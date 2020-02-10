@@ -7,16 +7,15 @@ import pandas as pd
 from pandas.api.types import is_numeric_dtype, is_datetime64_dtype
 from schedula import DispatcherError
 from cjwkernel.pandas.moduleutils import autocast_series_dtype
+from cjwkernel.types import I18nMessage
 
 
-class PythonFeatureDisabledError(Exception):
-    def __init__(self, name):
-        super().__init__(self)
-        self.name = name
-        self.message = f"builtins.{name} is disabled"
+class UserVisibleError(Exception):
+    """Has an `i18n.I18nMessage` as its first argument"""
 
-    def __str__(self):
-        return self.message
+    @property
+    def i18n_message(self):
+        return self.args[0]
 
 
 def build_builtins_for_eval() -> Dict[str, Any]:
@@ -33,7 +32,13 @@ def build_builtins_for_eval() -> Dict[str, Any]:
     # This doesn't increase security: it just helps module authors.
     def disable_func(name):
         def _disabled(*args, **kwargs):
-            raise PythonFeatureDisabledError(name)
+            raise UserVisibleError(
+                I18nMessage.trans(
+                    "staticmodules.formula.python.disabledFunction",
+                    default="{name} is disabled",
+                    args={"name": f"builtins.{name}"},
+                )
+            )
 
         return _disabled
 
@@ -156,11 +161,22 @@ def eval_excel_one_row(code, table):
     formula_args = []
     for token, obj in code.inputs.items():
         if obj is None:
-            raise ValueError("Invalid cell range: %s" % token)
+            raise UserVisibleError(
+                I18nMessage.trans(
+                    "staticmodules.formula.excel.one_row.invalidCellRange",
+                    default="Invalid cell range: {token}",
+                    args={"token": token},
+                )
+            )
         ranges = obj.ranges
         if len(ranges) != 1:
             # ...not sure what input would get us here
-            raise ValueError("Excel range must be a rectangular block of values")
+            raise UserVisibleError(
+                I18nMessage.trans(
+                    "staticmodules.formula.excel.one_row.cellRangeNotRectangular",
+                    default="Excel range must be a rectangular block of values",
+                )
+            )
         range = ranges[0]
 
         # Unpack start/end row/col
@@ -192,15 +208,23 @@ def eval_excel_all_rows(code, table):
         # Missing row number?
         # with only A-Z. But just in case:
         if obj is None:
-            raise ValueError(f"Bad cell reference {token}")
+            raise UserVisibleError(
+                I18nMessage.trans(
+                    "staticmodules.formula.excel.badCellReference",
+                    default="Bad cell reference {token}",
+                    args={"token": token},
+                )
+            )
 
         ranges = obj.ranges
         for rng in ranges:
             # r1 and r2 refer to which rows are referenced by the range.
             if rng["r1"] != "1" or rng["r2"] != "1":
-                raise ValueError(
-                    "Excel formulas can only reference "
-                    "the first row when applied to all rows"
+                raise UserVisibleError(
+                    I18nMessage.trans(
+                        "staticmodules.formula.excel.formulaFirstRowReference",
+                        default="Excel formulas can only reference the first row when applied to all rows",
+                    )
                 )
 
             col_first = rng["n1"]
@@ -224,7 +248,13 @@ def excel_formula(table, formula, all_rows):
         # 0 is a list of tokens, 1 is the function builder object
         code = Parser().ast(formula)[1].compile()
     except Exception as e:
-        raise ValueError(f"Couldn't parse formula: {str(e)}")
+        raise UserVisibleError(
+            I18nMessage.trans(
+                "staticmodules.formula.excel.invalidFormula",
+                default="Couldn't parse formula: {error}",
+                args={"error": str(e)},
+            )
+        )
 
     if all_rows:
         newcol = eval_excel_all_rows(code, table)
@@ -263,6 +293,8 @@ def render(table, params, **kwargs):
         all_rows: bool = params["all_rows"]
         try:
             newcol = excel_formula(table, formula, all_rows)
+        except UserVisibleError as e:
+            return e.i18n_message
         except Exception as e:
             return str(e)
     else:
@@ -271,6 +303,8 @@ def render(table, params, **kwargs):
             return table
         try:
             newcol = python_formula(table, formula)
+        except UserVisibleError as e:
+            return e.i18n_message
         except Exception as e:
             return str(e)
 

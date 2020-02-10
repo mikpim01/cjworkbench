@@ -7,6 +7,7 @@ from cjwkernel.pandas.types import ProcessResult
 from staticmodules import formula
 from staticmodules.formula import build_globals_for_eval, sanitize_series
 from .util import MockParams
+from cjwkernel.types import I18nMessage
 
 
 P = MockParams.factory(
@@ -317,9 +318,8 @@ class FormulaTests(unittest.TestCase):
         self._test(
             pd.DataFrame({"A": [1, 2], "B": [2, 3]}),
             {"formula_excel": "=SUM(A:B)", "all_rows": True},
-            expected_error=(
-                "Excel formulas can only reference "
-                "the first row when applied to all rows"
+            expected_error=I18nMessage(
+                "staticmodules.formula.excel.formulaFirstRowReference"
             ),
         )
 
@@ -327,19 +327,17 @@ class FormulaTests(unittest.TestCase):
         self._test(
             pd.DataFrame({"A": [1, 2]}),
             {"formula_excel": "=A2*2", "all_rows": True},
-            expected_error=(
-                "Excel formulas can only reference "
-                "the first row when applied to all rows"
-            ),
+            expected_error=("staticmodules.formula.excel.formulaFirstRowReference"),
         )
 
     def test_excel_error_syntax(self):
         self._test(
             pd.DataFrame({"A": [1, 2]}),
             {"formula_excel": "=SUM B>", "all_rows": False},
-            expected_error=(
+            expected_error=I18nMessage(
                 # The "%s" is built in to the formulas module. TODO file bugrep
-                "Couldn't parse formula: Not a valid formula:\n%s"
+                "staticmodules.formula.excel.invalidFormula",
+                {"error": "Not a valid formula:\n%s"},
             ),
         )
 
@@ -362,7 +360,9 @@ class FormulaTests(unittest.TestCase):
         self._test(
             pd.DataFrame({"A": [1, 2]}),
             {"formula_excel": "=A0*2", "all_rows": False},
-            expected_error="Invalid cell range: A0",
+            expected_error=I18nMessage(
+                "staticmodules.formula.excel.one_row.invalidCellRange", {"token": "A0"}
+            ),
         )
 
     def test_excel_sanitize_output(self):
