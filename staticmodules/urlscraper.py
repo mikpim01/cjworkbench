@@ -5,9 +5,16 @@ import pandas as pd
 import aiohttp
 import yarl  # aiohttp innards -- yuck!
 from cjwkernel import settings
+from cjwkernel.types import I18nMessage
 
 
 MaxNUrls = 10
+
+_maxNUrls_warning = I18nMessage.trans(
+    "staticmodules.urlscraper.warning.maxNUrls",
+    default="We limited your scrape to {max_n_urls} URLs",
+    args={"max_n_urls": MaxNUrls},
+)
 
 
 def utcnow():
@@ -161,7 +168,7 @@ async def fetch(params, *, get_input_dataframe):
         end = params["endpage"] + 1
         if end - begin > MaxNUrls:
             end = begin + MaxNUrls
-            error = f"We limited your scrape to {MaxNUrls} URLs"
+            error = _maxNUrls_warning
 
         # Generate multiple urls by adding page numbers, if user says so
         if params["addpagenumbers"]:
@@ -174,7 +181,7 @@ async def fetch(params, *, get_input_dataframe):
 
     if len(urls) > MaxNUrls:
         urls = urls[:MaxNUrls]
-        error = f"We limited your scrape to {MaxNUrls} URLs"
+        error = _maxNUrls_warning
 
     table = pd.DataFrame(
         {

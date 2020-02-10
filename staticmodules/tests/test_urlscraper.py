@@ -9,6 +9,7 @@ from django.test import override_settings, SimpleTestCase
 import pandas as pd
 from pandas.testing import assert_frame_equal
 from cjwkernel.pandas.types import ProcessResult
+from cjwkernel.types import I18nMessage
 from staticmodules import urlscraper
 from .util import MockParams
 
@@ -328,7 +329,12 @@ class URLScraperTests(unittest.TestCase):
                 None,
             )
             self.assertEqual(len(table), 10)
-            self.assertEqual(error, "We limited your scrape to 10 URLs")
+            self.assertEqual(
+                error,
+                I18nMessage(
+                    "staticmodules.urlscraper.warning.maxNUrls", {"max_n_urls": 10}
+                ),
+            )
 
     # Mostly tests that the correct sequence of URLs with page numbers is generated from the user's input
     def test_scrape_paged(self):
@@ -373,7 +379,12 @@ class URLScraperTests(unittest.TestCase):
                 None,
             )
             self.assertEqual(len(table), 10)
-            self.assertEqual(error, "We limited your scrape to 10 URLs")
+            self.assertEqual(
+                error,
+                I18nMessage(
+                    "staticmodules.urlscraper.warning.maxNUrls", {"max_n_urls": 10}
+                ),
+            )
 
 
 class MigrateParamsTest(unittest.TestCase):
