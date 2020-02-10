@@ -6,6 +6,7 @@ from pandas.testing import assert_frame_equal
 from cjwkernel.tests.util import override_settings
 from staticmodules.countbydate import migrate_params, render
 from .util import MockParams
+from cjwkernel.types import I18nMessage
 
 
 P = MockParams.factory(
@@ -431,9 +432,9 @@ class CountByDateTests(unittest.TestCase):
         result = render(count_table, params)
         self.assertEqual(
             result,
-            (
-                "Including missing dates would create 174787201 rows, "
-                "but the maximum allowed is 100"
+            I18nMessage(
+                "staticmodules.countbydate.TooManyRowsError.message",
+                {"rows": 174787201, "max_rows": 100},
             ),
         )
 

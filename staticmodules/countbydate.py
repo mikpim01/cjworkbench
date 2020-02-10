@@ -4,9 +4,16 @@ import numpy as np
 import pandas as pd
 from pandas.api.types import is_numeric_dtype
 from cjwkernel import settings
+from cjwkernel.types import I18nMessage
 
 # ---- CountByDate ----
 # group column by unique value, discard all other columns
+
+
+class UserVisibleError(Exception):
+    @property
+    def i18n_message(self) -> I18nMessage:
+        return self.args[0]
 
 
 class Period(enum.Enum):
@@ -137,10 +144,16 @@ class ValidatedForm:
                 n_rows = (end - start).n + 1
 
                 if n_rows > settings.MAX_ROWS_PER_TABLE:
-                    raise ValueError(
-                        f"Including missing dates would create {n_rows} rows, "
-                        f"but the maximum allowed is "
-                        f"{settings.MAX_ROWS_PER_TABLE}"
+                    raise UserVisibleError(
+                        I18nMessage.trans(
+                            "staticmodules.countbydate.TooManyRowsError.message",
+                            default="Including missing dates would create {n_rows} rows, "
+                            "but the maximum allowed is {max_rows}",
+                            args={
+                                "rows": n_rows,
+                                "max_rows": settings.MAX_ROWS_PER_TABLE,
+                            },
+                        )
                     )
                 new_index = pd.period_range(
                     start=start, end=end, freq=period_index.freq
@@ -280,6 +293,8 @@ def render(table, params, **kwargs):
 
     try:
         return validated_form.run()
+    except UserVisibleError as err:
+        return err.i18n_message
     except ValueError as err:
         return str(err)
 
