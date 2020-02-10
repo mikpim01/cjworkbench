@@ -8,7 +8,9 @@ from staticmodules.renamecolumns import (
     render,
     _parse_renames,
     _parse_custom_list,
+    UserVisibleError,
 )
+from cjwkernel.types import I18nMessage
 
 
 def P(custom_list=False, renames={}, list_string=""):
@@ -117,10 +119,19 @@ class RenderTests(unittest.TestCase):
         self.assertEqual(_parse_custom_list("A\nY\nC", ["A", "B", "C"]), {"B": "Y"})
 
     def test_parse_custom_list_too_many_columns_is_valueerror(self):
-        with self.assertRaisesRegex(
-            ValueError, "You supplied 4 column names, but the table has 3 columns."
-        ):
+        with self.assertRaises(UserVisibleError):
             _parse_custom_list("A\nB\nC\nD", ["A", "B", "C"])
+
+        try:
+            _parse_custom_list("A\nB\nC\nD", ["A", "B", "C"])
+        except UserVisibleError as err:
+            self.assertEqual(
+                err.i18n_message,
+                I18nMessage(
+                    "staticmodules.renamecolumns.wrongNumberOfNames",
+                    {"n_names": 4, "n_columns": 3},
+                ),
+            )
 
     def test_parse_custom_list_ignore_trailing_newline(self):
         self.assertEqual(
@@ -153,7 +164,11 @@ class RenderTests(unittest.TestCase):
             table, P(custom_list=True, list_string="X,Y"), input_columns={"A": Column()}
         )
         self.assertEqual(
-            result, "You supplied 2 column names, but the table has 1 columns."
+            result,
+            I18nMessage(
+                "staticmodules.renamecolumns.wrongNumberOfNames",
+                {"n_names": 2, "n_columns": 1},
+            ),
         )
 
     def test_rename_formats(self):
