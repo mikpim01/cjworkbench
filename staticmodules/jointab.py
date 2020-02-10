@@ -1,4 +1,5 @@
 from typing import List, Set
+from cjwkernel.types import I18nMessage
 
 
 def _parse_colnames(val: List[str], valid: Set[str]):
@@ -35,19 +36,28 @@ def render(table, params, *, input_columns):
         left_type = input_columns[colname].type
         right_type = right_tab.columns[colname].type
         if left_type != right_type:
-            return (
-                f'Column "{colname}" is *{left_type}* in this tab '
-                f"and *{right_type}* in {right_tab.name}. Please convert "
-                "one or the other so they are both the same type."
+            return I18nMessage.trans(
+                "staticmodules.jointab.badValue.differentColumnTypes",
+                default='Column "{column_name}" is *{left_type}* in this tab '
+                "and *{right_type}* in {other_tab_name}. Please convert "
+                "one or the other so they are both the same type.",
+                args={
+                    "column_name": colname,
+                    "left_type": left_type,
+                    "right_type": right_type,
+                    "other_tab_name": right_tab.name,
+                },
             )
 
     # Ensure we don't overwrite a column (the user won't want that)
     for colname in right_columns:
         if colname in input_columns:
-            return (
-                f'You tried to add "{colname}" from {right_tab.name}, but '
+            return I18nMessage.trans(
+                "staticmodules.jointab.badValue.columnAlreadyExists",
+                default='You tried to add "{column_name}" from {other_tab_name}, but '
                 "your table already has that column. Please rename the column "
-                "in one of the tabs, or unselect the column."
+                "in one of the tabs, or unselect the column.",
+                args={"column_name": colname, "other_tab_name": right_tab.name},
             )
 
     if not on_columns:
