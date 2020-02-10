@@ -51,9 +51,9 @@ def _generate_gdrive_file_url(sheet_id: str) -> str:
     return f"{GDRIVE_API_URL}/files/{sheet_id}?alt=media"
 
 
-def TODO_i18n_fetch_error(output_path: Path, message: str):
+def _fetch_error(output_path: Path, message: I18nMessage):
     os.truncate(output_path, 0)
-    return FetchResult(output_path, [RenderError(I18nMessage.TODO_i18n(message))])
+    return FetchResult(output_path, [RenderError(message)])
 
 
 async def do_download(
@@ -80,17 +80,29 @@ async def do_download(
     except HttpError.NotSuccess as err:
         response = err.response
         if response.status_code == 401:
-            return TODO_i18n_fetch_error(
-                output_path, "Invalid credentials. Please reconnect to Google Drive."
+            return _fetch_error(
+                output_path,
+                I18nMessage.trans(
+                    "staticmodules.googlesheets.download.error.http.401",
+                    default="Invalid credentials. Please reconnect to Google Drive.",
+                ),
             )
         elif response.status_code == 403:
-            return TODO_i18n_fetch_error(
+            return _fetch_error(
                 output_path,
-                "You chose a file your logged-in user cannot access. Please reconnect to Google Drive or choose a different file.",
+                I18nMessage.trans(
+                    "staticmodules.googlesheets.download.error.http.403",
+                    default="You chose a file your logged-in user cannot access."
+                    "Please reconnect to Google Drive or choose a different file.",
+                ),
             )
         elif response.status_code == 404:
-            return TODO_i18n_fetch_error(
-                output_path, "File not found. Please choose a different file."
+            return _fetch_error(
+                output_path,
+                I18nMessage.trans(
+                    "staticmodules.googlesheets.download.error.http.404",
+                    default="File not found. Please choose a different file.",
+                ),
             )
         else:
             # HACK: *err.i18n_message because i18n_message is a tuple
@@ -192,7 +204,13 @@ def fetch_arrow(
     if not file_meta:
         return FetchResult(
             output_path,
-            errors=[RenderError(I18nMessage.TODO_i18n("Please choose a file"))],
+            errors=[
+                RenderError(
+                    I18nMessage.trans(
+                        "badParam.file.missing", default="Please choose a file"
+                    )
+                )
+            ],
         )
 
     # Ignore file_meta['url']. That's for the client's web browser, not for
@@ -202,7 +220,13 @@ def fetch_arrow(
         # [adamhooper, 2019-12-06] has this ever happened?
         return FetchResult(
             output_path,
-            errors=[RenderError(I18nMessage.TODO_i18n("Please choose a file"))],
+            errors=[
+                RenderError(
+                    I18nMessage.trans(
+                        "badParam.file.missing", default="Please choose a file"
+                    )
+                )
+            ],
         )
 
     # backwards-compat for old entries without 'mimeType', 2018-06-13
@@ -212,7 +236,13 @@ def fetch_arrow(
 
     secret = secrets.get("google_credentials")
     if not secret:
-        return TODO_i18n_fetch_error(output_path, "Please connect to Google Drive.")
+        return _fetch_error(
+            output_path,
+            I18nMessage.trans(
+                "staticmodules.googlesheets.badParams.google_credentials.missing",
+                default="Please connect to Google Drive.",
+            ),
+        )
     if "error" in secret:
         return FetchResult(
             output_path, errors=[RenderError(I18nMessage.from_dict(secret["error"]))]

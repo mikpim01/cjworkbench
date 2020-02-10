@@ -118,8 +118,7 @@ class FetchTests(unittest.TestCase):
         with tempfile_context(prefix="output-") as output_path:
             result = fetch_arrow(P(file=None), {}, None, None, output_path)
             self.assertEqual(
-                result.errors,
-                [RenderError(I18nMessage.TODO_i18n("Please choose a file"))],
+                result.errors, [RenderError(I18nMessage("badParam.file.missing"))]
             )
 
     def test_fetch_native_sheet(self):
@@ -237,7 +236,13 @@ class FetchTests(unittest.TestCase):
             self.assertEqual(result.path.read_bytes(), b"")
             self.assertEqual(
                 result.errors,
-                [RenderError(I18nMessage.TODO_i18n("Please connect to Google Drive."))],
+                [
+                    RenderError(
+                        I18nMessage(
+                            "staticmodules.googlesheets.badParams.google_credentials.missing"
+                        )
+                    )
+                ],
             )
         # Should not make any request
         self.assertIsNone(self.last_http_requestline)
@@ -250,8 +255,8 @@ class FetchTests(unittest.TestCase):
                 result.errors,
                 [
                     RenderError(
-                        I18nMessage.TODO_i18n(
-                            "Invalid credentials. Please reconnect to Google Drive."
+                        I18nMessage(
+                            "staticmodules.googlesheets.download.error.http.401"
                         )
                     )
                 ],
@@ -265,8 +270,8 @@ class FetchTests(unittest.TestCase):
                 result.errors,
                 [
                     RenderError(
-                        I18nMessage.TODO_i18n(
-                            "File not found. Please choose a different file."
+                        I18nMessage(
+                            "staticmodules.googlesheets.download.error.http.404"
                         )
                     )
                 ],
@@ -280,9 +285,8 @@ class FetchTests(unittest.TestCase):
                 result.errors,
                 [
                     RenderError(
-                        I18nMessage.TODO_i18n(
-                            "You chose a file your logged-in user cannot access. "
-                            "Please reconnect to Google Drive or choose a different file."
+                        I18nMessage(
+                            "staticmodules.googlesheets.download.error.http.403"
                         )
                     )
                 ],
