@@ -4,6 +4,7 @@ import pandas as pd
 from pandas.testing import assert_frame_equal
 import numpy as np
 from staticmodules.sort import render, migrate_params
+from cjwkernel.types import I18nMessage
 
 
 def P(sort_columns=[], keep_top=""):
@@ -82,7 +83,9 @@ class SortTests(unittest.TestCase):
         )
 
         result = render(pd.DataFrame(), params)
-        self.assertEqual(result, "Duplicate columns.")
+        self.assertEqual(
+            result, I18nMessage("staticmodules.sort.badParam.sort_columns.duplicate")
+        )
 
     def test_params_initial_value_is_no_op(self):
         params = P([{"colname": "", "is_ascending": False}])
@@ -109,14 +112,14 @@ class SortTests(unittest.TestCase):
         params = P([{"colname": "A", "is_ascending": False}], keep_top="apple")
 
         result = render(pd.DataFrame({"A": [1, 2, 3]}), params)
-        expected = 'Please enter a positive integer in "Keep top" or leave it blank.'
+        expected = I18nMessage("staticmodules.sort.badParam.keep_top.negative")
         self.assertEqual(result, expected)
 
     def test_params_keep_top_negative_is_error(self):
         params = P([{"colname": "A", "is_ascending": False}], keep_top="-2")
 
         result = render(pd.DataFrame({"A": [1, 2, 3]}), params)
-        expected = 'Please enter a positive integer in "Keep top" or leave it blank.'
+        expected = I18nMessage("staticmodules.sort.badParam.keep_top.negative")
         self.assertEqual(result, expected)
 
     def test_order_str_ascending(self):

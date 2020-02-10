@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from typing import Any, Dict, List, Union
 import pandas as pd
+from cjwkernel.types import I18nMessage
 
 
 @dataclass
@@ -23,7 +24,10 @@ def _do_render(
             if keep_top_int <= 0:
                 raise ValueError
         except ValueError:
-            return 'Please enter a positive integer in "Keep top" ' "or leave it blank."
+            return I18nMessage.trans(
+                "staticmodules.sort.badParam.keep_top.negative",
+                default='Please enter a positive integer in "Keep top" or leave it blank.',
+            )
     else:
         keep_top_int = None
 
@@ -36,7 +40,10 @@ def _do_render(
     # check for duplicate columns
     if len(columns) != len(set(columns)):
         # TODO support this case? The intent is unambiguous.
-        return "Duplicate columns."
+        return I18nMessage.trans(
+            "staticmodules.sort.badParam.sort_columns.duplicate",
+            default="Duplicate columns.",
+        )
 
     if keep_top_int and len(sort_columns) > 1:
         # sort by _last_ column: that's the sorting we'll use within each group
