@@ -9,6 +9,7 @@ from staticmodules.converttexttonumber import (
     Form,
     migrate_params,
 )
+from cjwkernel.types import I18nMessage
 
 
 class TestMigrateParams(unittest.TestCase):
@@ -235,10 +236,15 @@ class TestExtractNumbers(unittest.TestCase):
         result = form.convert_table(table)
         self.assertEqual(
             result,
-            (
-                "'' in row 1 of 'A' cannot be converted. Overall, there are 2 "
-                "errors in 1 column. Select 'Convert non-numbers to null' to set "
-                "these values to null."
+            I18nMessage(
+                "staticmodules.converttexttonumber.ErrorCount.message",
+                {
+                    "a_value": "",
+                    "a_row": 1,
+                    "a_column": "A",
+                    "n_errors": 2,
+                    "n_columns": 1,
+                },
             ),
         )
 

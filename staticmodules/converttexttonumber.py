@@ -4,6 +4,7 @@ from typing import Any, Dict, List, Optional, Set, Tuple, Union
 import pandas as pd
 from pandas.api.types import is_numeric_dtype
 import re
+from cjwkernel.types import I18nMessage
 
 
 def _chars_to_pattern(chars: Set[str]) -> str:
@@ -103,22 +104,23 @@ class ErrorCount:
                 n_columns=(self.n_columns + rhs.n_columns),
             )
 
-    def __str__(self):
-        if self.total == 1:
-            n_errors_str = "is 1 error"
-        else:
-            n_errors_str = f"are {self.total} errors"
-
-        if self.n_columns == 1:
-            n_columns_str = "1 column"
-        else:
-            n_columns_str = f"{self.n_columns} columns"
-
-        return (
-            f"'{self.a_value}' in row {self.a_row + 1} of "
-            f"'{self.a_column}' cannot be converted. Overall, there "
-            f"{n_errors_str} in {n_columns_str}. Select 'Convert non-numbers "
-            "to null' to set these values to null."
+    @property
+    def i18n_message(self):
+        return I18nMessage.trans(
+            "staticmodules.converttexttonumber.ErrorCount.message",
+            default="“{a_value}” in row {a_row} of “{a_column}” cannot be converted. "
+            "{n_errors, plural, "
+            "  one {Overall, there is # error in {n_columns, plural, other {# columns} one {# column}}.} "
+            "  other {Overall, there are # errors in {n_columns, plural, other {# columns} one {# column}}.} "
+            "} "
+            "Select 'non-numbers to null' to set these values to null.",
+            args={
+                "a_value": self.a_value,
+                "a_row": self.a_row + 1,
+                "a_column": self.a_column,
+                "n_errors": self.total,
+                "n_columns": self.n_columns,
+            },
         )
 
     def __len__(self):
@@ -218,7 +220,7 @@ class Form:
                 error_count += new_errors
 
         if not self.error_means_null and error_count:
-            return str(error_count)
+            return error_count.i18n_message
 
         return table
 
