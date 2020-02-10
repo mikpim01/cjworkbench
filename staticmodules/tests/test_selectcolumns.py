@@ -3,6 +3,7 @@ import unittest
 import pandas as pd
 from pandas.testing import assert_frame_equal
 from staticmodules.selectcolumns import migrate_params, render
+from cjwkernel.types import I18nMessage
 
 
 class MigrateParamsTest(unittest.TestCase):
@@ -78,7 +79,11 @@ class RenderTest(unittest.TestCase):
         table = pd.DataFrame({"A": [1, 2], "B": [2, 3], "C": [3, 4]})
         result = render(table.copy(), P(select_range=True, column_numbers=""))
         self.assertEqual(
-            result, 'Column numbers must look like "1-2", "5" or "1-2, 5"; got ""'
+            result,
+            I18nMessage(
+                "staticmodules.selectcolumns.badParam.column_numbers.invalid",
+                {"value": ""},
+            ),
         )
 
     def test_render_range_comma_separated(self):
@@ -94,13 +99,22 @@ class RenderTest(unittest.TestCase):
     def test_render_range_overlapping_ranges(self):
         table = pd.DataFrame({"A": [1, 2], "B": [2, 3], "C": [3, 4]})
         result = render(table, P(select_range=True, column_numbers="2-3,2"))
-        self.assertEqual(result, "There are overlapping numbers in input range")
+        self.assertEqual(
+            result,
+            I18nMessage(
+                "staticmodules.selectcolumns.badParam.column_numbers.overlapping"
+            ),
+        )
 
     def test_render_range_clamp_range(self):
         table = pd.DataFrame({"A": [1, 2], "B": [2, 3], "C": [3, 4]})
         result = render(table, P(select_range=True, column_numbers="-1,2,6"))
         self.assertEqual(
-            result, 'Column numbers must look like "1-2", "5" or "1-2, 5"; got "-1"'
+            result,
+            I18nMessage(
+                "staticmodules.selectcolumns.badParam.column_numbers.invalid",
+                {"value": "-1"},
+            ),
         )
 
     def test_render_range_non_numeric_ranges(self):
@@ -108,5 +122,8 @@ class RenderTest(unittest.TestCase):
         result = render(table, P(select_range=True, column_numbers="2-3,giraffe"))
         self.assertEqual(
             result,
-            ('Column numbers must look like "1-2", "5" or "1-2, 5"; ' 'got "giraffe"'),
+            I18nMessage(
+                "staticmodules.selectcolumns.badParam.column_numbers.invalid",
+                {"value": "giraffe"},
+            ),
         )

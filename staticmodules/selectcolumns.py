@@ -2,10 +2,19 @@ import re
 from typing import Tuple
 import pandas as pd
 from pandas.core.indexes.base import InvalidIndexError
+from cjwkernel.types import I18nMessage
 
 
 commas = re.compile(r"\s*,\s*")
 numbers = re.compile(r"(?P<first>[1-9]\d*)(?:-(?P<last>[1-9]\d*))?")
+
+
+class UserVisibleError(Exception):
+    """Has an `I18nMessage` as first argument"""
+
+    @property
+    def i18n_message(self):
+        return self.args[0]
 
 
 def select_columns_by_number(table, str_col_nums):
@@ -19,7 +28,12 @@ def select_columns_by_number(table, str_col_nums):
     try:
         mask = index.get_indexer(table_col_nums) != -1
     except InvalidIndexError:
-        raise ValueError("There are overlapping numbers in input range")
+        raise UserVisibleError(
+            I18nMessage.trans(
+                "staticmodules.selectcolumns.badParam.column_numbers.overlapping",
+                default="There are overlapping numbers in input range",
+            )
+        )
 
     return list(table.columns[mask])
 
@@ -40,8 +54,12 @@ def parse_interval(s: str) -> Tuple[int, int]:
     """
     match = numbers.fullmatch(s)
     if not match:
-        raise ValueError(
-            f'Column numbers must look like "1-2", "5" or "1-2, 5"; got "{s}"'
+        raise UserVisibleError(
+            I18nMessage.trans(
+                "staticmodules.selectcolumns.badParam.column_numbers.invalid",
+                default='Column numbers must look like "1-2", "5" or "1-2, 5"; got "{value}"',
+                args={"value": s},
+            )
         )
 
     first = int(match.group("first"))
@@ -66,6 +84,8 @@ def render(table, params, **kwargs):
     if params["select_range"]:
         try:
             columns = select_columns_by_number(table, params["column_numbers"])
+        except UserVisibleError as err:
+            return err.i18n_message
         except ValueError as err:
             return str(err)
     else:
