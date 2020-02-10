@@ -130,12 +130,11 @@ def _render_file(path: Path, output_path: Path, params: Dict[str, Any]):
             return RenderResult(
                 errors=[
                     RenderError(
-                        I18nMessage.TODO_i18n(
-                            (
-                                "Server responded with unhandled Content-Type %r. "
-                                "Please use a different URL."
-                            )
-                            % content_type
+                        I18nMessage.trans(
+                            "staticmodules.loadurl.unhandledContentType",
+                            default="Server responded with unhandled Content-Type {content_type}. "
+                            "Please use a different URL.",
+                            args={"content_type": str(content_type)},
                         )
                     )
                 ]
