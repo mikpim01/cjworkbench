@@ -7,6 +7,8 @@ class TestPythonCode(LoggedInIntegrationTest):
 
         b = self.browser
         b.click_button("Create Workflow")
+        
+        self.import_module("pythoncode")
 
         # Empty module stack
         b.wait_for_element(".module-stack", wait=True)
