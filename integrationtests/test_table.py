@@ -18,6 +18,7 @@ class TestTable(LoggedInIntegrationTest):
 
         self.import_module("renamecolumns")
 
+        self.import_module("pastecsv")
         self.add_data_step("Paste data")
         b.fill_in("csv", "string,int\nfoo,1\nbar,3\nbaz,2", wait=True)
         self.submit_wf_module()

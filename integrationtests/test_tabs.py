@@ -37,6 +37,7 @@ class TestTabs(WorkbenchBase):
         accounts.login(b, "a@example.org", "a@example.org")
         self._create_workflow()
 
+        self.import_module("pastecsv")
         self.add_data_step("Paste data")
         b.fill_in("csv", "A,B\n1,2,\n2,3", wait=True)
 
@@ -61,6 +62,7 @@ class TestTabs(WorkbenchBase):
 
         self.import_module("startfromtab")
 
+        self.import_module("pastecsv")
         self.add_data_step("Paste data")
         b.fill_in("csv", "foo,bar\n1,2", wait=True)
         self.submit_wf_module()
@@ -146,6 +148,7 @@ class TestTabs(WorkbenchBase):
         accounts.login(b, "a@example.org", "a@example.org")
         self._create_workflow()
 
+        self.import_module("pastecsv")
         self.add_data_step("Paste data")
         b.fill_in("csv", "foo,bar\n1,2", wait=True)
         self.submit_wf_module()

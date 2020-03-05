@@ -15,6 +15,7 @@
 #        b.assert_element('input[name="name"][value="Untitled Workflow"]', wait=True)
 #
 #        self.import_module("reordercolumns")
+#        self.import_module("pastecsv")
 #
 #        self.browser.click_button('ADD STEP')
 #        self.browser.fill_in('moduleQ', 'Paste data')

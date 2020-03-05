@@ -15,6 +15,7 @@ class TestQuickFix(LoggedInIntegrationTest):
 
         b.fill_in("name", "Example Workflow")
 
+        self.import_module("pastecsv")
         self.add_data_step("Paste data")
         b.fill_in("csv", csv_data, wait=True)
         self.submit_wf_module()

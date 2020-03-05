@@ -136,6 +136,7 @@ class WorkbenchBase(unittest.TestCase):
                 ]
             )
 
+        self.import_module("pastecsv")
         self.add_data_step("Paste data")
         self.browser.fill_in("csv", csv)
         self.submit_wf_module()
