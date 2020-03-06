@@ -1,10 +1,9 @@
-from cjwkernel.pandas.parse import parse_file
-from cjwkernel.types import RenderResult
+from cjwparse.api import parse_file
 
 
-def render_arrow(table, params, tab_name, fetch_result, output_path):
-    if not params["file"]:
-        return RenderResult()  # user hasn't uploaded yet
+def render(arrow_table, params, output_path, **kwargs):
+    if params["file"] is None:
+        return []
 
     return parse_file(
         params["file"], output_path=output_path, has_header=params["has_header"]
