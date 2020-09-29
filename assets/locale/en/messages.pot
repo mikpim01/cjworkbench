@@ -1140,12 +1140,12 @@ msgstr ""
 
 #. default-message: There are no Date and Time columns to group by date
 #: assets/js/params/Custom/Groups/DateGranularities.js:65
-msgid "js.params.Custom.Groups.DateGranularities.noDateAndTimeToGroup"
+msgid "js.params.Custom.Groups.DateGranularities.noTimestampToGroup"
 msgstr ""
 
 #. default-message: Select a Date and Time column to group it by date
 #: assets/js/params/Custom/Groups/DateGranularities.js:76
-msgid "js.params.Custom.Groups.DateGranularities.selectDateAndTimeToGroup"
+msgid "js.params.Custom.Groups.DateGranularities.selectTimestampToGroup"
 msgstr ""
 
 #. default-message: as is
@@ -2102,9 +2102,9 @@ msgstr ""
 msgid "js.table.ColumnContextMenu.cleanText"
 msgstr ""
 
-#. default-message: Convert to date & time
+#. default-message: Convert to timestamp
 #: assets/js/table/ColumnContextMenu.js:54
-msgid "js.table.ColumnContextMenu.convertToDateTime"
+msgid "js.table.ColumnContextMenu.convertToTimestamp"
 msgstr ""
 
 #. default-message: Convert to number
@@ -2152,9 +2152,9 @@ msgstr ""
 msgid "js.table.ColumnContextMenu.sortDescending"
 msgstr ""
 
-#. default-message: date & time
+#. default-message: timestamp
 #: assets/js/table/ColumnHeader.js:13
-msgid "js.table.ColumnHeader.types.dateAndtime"
+msgid "js.table.ColumnHeader.types.timestamp"
 msgstr ""
 
 #. default-message: number
@@ -2331,9 +2331,9 @@ msgid "py.renderer.execute.types.PromptingError.WrongColumnType.as_quick_fixes.s
 msgstr ""
 
 #. i18n: The parameters {found_type} and {best_wanted_type} will have values
-#. among "text", "number", "datetime"; however, including an (possibly empty)
+#. among "text", "number", "timestamp"; however, including an (possibly empty)
 #. "other" case is mandatory.
-#. default-message: Convert { found_type, select, text {Text} number {Numbers} datetime {Dates & Times} other {}} to {best_wanted_type, select, text {Text} number {Numbers} datetime {Dates & Times} other{}}.
+#. default-message: Convert { found_type, select, text {Text} number {Numbers} timestamp {Timestamps} other {}} to {best_wanted_type, select, text {Text} number {Numbers} timestamp {Timestamps} other{}}.
 #: renderer/execute/types.py:101
 msgid "py.renderer.execute.types.PromptingError.WrongColumnType.as_quick_fixes.general"
 msgstr ""
@@ -2349,9 +2349,9 @@ msgstr ""
 #. i18n: The parameter {columns} will contain the total number of columns that
 #. need to be converted; you will also receive the column names: {0}, {1}, {2},
 #. etc. The parameters {found_type} and {best_wanted_type} will have values
-#. among "text", "number", "datetime"; however, including a (possibly empty)
+#. among "text", "number", "timestamp"; however, including a (possibly empty)
 #. "other" case is mandatory.
-#. default-message: { columns, plural, offset:2 =1 {The column “{0}” must be converted from { found_type, select, text {Text} number {Numbers} datetime {Dates & Times} other {}} to {best_wanted_type, select, text {Text} number {Numbers} datetime {Dates & Times} other {}}.} =2 {The columns “{0}” and “{1}” must be converted from { found_type, select, text {Text} number {Numbers} datetime {Dates & Times} other {}} to {best_wanted_type, select, text {Text} number {Numbers} datetime {Dates & Times}  other{}}.} =3 {The columns “{0}”, “{1}” and “{2}” must be converted from { found_type, select, text {Text} number {Numbers} datetime {Dates & Times} other {}} to {best_wanted_type, select, text {Text} number {Numbers} datetime {Dates & Times} other{}}.} other {The columns “{0}”, “{1}” and # others must be converted from { found_type, select, text {Text} number {Numbers} datetime {Dates & Times} other {}} to {best_wanted_type, select, text {Text} number {Numbers} datetime {Dates & Times} other{}}.}}
+#. default-message: { columns, plural, offset:2 =1 {The column “{0}” must be converted from { found_type, select, text {Text} number {Numbers} timestamp {Timestamps} other {}} to {best_wanted_type, select, text {Text} number {Numbers} timestamp {Timestamps} other {}}.} =2 {The columns “{0}” and “{1}” must be converted from { found_type, select, text {Text} number {Numbers} timestamp {Timestamps} other {}} to {best_wanted_type, select, text {Text} number {Numbers} timestamp {Timestamps}  other{}}.} =3 {The columns “{0}”, “{1}” and “{2}” must be converted from { found_type, select, text {Text} number {Numbers} timestamp {Timestamps} other {}} to {best_wanted_type, select, text {Text} number {Numbers} timestamp {Timestamps} other{}}.} other {The columns “{0}”, “{1}” and # others must be converted from { found_type, select, text {Text} number {Numbers} timestamp {Timestamps} other {}} to {best_wanted_type, select, text {Text} number {Numbers} timestamp {Timestamps} other{}}.}}
 #: renderer/execute/types.py:157
 msgid "py.renderer.execute.types.PromptingError.WrongColumnType.as_error_message.general"
 msgstr ""

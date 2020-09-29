@@ -954,11 +954,11 @@ msgid "js.params.Custom.Groups.DateGranularities.convertColumns"
 msgstr "Convert columns"
 
 #: assets/js/params/Custom/Groups/DateGranularities.js:65
-msgid "js.params.Custom.Groups.DateGranularities.noDateAndTimeToGroup"
+msgid "js.params.Custom.Groups.DateGranularities.noTimestampToGroup"
 msgstr "There are no Date and Time columns to group by date"
 
 #: assets/js/params/Custom/Groups/DateGranularities.js:76
-msgid "js.params.Custom.Groups.DateGranularities.selectDateAndTimeToGroup"
+msgid "js.params.Custom.Groups.DateGranularities.selectTimestampToGroup"
 msgstr "Select a Date and Time column to group it by date"
 
 #: assets/js/params/Custom/Groups/DateGranularity.js:38
@@ -1778,8 +1778,8 @@ msgid "js.table.ColumnContextMenu.cleanText"
 msgstr "Clean Text"
 
 #: assets/js/table/ColumnContextMenu.js:54
-msgid "js.table.ColumnContextMenu.convertToDateTime"
-msgstr "Convert to date & time"
+msgid "js.table.ColumnContextMenu.convertToTimestamp"
+msgstr "Convert to timestamp"
 
 #: assets/js/table/ColumnContextMenu.js:55
 msgid "js.table.ColumnContextMenu.convertToNumbers"
@@ -1965,14 +1965,14 @@ msgid "py.renderer.execute.types.PromptingError.WrongColumnType.as_quick_fixes.s
 msgstr "Convert to Text."
 
 #. i18n: The parameters {found_type} and {best_wanted_type} will have values
-#. among "text", "number", "datetime"; however, including an (possibly empty)
+#. among "text", "number", "timestamp"; however, including an (possibly empty)
 #. "other" case is mandatory.
 #: renderer/execute/types.py:101
 msgid "py.renderer.execute.types.PromptingError.WrongColumnType.as_quick_fixes.general"
 msgstr ""
-"Convert { found_type, select, text {Text} number {Numbers} datetime "
-"{Dates & Times} other {}} to {best_wanted_type, select, text {Text} "
-"number {Numbers} datetime {Dates & Times} other{}}."
+"Convert { found_type, select, text {Text} number {Numbers} timestamp "
+"{Timestamps} other {}} to {best_wanted_type, select, text {Text} "
+"number {Numbers} timestamp {Timestamps} other{}}."
 
 #. i18n: The parameter {columns} will contain the total number of columns that
 #. need to be converted; you will also receive the column names as {0}, {1},
@@ -1988,25 +1988,25 @@ msgstr ""
 #. i18n: The parameter {columns} will contain the total number of columns that
 #. need to be converted; you will also receive the column names: {0}, {1}, {2},
 #. etc. The parameters {found_type} and {best_wanted_type} will have values
-#. among "text", "number", "datetime"; however, including a (possibly empty)
+#. among "text", "number", "timestamp"; however, including a (possibly empty)
 #. "other" case is mandatory.
 #: renderer/execute/types.py:157
 msgid "py.renderer.execute.types.PromptingError.WrongColumnType.as_error_message.general"
 msgstr ""
 "{ columns, plural, offset:2 =1 {The column “{0}” must be converted from {"
-" found_type, select, text {Text} number {Numbers} datetime {Dates & "
+" found_type, select, text {Text} number {Numbers} timestamp {Dates & "
 "Times} other {}} to {best_wanted_type, select, text {Text} number "
-"{Numbers} datetime {Dates & Times} other {}}.} =2 {The columns “{0}” and "
+"{Numbers} timestamp {Timestamps} other {}}.} =2 {The columns “{0}” and "
 "“{1}” must be converted from { found_type, select, text {Text} number "
-"{Numbers} datetime {Dates & Times} other {}} to {best_wanted_type, "
-"select, text {Text} number {Numbers} datetime {Dates & Times}  other{}}.}"
+"{Numbers} timestamp {Timestamps} other {}} to {best_wanted_type, "
+"select, text {Text} number {Numbers} timestamp {Timestamps}  other{}}.}"
 " =3 {The columns “{0}”, “{1}” and “{2}” must be converted from { "
-"found_type, select, text {Text} number {Numbers} datetime {Dates & Times}"
+"found_type, select, text {Text} number {Numbers} timestamp {Timestamps}"
 " other {}} to {best_wanted_type, select, text {Text} number {Numbers} "
-"datetime {Dates & Times} other{}}.} other {The columns “{0}”, “{1}” and #"
+"timestamp {Timestamps} other{}}.} other {The columns “{0}”, “{1}” and #"
 " others must be converted from { found_type, select, text {Text} number "
-"{Numbers} datetime {Dates & Times} other {}} to {best_wanted_type, "
-"select, text {Text} number {Numbers} datetime {Dates & Times} other{}}.}}"
+"{Numbers} timestamp {Timestamps} other {}} to {best_wanted_type, "
+"select, text {Text} number {Numbers} timestamp {Timestamps} other{}}.}}"
 
 #: renderer/execute/wf_module.py:140
 msgid "py.renderer.execute.wf_module.user_visible_bug_during_render"

@@ -252,7 +252,7 @@ class FormTest(unittest.TestCase):
                 {"A": Column("A", "text", None), "B": Column("B", "number", "{:}")},
             )
 
-    def test_x_datetime(self):
+    def test_x_timestamp(self):
         form = self.build_form(x_column="A")
         t1 = datetime.datetime(2018, 8, 29, 13, 39)
         t2 = datetime.datetime(2018, 8, 29, 13, 40)
@@ -260,7 +260,7 @@ class FormTest(unittest.TestCase):
         chart = form.make_chart(
             table,
             # TODO use datetime format
-            {"A": Column("A", "datetime", None), "B": Column("B", "number", "{:}")},
+            {"A": Column("A", "timestamp", None), "B": Column("B", "number", "{:}")},
         )
         assert np.array_equal(
             chart.x_series.series, np.array([t1, t2], dtype="datetime64[ms]")
@@ -276,7 +276,7 @@ class FormTest(unittest.TestCase):
             ],
         )
 
-    def test_x_datetime_drop_na_x(self):
+    def test_x_timestamp_drop_na_x(self):
         form = self.build_form(x_column="A")
         t1 = datetime.datetime(2018, 8, 29, 13, 39)
         t2 = datetime.datetime(2018, 8, 29, 13, 40)
@@ -284,7 +284,7 @@ class FormTest(unittest.TestCase):
         chart = form.make_chart(
             table,
             # TODO use datetime format
-            {"A": Column("A", "datetime", None), "B": Column("B", "number", "{:}")},
+            {"A": Column("A", "timestamp", None), "B": Column("B", "number", "{:}")},
         )
 
         vega = chart.to_vega()

@@ -974,11 +974,11 @@ msgid "js.params.Custom.Groups.DateGranularities.convertColumns"
 msgstr "Μετατροπή στηλών"
 
 #: assets/js/params/Custom/Groups/DateGranularities.js:65
-msgid "js.params.Custom.Groups.DateGranularities.noDateAndTimeToGroup"
+msgid "js.params.Custom.Groups.DateGranularities.noTimestampToGroup"
 msgstr "Δεν υπάρχουν στήλες ημερομηνίας & ώρας για ομαδοποίηση κατά ημερομηνία"
 
 #: assets/js/params/Custom/Groups/DateGranularities.js:76
-msgid "js.params.Custom.Groups.DateGranularities.selectDateAndTimeToGroup"
+msgid "js.params.Custom.Groups.DateGranularities.selectTimestampToGroup"
 msgstr "Επιλέξτε στήλη Ημερομηνίας & ώρας για να την ομαδοποιήσετε κατά ημερομηνία"
 
 #: assets/js/params/Custom/Groups/DateGranularity.js:38
@@ -1820,7 +1820,7 @@ msgid "js.table.ColumnContextMenu.cleanText"
 msgstr "Καθάρισμα κειμένου"
 
 #: assets/js/table/ColumnContextMenu.js:54
-msgid "js.table.ColumnContextMenu.convertToDateTime"
+msgid "js.table.ColumnContextMenu.convertToTimestamp"
 msgstr "Μετατροπή σε ημερομηνία & ώρα"
 
 #: assets/js/table/ColumnContextMenu.js:55
@@ -1861,7 +1861,7 @@ msgid "js.table.ColumnContextMenu.sortDescending"
 msgstr "Φθίνουσα ταξινόμηση"
 
 #: assets/js/table/ColumnHeader.js:13
-msgid "js.table.ColumnHeader.types.dateAndtime"
+msgid "js.table.ColumnHeader.types.timestamp"
 msgstr "ημερομηνία & ώρα"
 
 #: assets/js/table/ColumnHeader.js:12
@@ -2011,14 +2011,14 @@ msgid "py.renderer.execute.types.PromptingError.WrongColumnType.as_quick_fixes.s
 msgstr "Μετατροπή σε κείμενο."
 
 #. i18n: The parameters {found_type} and {best_wanted_type} will have values
-#. among "text", "number", "datetime"; however, including an (possibly empty)
+#. among "text", "number", "timestamp"; however, including an (possibly empty)
 #. "other" case is mandatory.
 #: renderer/execute/types.py:101
 msgid "py.renderer.execute.types.PromptingError.WrongColumnType.as_quick_fixes.general"
 msgstr ""
-"Μετατροπή { found_type, select, text {κειμένου} number {αριθμών} datetime"
+"Μετατροπή { found_type, select, text {κειμένου} number {αριθμών} timestamp"
 " {ημερομηνιών & ωρών} other {}} σε {best_wanted_type, select, text "
-"{κείμενο} number {αριθμούς} datetime {ημερομηνίες & ώρες} other{}}."
+"{κείμενο} number {αριθμούς} timestamp {ημερομηνίες & ώρες} other{}}."
 
 #. i18n: The parameter {columns} will contain the total number of columns that
 #. need to be converted; you will also receive the column names as {0}, {1},
@@ -2035,26 +2035,26 @@ msgstr ""
 #. i18n: The parameter {columns} will contain the total number of columns that
 #. need to be converted; you will also receive the column names: {0}, {1}, {2},
 #. etc. The parameters {found_type} and {best_wanted_type} will have values
-#. among "text", "number", "datetime"; however, including a (possibly empty)
+#. among "text", "number", "timestamp"; however, including a (possibly empty)
 #. "other" case is mandatory.
 #: renderer/execute/types.py:157
 msgid "py.renderer.execute.types.PromptingError.WrongColumnType.as_error_message.general"
 msgstr ""
 "{ columns, plural, offset:2 =1 {Η στήλη “{0}” πρέπει να μετατραπεί από { "
-"found_type, select, text {κείμενο} number {αριθμούς} datetime "
+"found_type, select, text {κείμενο} number {αριθμούς} timestamp "
 "{ημερομηνίες & ώρες} other {}} σε {best_wanted_type, select, text "
-"{κείμενο} number {αριθμούς} datetime {ημερομηνίες & ώρες} other {}}.} =2 "
+"{κείμενο} number {αριθμούς} timestamp {ημερομηνίες & ώρες} other {}}.} =2 "
 "{Οι στήλες “{0}” και “{1}” πρέπει να μετατραπούν από { found_type, "
-"select, text {κείμενο} number {αριθμούς} datetime {ημερομηνίες & ώρες} "
+"select, text {κείμενο} number {αριθμούς} timestamp {ημερομηνίες & ώρες} "
 "other {}} σε {best_wanted_type, select, text {κείμενο} number {αριθμούς} "
-"datetime {ημερομηνίες & ώρες}  other{}}.} =3 {Οι στήλες “{0}”, “{1}” και "
+"timestamp {ημερομηνίες & ώρες}  other{}}.} =3 {Οι στήλες “{0}”, “{1}” και "
 "“{2}” πρέπει να μετατραπούν από { found_type, select, text {κείμενο} "
-"number {αριθμούς} datetime {ημερομηνίες & ώρες} other {}} σε "
-"{best_wanted_type, select, text {κείμενο} number {αριθμούς} datetime "
+"number {αριθμούς} timestamp {ημερομηνίες & ώρες} other {}} σε "
+"{best_wanted_type, select, text {κείμενο} number {αριθμούς} timestamp "
 "{ημερομηνίες & ώρες} other{}}.} other {Οι στήλες “{0}”, “{1}” και # άλλες"
 " πρέπει να μετατραπούν από { found_type, select, text {κείμενο} number "
-"{αριθμούς} datetime {ημερομηνίες & ώρες} other {}} σε {best_wanted_type, "
-"select, text {κείμενο} number {αριθμούς} datetime {ημερομηνίες & ώρες} "
+"{αριθμούς} timestamp {ημερομηνίες & ώρες} other {}} σε {best_wanted_type, "
+"select, text {κείμενο} number {αριθμούς} timestamp {ημερομηνίες & ώρες} "
 "other{}}.}}"
 
 #: renderer/execute/wf_module.py:140

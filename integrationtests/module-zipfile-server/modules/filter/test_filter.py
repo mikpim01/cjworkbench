@@ -442,7 +442,7 @@ class TestRender(unittest.TestCase):
         expected = self.table[[False, True, False, False, True]].reset_index(drop=True)
         assert_frame_equal(result, expected)
 
-    def test_datetime_before(self):
+    def test_timestamp_before(self):
         table = pd.DataFrame(
             {"date": ["2019-01-01T04:59+0500", "2019-01-01T05:01+0500"]}
         )

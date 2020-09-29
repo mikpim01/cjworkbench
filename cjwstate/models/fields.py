@@ -82,7 +82,7 @@ def _dict_to_column(value: Dict[str, Any]) -> ColumnType:
         type_cls = {
             "text": ColumnType.Text,
             "number": ColumnType.Number,
-            "datetime": ColumnType.Datetime,
+            "timestamp": ColumnType.Timestamp,
         }[type_name]
     except KeyError:
         raise ValueError("Invalid type: %r" % type_name)

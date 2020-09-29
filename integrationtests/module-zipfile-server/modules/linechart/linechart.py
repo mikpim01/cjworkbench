@@ -84,7 +84,7 @@ class XSeries:
 
     @property
     def vega_data_type(self) -> str:
-        if self.column.type == "datetime":
+        if self.column.type == "timestamp":
             return "temporal"
         elif self.column.type == "number":
             return "quantitative"
@@ -105,7 +105,7 @@ class XSeries:
 
         In particular: datetime64 values will be converted to str.
         """
-        if self.column.type == "datetime":
+        if self.column.type == "timestamp":
             try:
                 utc_series = self.series.dt.tz_convert(None).to_series()
             except TypeError:

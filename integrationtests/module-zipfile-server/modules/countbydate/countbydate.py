@@ -229,7 +229,7 @@ class Form:
         [ ] if date column is text, error+quickfix
         [ ] if period is time-of-day, dates are all 1970-01-01
         [ ] if operation isn't count, value column must exist
-        [ ] if operation is sum/average, and value is datetime, error
+        [ ] if operation is sum/average, and value is timestamp, error
         [ ] if operation is sum/average, and value is text, error+quickfix
         [ ] if operation is count, output column is 'count'; else it is value
         """
@@ -249,7 +249,7 @@ class Form:
 
             if self.operation.only_numeric and not is_numeric_dtype(value_series):
                 if hasattr(value_series, "dt"):
-                    raise DatetimeIsNotNumeric(self.value_column)
+                    raise TimestampIsNotNumeric(self.value_column)
                 else:
                     raise TextIsNotNumeric(self.value_column)
         else:
