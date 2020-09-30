@@ -5,8 +5,18 @@ import numpy as np
 import pandas as pd
 from pandas.api.types import is_numeric_dtype
 
+from cjwmodule.i18n import trans
+
 # ---- CountByDate ----
 # group column by unique value, discard all other columns
+
+
+class UserVisibleError(Exception):
+    """An exception that has a `i18n.I18nMessage` as its first argument. Use `err.i18n_message` to see it."""
+
+    @property
+    def i18n_message(self):
+        return self.args[0]
 
 
 class Period(enum.Enum):
@@ -139,10 +149,16 @@ class ValidatedForm:
                 n_rows = (end - start).n + 1
 
                 if n_rows > self.settings.MAX_ROWS_PER_TABLE:
-                    raise ValueError(
-                        f"Including missing dates would create {n_rows} rows, "
-                        f"but the maximum allowed is "
-                        f"{self.settings.MAX_ROWS_PER_TABLE}"
+                    raise UserVisibleError(
+                        trans(
+                            "error.tooManyRows",
+                            "Including missing dates would create {n_rows} rows, "
+                            "but the maximum allowed is {max_rows_per_table}",
+                            {
+                                'n_rows': n_rows,
+                                'max_rows_per_table': self.settings.MAX_ROWS_PER_TABLE,
+                            }
+                        )
                     )
                 new_index = pd.period_range(
                     start=start, end=end, freq=period_index.freq
@@ -229,7 +245,7 @@ class Form:
         [ ] if date column is text, error+quickfix
         [ ] if period is time-of-day, dates are all 1970-01-01
         [ ] if operation isn't count, value column must exist
-        [ ] if operation is sum/average, and value is timestamp, error
+        [ ] if operation is sum/average, and value is datetime, error
         [ ] if operation is sum/average, and value is text, error+quickfix
         [ ] if operation is count, output column is 'count'; else it is value
         """
@@ -249,7 +265,7 @@ class Form:
 
             if self.operation.only_numeric and not is_numeric_dtype(value_series):
                 if hasattr(value_series, "dt"):
-                    raise TimestampIsNotNumeric(self.value_column)
+                    raise DatetimeIsNotNumeric(self.value_column)
                 else:
                     raise TextIsNotNumeric(self.value_column)
         else:
@@ -288,6 +304,8 @@ def render(table, params, *, settings, **kwargs):
         return validated_form.run()
     except ValueError as err:
         return str(err)
+    except UserVisibleError as err:
+        return err.i18n_message
 
 
 def _migrate_params_v0_to_v1(params):

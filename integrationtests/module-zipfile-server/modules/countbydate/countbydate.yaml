@@ -12,7 +12,7 @@
       "id_name" : "column",
       "type": "column",
       "placeholder": "Select date column",
-      "column_types": [ "timestamp" ]
+      "column_types": [ "datetime" ]
     },
     {
       "name": "Group by",

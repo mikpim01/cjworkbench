@@ -94,13 +94,13 @@ class PromptingError(Exception):
             if self.should_be_text:
                 message = I18nMessage.trans(
                     "py.renderer.execute.types.PromptingError.WrongColumnType.as_quick_fixes.shouldBeText",
-                    default="Convert to Text.",
+                    default="Convert to Text",
                 )
             else:
                 # i18n: The parameters {found_type} and {best_wanted_type} will have values among "text", "number", "timestamp"; however, including an (possibly empty) "other" case is mandatory.
                 message = I18nMessage.trans(
                     "py.renderer.execute.types.PromptingError.WrongColumnType.as_quick_fixes.general",
-                    default="Convert { found_type, select, text {Text} number {Numbers} timestamp {Timestamps} other {}} to {best_wanted_type, select, text {Text} number {Numbers} timestamp {Timestamps} other{}}.",
+                    default="Convert {found_type, select, text {Text} number {Numbers} timestamp {Timestamps} other {}} to {best_wanted_type, select, text {Text} number {Numbers} timestamp {Timestamps} other{}}",
                     args={
                         "found_type": self.found_type,
                         "best_wanted_type": self.best_wanted_type_id,

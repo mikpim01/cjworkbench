@@ -2102,11 +2102,6 @@ msgstr ""
 msgid "js.table.ColumnContextMenu.cleanText"
 msgstr ""
 
-#. default-message: Convert to timestamp
-#: assets/js/table/ColumnContextMenu.js:54
-msgid "js.table.ColumnContextMenu.convertToTimestamp"
-msgstr ""
-
 #. default-message: Convert to number
 #: assets/js/table/ColumnContextMenu.js:55
 msgid "js.table.ColumnContextMenu.convertToNumbers"
@@ -2115,6 +2110,11 @@ msgstr ""
 #. default-message: Convert to text
 #: assets/js/table/ColumnContextMenu.js:56
 msgid "js.table.ColumnContextMenu.convertToText"
+msgstr ""
+
+#. default-message: Convert to timestamp
+#: assets/js/table/ColumnContextMenu.js:54
+msgid "js.table.ColumnContextMenu.convertToTimestamp"
 msgstr ""
 
 #. default-message: Delete column
@@ -2152,11 +2152,6 @@ msgstr ""
 msgid "js.table.ColumnContextMenu.sortDescending"
 msgstr ""
 
-#. default-message: timestamp
-#: assets/js/table/ColumnHeader.js:13
-msgid "js.table.ColumnHeader.types.timestamp"
-msgstr ""
-
 #. default-message: number
 #: assets/js/table/ColumnHeader.js:12
 msgid "js.table.ColumnHeader.types.number"
@@ -2165,6 +2160,11 @@ msgstr ""
 #. default-message: text
 #: assets/js/table/ColumnHeader.js:11
 msgid "js.table.ColumnHeader.types.text"
+msgstr ""
+
+#. default-message: timestamp
+#: assets/js/table/ColumnHeader.js:13
+msgid "js.table.ColumnHeader.types.timestamp"
 msgstr ""
 
 #. default-message: menu
@@ -2325,7 +2325,7 @@ msgstr ""
 msgid "py.fetcher.secrets._refresh_oauth2_token.client_error"
 msgstr ""
 
-#. default-message: Convert to Text.
+#. default-message: Convert to Text
 #: renderer/execute/types.py:95
 msgid "py.renderer.execute.types.PromptingError.WrongColumnType.as_quick_fixes.shouldBeText"
 msgstr ""
@@ -2333,7 +2333,7 @@ msgstr ""
 #. i18n: The parameters {found_type} and {best_wanted_type} will have values
 #. among "text", "number", "timestamp"; however, including an (possibly empty)
 #. "other" case is mandatory.
-#. default-message: Convert { found_type, select, text {Text} number {Numbers} timestamp {Timestamps} other {}} to {best_wanted_type, select, text {Text} number {Numbers} timestamp {Timestamps} other{}}.
+#. default-message: Convert {found_type, select, text {Text} number {Numbers} timestamp {Timestamps} other {}} to {best_wanted_type, select, text {Text} number {Numbers} timestamp {Timestamps} other{}}
 #: renderer/execute/types.py:101
 msgid "py.renderer.execute.types.PromptingError.WrongColumnType.as_quick_fixes.general"
 msgstr ""
@@ -2357,22 +2357,22 @@ msgid "py.renderer.execute.types.PromptingError.WrongColumnType.as_error_message
 msgstr ""
 
 #. default-message: Something unexpected happened. We have been notified and are working to fix it. If this persists, contact us. Error code: {message}
-#: renderer/execute/wf_module.py:140
+#: renderer/execute/wf_module.py:141
 msgid "py.renderer.execute.wf_module.user_visible_bug_during_render"
 msgstr ""
 
 #. default-message: Please delete this step: an administrator uninstalled its code.
-#: renderer/execute/wf_module.py:350
+#: renderer/execute/wf_module.py:372
 msgid "py.renderer.execute.wf_module.noModule"
 msgstr ""
 
 #. default-message: The chosen tab depends on this one. Please choose another tab.
-#: renderer/execute/wf_module.py:377
+#: renderer/execute/wf_module.py:399
 msgid "py.renderer.execute.wf_module.TabCycleError"
 msgstr ""
 
 #. default-message: The chosen tab has no output. Please select another one.
-#: renderer/execute/wf_module.py:388
+#: renderer/execute/wf_module.py:410
 msgid "py.renderer.execute.wf_module.TabOutputUnreachableError"
 msgstr ""
 
