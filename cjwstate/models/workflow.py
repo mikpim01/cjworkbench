@@ -117,7 +117,7 @@ def _find_orphan_soft_deleted_steps(workflow_id: int) -> models.QuerySet:
 class Workflow(models.Model):
     class Meta:
         app_label = "server"
-        db_table = "server_workflow"
+        db_table = "workflow"
 
     # TODO when we upgrade to Django 2.2, uncomment this and figure out
     # how to migrate our previous RunSQL(CREATE UNIQUE INDEX) code to use it.

@@ -21,7 +21,7 @@ class StoredObject(models.Model):
 
     class Meta:
         app_label = "server"
-        db_table = "server_storedobject"
+        db_table = "stored_object"
 
     # delete stored data if Step deleted
     step = models.ForeignKey(

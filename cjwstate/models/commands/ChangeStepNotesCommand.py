@@ -1,5 +1,5 @@
 from django.db import models
-from ..Delta import Delta
+from ..delta import Delta
 from ..step import Step
 
 

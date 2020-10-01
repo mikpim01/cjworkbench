@@ -11,7 +11,7 @@ from .step import Step
 class UploadedFile(models.Model):
     class Meta:
         app_label = "server"
-        db_table = "server_uploadedfile"
+        db_table = "uploaded_file"
         ordering = ["-created_at"]
 
     # delete this object if its Step deleted

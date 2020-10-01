@@ -1,6 +1,6 @@
 from django.db import models
 from django.db.models import F
-from ..Delta import Delta
+from ..delta import Delta
 from ..step import Step
 from .util import ChangesStepOutputs
 

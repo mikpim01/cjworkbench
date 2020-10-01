@@ -119,7 +119,6 @@ class AccountAdmin:
     def clear_data_from_previous_tests(self):
         """Delete all accounts and related data."""
         _Tables = [
-            "server_aclentry",
             "server_addmodulecommand",
             "server_addtabcommand",
             "server_changedataversioncommand",
@@ -133,13 +132,14 @@ class AccountAdmin:
             "server_reordertabscommand",
             "server_settabnamecommand",
             "server_initworkflowcommand",
-            "server_delta",
-            "server_storedobject",
-            "server_uploadedfile",
-            "server_inprogressupload",
+            "acl_entry",
+            "delta",
+            "stored_object",
+            "uploaded_file",
+            "in_progress_upload",
             "step",
-            "server_tab",
-            "server_workflow",
+            "tab",
+            "workflow",
             "django_session",
             "account_emailconfirmation",
             "account_emailaddress",
@@ -156,7 +156,7 @@ class AccountAdmin:
             WITH
             f{', '.join([f't{i} AS (DELETE FROM {table})' for i, table in enumerate(_Tables)])},
             dmv AS (
-                DELETE FROM server_moduleversion
+                DELETE FROM module_version
                 WHERE source_version_hash <> '1.0'
             )
             SELECT 1

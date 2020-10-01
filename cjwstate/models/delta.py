@@ -22,7 +22,7 @@ from cjwstate import clientside
 class Delta(PolymorphicModel):
     class Meta:
         app_label = "server"
-        db_table = "server_delta"
+        db_table = "delta"
 
     # These fields must be set by any child classes, when instantiating
     workflow = models.ForeignKey(

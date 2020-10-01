@@ -9,7 +9,7 @@ class AclEntry(models.Model):
 
     class Meta:
         app_label = "server"
-        db_table = "server_aclentry"
+        db_table = "acl_entry"
         ordering = ["email"]
         unique_together = ("workflow", "email")
 

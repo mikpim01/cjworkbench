@@ -9,7 +9,7 @@ class Tab(models.Model):
 
     class Meta:
         app_label = "server"
-        db_table = "server_tab"
+        db_table = "tab"
         ordering = ["position"]
         unique_together = (("workflow", "slug"),)
 

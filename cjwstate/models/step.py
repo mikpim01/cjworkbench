@@ -11,9 +11,9 @@ from django.db.models import Q
 from cjwkernel.types import TableMetadata
 from cjwstate import clientside, minio
 
-from .CachedRenderResult import CachedRenderResult
+from .cached_render_result import CachedRenderResult
 from .fields import ColumnsField, RenderErrorsField
-from .Tab import Tab
+from .tab import Tab
 from .workflow import Workflow
 
 logger = logging.getLogger(__name__)

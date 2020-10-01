@@ -32,7 +32,7 @@ class InProgressUpload(models.Model):
 
     class Meta:
         app_label = "server"
-        db_table = "server_inprogressupload"
+        db_table = "in_progress_upload"
 
     Bucket = minio.UserFilesBucket
     """
