@@ -3,6 +3,7 @@
 exports[`StepContextMenu should match snapshot 1`] = `
 <WithI18n
   className="menu-test-class"
+  deleteStep={[MockFunction]}
   i18n={
     Object {
       "_": [Function],
@@ -30,7 +31,6 @@ exports[`StepContextMenu should match snapshot 1`] = `
     }
   }
   id={415}
-  removeModule={[MockFunction]}
 >
   <I18n
     update={true}
@@ -38,6 +38,7 @@ exports[`StepContextMenu should match snapshot 1`] = `
   >
     <Memo(StepContextMenu)
       className="menu-test-class"
+      deleteStep={[MockFunction]}
       i18n={
         Object {
           "_": [Function],
@@ -65,7 +66,6 @@ exports[`StepContextMenu should match snapshot 1`] = `
         }
       }
       id={415}
-      removeModule={[MockFunction]}
     >
       <UncontrolledDropdown>
         <Dropdown

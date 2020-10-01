@@ -6,11 +6,11 @@ import ExportModal from '../../ExportModal'
 import { Trans, t } from '@lingui/macro'
 import { withI18n } from '@lingui/react'
 
-const StepContextMenu = React.memo(function StepContextMenu ({ i18n, removeModule, id }) {
+const StepContextMenu = React.memo(function StepContextMenu ({ i18n, deleteStep, id }) {
   const [isExportModalOpen, setExportModalOpen] = React.useState(false)
   const handleClickOpenExportModal = React.useCallback(() => setExportModalOpen(true))
   const handleCloseExportModal = React.useCallback(() => setExportModalOpen(false))
-  const handleClickDelete = React.useCallback(() => removeModule(id))
+  const handleClickDelete = React.useCallback(() => deleteStep(id))
 
   return (
     <UncontrolledDropdown>
@@ -26,7 +26,7 @@ const StepContextMenu = React.memo(function StepContextMenu ({ i18n, removeModul
   )
 })
 StepContextMenu.propTypes = {
-  removeModule: PropTypes.func,
+  deleteStep: PropTypes.func,
   id: PropTypes.number
 }
 export default withI18n()(StepContextMenu)

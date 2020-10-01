@@ -76,7 +76,7 @@ export class Step extends React.PureComponent {
     isAfterSelected: PropTypes.bool.isRequired,
     setStepParams: PropTypes.func, // func(stepId, { paramidname: newVal }) => undefined
     setStepSecret: PropTypes.func, // func(stepId, param, secret) => undefined
-    removeModule: PropTypes.func,
+    deleteStep: PropTypes.func,
     api: PropTypes.object.isRequired,
     onDragStart: PropTypes.func, // func({ type:'Step',id,index }) => undefined; null if not draggable
     onDragEnd: PropTypes.func, // func() => undefined
@@ -163,8 +163,8 @@ export class Step extends React.PureComponent {
     })
   }
 
-  removeModule = () => {
-    this.props.removeModule(this.props.step.id)
+  deleteStep = () => {
+    this.props.deleteStep(this.props.step.id)
   }
 
   // Optimistically updates the state, and then sends the new state to the server,
@@ -404,7 +404,7 @@ export class Step extends React.PureComponent {
     if (!this.props.isReadOnly) {
       contextMenu = (
         <StepContextMenu
-          removeModule={this.removeModule}
+          deleteStep={this.deleteStep}
           id={step.id}
         />
       )

@@ -5,14 +5,14 @@ import { mountWithI18n } from '../../i18n/test-utils'
 
 describe('StepContextMenu', () => {
   let wrapper
-  let removeModule
+  let deleteStep
 
   beforeEach(() => {
-    removeModule = jest.fn()
+    deleteStep = jest.fn()
 
     wrapper = mountWithI18n(
       <StepContextMenu
-        removeModule={removeModule}
+        deleteStep={deleteStep}
         id={415}
         className='menu-test-class'
       />
@@ -25,7 +25,7 @@ describe('StepContextMenu', () => {
     expect(wrapper).toMatchSnapshot()
   })
 
-  // only checking the call to removeModule(), not the removal
+  // only checking the call to deleteStep(), not the removal
   it('Renders menu option to Delete with onClick method', () => {
     // open the context menu
     wrapper.find('button.context-button').simulate('click')
@@ -33,7 +33,7 @@ describe('StepContextMenu', () => {
     const deleteButton = wrapper.find('button.test-delete-button')
     expect(deleteButton).toHaveLength(1)
     deleteButton.simulate('click')
-    expect(removeModule).toHaveBeenCalled()
+    expect(deleteStep).toHaveBeenCalled()
   })
 
   it('should open and close the export modal', () => {

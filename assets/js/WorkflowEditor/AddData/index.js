@@ -4,14 +4,14 @@ import PropTypes from 'prop-types'
 import Button from './Button'
 import Step from '../step/Step'
 
-const AddData = React.memo(function AddData ({ tabSlug, isLessonHighlight, isReadOnly, step, isZenMode, removeModule, isSelected, api, setZenMode, paneRef }) {
+const AddData = React.memo(function AddData ({ tabSlug, isLessonHighlight, isReadOnly, step, isZenMode, deleteStep, isSelected, api, setZenMode, paneRef }) {
   if (step) {
     return (
       <Step
         isReadOnly={isReadOnly}
         isZenMode={isZenMode}
         step={step}
-        removeModule={removeModule}
+        deleteStep={deleteStep}
         inputStep={null}
         isSelected={isSelected}
         isAfterSelected={false}

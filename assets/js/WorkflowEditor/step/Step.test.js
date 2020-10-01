@@ -77,7 +77,7 @@ describe('Step, not read-only mode', () => {
         module={module}
         workflowId={99}
         step={step}
-        removeModule={jest.fn()}
+        deleteStep={jest.fn()}
         inputStep={{ id: 123, last_relevant_delta_id: 707 }}
         isSelected
         isAfterSelected={false}

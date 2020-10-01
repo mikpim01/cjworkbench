@@ -166,7 +166,7 @@ export class ModuleStack extends React.Component {
     steps: PropTypes.arrayOf(PropTypes.object).isRequired,
     modules: PropTypes.objectOf(PropTypes.shape({ loads_data: PropTypes.bool.isRequired })).isRequired,
     moveModuleByIndex: PropTypes.func.isRequired, // func(tabSlug, oldIndex, newIndex) => undefined
-    removeModule: PropTypes.func.isRequired,
+    deleteStep: PropTypes.func.isRequired,
     testLessonHighlightIndex: PropTypes.func.isRequired, // func(int) => boolean
     isReadOnly: PropTypes.bool.isRequired,
     /** <WorkflowEditor/Pane> container, where the dialog will open */
@@ -297,7 +297,7 @@ export class ModuleStack extends React.Component {
               isReadOnly={isReadOnly}
               isZenMode={this.state.zenModeStepId === item.id}
               step={item}
-              removeModule={this.props.removeModule}
+              deleteStep={this.props.deleteStep}
               inputStep={i === 0 ? null : steps[i - 1]}
               isSelected={i === this.props.selected_step_position}
               isAfterSelected={i > this.props.selected_step_position}
@@ -330,7 +330,7 @@ export class ModuleStack extends React.Component {
               isSelected={!!addDataStep && this.props.selected_step_position === 0}
               isZenMode={addDataStep && this.state.zenModeStepId === addDataStep.id}
               api={this.props.api}
-              removeModule={this.props.removeModule}
+              deleteStep={this.props.deleteStep}
               setZenMode={this.setZenMode}
               paneRef={paneRef}
             />
@@ -379,7 +379,7 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(action)
     },
 
-    removeModule (stepId) {
+    deleteStep (stepId) {
       const action = deleteStepAction(stepId)
       dispatch(action)
     }
