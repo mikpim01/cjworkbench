@@ -2,6 +2,7 @@ from django.db import models
 from django.dispatch import receiver
 from django.utils import timezone
 from cjwstate import minio
+from .step import Step
 
 
 # Simple model that receives POST requests to upload a file.
@@ -15,7 +16,7 @@ class UploadedFile(models.Model):
 
     # delete this object if its Step deleted
     step = models.ForeignKey(
-        "WfModule", related_name="uploaded_files", on_delete=models.CASCADE
+        Step, related_name="uploaded_files", on_delete=models.CASCADE
     )
 
     created_at = models.DateTimeField(default=timezone.now, null=True)

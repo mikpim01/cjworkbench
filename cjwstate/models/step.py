@@ -19,12 +19,12 @@ from .workflow import Workflow
 logger = logging.getLogger(__name__)
 
 
-class WfModule(models.Model):
+class Step(models.Model):
     """An instance of a Module in a Workflow."""
 
     class Meta:
         app_label = "server"
-        db_table = "server_wfmodule"
+        db_table = "step"
         ordering = ["order"]
         constraints = [
             models.CheckConstraint(
@@ -603,6 +603,3 @@ class WfModule(models.Model):
                 selected=self.stored_data_version,
             ),
         )
-
-
-Step = WfModule  # other code imports this

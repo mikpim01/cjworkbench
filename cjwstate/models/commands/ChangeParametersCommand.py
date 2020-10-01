@@ -1,9 +1,10 @@
 import logging
 from django.contrib.postgres.fields import JSONField
 from django.db import models
-from .. import Delta, Step
 from cjwstate.models.module_registry import MODULE_REGISTRY
 from cjwstate.params import invoke_migrate_params
+from ..Delta import Delta
+from ..step import Step
 from .util import ChangesStepOutputs
 
 

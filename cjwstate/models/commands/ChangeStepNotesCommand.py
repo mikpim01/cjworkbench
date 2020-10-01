@@ -1,5 +1,6 @@
 from django.db import models
-from cjwstate.models import Delta, Step
+from ..Delta import Delta
+from ..step import Step
 
 
 class ChangeStepNotesCommand(Delta):

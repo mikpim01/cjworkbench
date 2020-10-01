@@ -3,6 +3,7 @@ from django.db.models.signals import pre_delete
 from django.dispatch import receiver
 from django.utils import timezone
 from cjwstate import minio
+from .step import Step
 
 
 # StoredObject is our persistence layer.
@@ -24,7 +25,7 @@ class StoredObject(models.Model):
 
     # delete stored data if Step deleted
     step = models.ForeignKey(
-        "WfModule", related_name="stored_objects", on_delete=models.CASCADE
+        Step, related_name="stored_objects", on_delete=models.CASCADE
     )
 
     # identification for file backing store

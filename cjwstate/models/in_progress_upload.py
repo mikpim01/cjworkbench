@@ -6,6 +6,7 @@ from django.conf import settings
 from django.db import models
 from django.utils import timezone
 from cjwstate import minio
+from .step import Step
 
 
 class InProgressUpload(models.Model):
@@ -69,7 +70,7 @@ class InProgressUpload(models.Model):
     """
 
     step = models.ForeignKey(
-        "WfModule", related_name="in_progress_uploads", on_delete=models.CASCADE
+        Step, related_name="in_progress_uploads", on_delete=models.CASCADE
     )
 
     updated_at = models.DateTimeField(default=timezone.now, db_index=True)
