@@ -19,9 +19,7 @@ from cjwstate.modules.param_spec import ParamSpec
 logger = logging.getLogger(__name__)
 
 
-Scope = namedtuple(
-    "Scope", ("service_id", "state", "workflow_id", "step_id", "param")
-)
+Scope = namedtuple("Scope", ("service_id", "state", "workflow_id", "step_id", "param"))
 
 
 class OauthServiceNotConfigured(Exception):
@@ -72,9 +70,7 @@ def _load_step_and_service(
         raise SecretDoesNotExist(f"Param {param} does not point to an OAuth secret")
 
 
-def start_authorize(
-    request: HttpRequest, workflow_id: int, step_id: int, param: str
-):
+def start_authorize(request: HttpRequest, workflow_id: int, step_id: int, param: str):
     """Redirect to the external service's authentication page and write session.
 
     Return 404 if id_name is not configured (e.g., user asked for
@@ -175,9 +171,7 @@ def finish_authorize(request: HttpRequest) -> HttpResponse:
         ) as workflow_lock:
             workflow = workflow_lock.workflow
             # raises Step.DoesNotExist, ModuleVersion.DoesNotExist
-            step, _ = _load_step_and_service(
-                workflow, scope.step_id, scope.param
-            )
+            step, _ = _load_step_and_service(workflow, scope.step_id, scope.param)
             step.secrets = {
                 **step.secrets,
                 scope.param: {"name": username, "secret": offline_token},

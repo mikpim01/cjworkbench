@@ -6,12 +6,12 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('server', '0012_auto_20201001_1734'),
+        ("server", "0012_auto_20201001_1734"),
     ]
 
     operations = [
         migrations.AlterModelTable(
-            name='changestepnotescommand',
-            table='server_changestepnotescommand',
+            name="changestepnotescommand",
+            table="server_changestepnotescommand",
         ),
     ]

@@ -6,33 +6,33 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('server', '0011_auto_20201001_1732'),
+        ("server", "0011_auto_20201001_1732"),
     ]
 
     operations = [
         migrations.RenameField(
-            model_name='addmodulecommand',
-            old_name='wf_module',
-            new_name='step',
+            model_name="addmodulecommand",
+            old_name="wf_module",
+            new_name="step",
         ),
         migrations.RenameField(
-            model_name='changedataversioncommand',
-            old_name='wf_module',
-            new_name='step',
+            model_name="changedataversioncommand",
+            old_name="wf_module",
+            new_name="step",
         ),
         migrations.RenameField(
-            model_name='changeparameterscommand',
-            old_name='wf_module',
-            new_name='step',
+            model_name="changeparameterscommand",
+            old_name="wf_module",
+            new_name="step",
         ),
         migrations.RenameField(
-            model_name='changestepnotescommand',
-            old_name='wf_module',
-            new_name='step',
+            model_name="changestepnotescommand",
+            old_name="wf_module",
+            new_name="step",
         ),
         migrations.RenameField(
-            model_name='deletemodulecommand',
-            old_name='wf_module',
-            new_name='step',
+            model_name="deletemodulecommand",
+            old_name="wf_module",
+            new_name="step",
         ),
     ]
