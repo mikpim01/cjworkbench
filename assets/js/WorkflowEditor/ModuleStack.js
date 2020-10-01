@@ -5,7 +5,7 @@ import AddData from './AddData'
 import ModuleSearch from './ModuleSearch'
 import Step from './step/Step'
 import StepHeader from './step/StepHeader'
-import { deleteModuleAction, moveModuleAction } from '../workflow-reducer'
+import { deleteStepAction, moveModuleAction } from '../workflow-reducer'
 import { scrollTo } from '../utils'
 import { connect } from 'react-redux'
 import lessonSelector from '../lessons/lessonSelector'
@@ -380,7 +380,7 @@ const mapDispatchToProps = (dispatch) => {
     },
 
     removeModule (stepId) {
-      const action = deleteModuleAction(stepId)
+      const action = deleteStepAction(stepId)
       dispatch(action)
     }
   }

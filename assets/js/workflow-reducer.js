@@ -10,7 +10,6 @@ import { reducerFunctions as FileReducerFunctions } from './params/File/actions'
 const SET_WORKFLOW_NAME = 'SET_WORKFLOW_NAME'
 const UPDATE_MODULE = 'UPDATE_MODULE'
 const ADD_MODULE = 'ADD_MODULE'
-const DELETE_MODULE = 'DELETE_MODULE'
 const SET_SELECTED_MODULE = 'SET_SELECTED_MODULE'
 const MOVE_MODULE = 'MOVE_MODULE'
 
@@ -25,6 +24,7 @@ const SET_STEP_PARAMS = 'SET_STEP_PARAMS'
 const TRY_SET_STEP_AUTOFETCH = 'TRY_SET_STEP_AUTOFETCH'
 const SET_STEP_NOTIFICATIONS = 'SET_STEP_NOTIFICATIONS'
 const SET_STEP_SECRET = 'SET_STEP_SECRET'
+const DELETE_STEP = 'DELETE_STEP'
 
 // Data versions/notifications
 const SET_DATA_VERSION = 'SET_DATA_VERSION'
@@ -341,12 +341,12 @@ registerReducerFunc(ADD_MODULE + '_PENDING', (state, action) => {
   }
 })
 
-// DELETE_MODULE_ACTION
+// DELETE_STEP
 // Call delete API, then dispatch a reload
-export function deleteModuleAction (stepId) {
+export function deleteStepAction (stepId) {
   return (dispatch, getState, api) => {
     return dispatch({
-      type: DELETE_MODULE,
+      type: DELETE_STEP,
       payload: {
         promise: api.deleteModule(stepId),
         data: { stepId }
@@ -354,7 +354,7 @@ export function deleteModuleAction (stepId) {
     })
   }
 }
-registerReducerFunc(DELETE_MODULE + '_PENDING', (state, action) => {
+registerReducerFunc(DELETE_STEP + '_PENDING', (state, action) => {
   const { stepId } = action.payload
 
   const { tabs, steps } = state

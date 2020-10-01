@@ -188,7 +188,7 @@ describe('Reducer actions', () => {
       deleteModule: jest.fn().mockImplementation(_ => Promise.resolve(null))
     }
     const store = mockStore(testState, api)
-    await store.dispatch(wfr.deleteModuleAction(20))
+    await store.dispatch(wfr.deleteStepAction(20))
 
     expect(api.deleteModule).toHaveBeenCalledWith(20)
     const state = store.getState()
