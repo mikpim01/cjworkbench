@@ -15,7 +15,7 @@ class UploadedFile(models.Model):
 
     # delete this object if its Step deleted
     step = models.ForeignKey(
-        "Step", related_name="uploaded_files", on_delete=models.CASCADE
+        "WfModule", related_name="uploaded_files", on_delete=models.CASCADE
     )
 
     created_at = models.DateTimeField(default=timezone.now, null=True)

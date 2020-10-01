@@ -19,7 +19,7 @@ from .workflow import Workflow
 logger = logging.getLogger(__name__)
 
 
-class Step(models.Model):
+class WfModule(models.Model):
     """An instance of a Module in a Workflow."""
 
     class Meta:
@@ -57,7 +57,7 @@ class Step(models.Model):
                 # We'll do the heavy lifting in software ... and leave this
                 # less-useful check as a constraint as documentation and for the index.
                 fields=["tab_id", "slug"],
-                name="unique_step_slug",
+                name="unique_wf_module_slug",
             ),
         ]
         indexes = [
@@ -603,3 +603,6 @@ class Step(models.Model):
                 selected=self.stored_data_version,
             ),
         )
+
+
+Step = WfModule  # other code imports this

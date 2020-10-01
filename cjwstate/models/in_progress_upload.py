@@ -69,7 +69,7 @@ class InProgressUpload(models.Model):
     """
 
     step = models.ForeignKey(
-        "Step", related_name="in_progress_uploads", on_delete=models.CASCADE
+        "WfModule", related_name="in_progress_uploads", on_delete=models.CASCADE
     )
 
     updated_at = models.DateTimeField(default=timezone.now, db_index=True)

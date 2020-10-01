@@ -8,7 +8,7 @@ class ChangeDataVersionCommand(ChangesStepOutputs, Delta):
         app_label = "server"
         db_table = "server_changedataversioncommand"
 
-    step = models.ForeignKey(Step, on_delete=models.PROTECT)
+    wf_module = models.ForeignKey(Step, on_delete=models.PROTECT)
     # may not have had a previous version
     old_version = models.DateTimeField("old_version", null=True)
     new_version = models.DateTimeField("new_version")

@@ -32,7 +32,7 @@ class AddModuleCommand(ChangesStepOutputs, Delta):
         app_label = "server"
         db_table = "server_addmodulecommand"
 
-    step = models.ForeignKey(Step, on_delete=models.PROTECT)
+    wf_module = models.ForeignKey(Step, on_delete=models.PROTECT)
     step_delta_ids = ChangesStepOutputs.step_delta_ids
 
     # override

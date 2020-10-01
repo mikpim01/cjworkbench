@@ -24,7 +24,7 @@ class StoredObject(models.Model):
 
     # delete stored data if Step deleted
     step = models.ForeignKey(
-        "Step", related_name="stored_objects", on_delete=models.CASCADE
+        "WfModule", related_name="stored_objects", on_delete=models.CASCADE
     )
 
     # identification for file backing store
