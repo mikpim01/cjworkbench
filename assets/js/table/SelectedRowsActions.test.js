@@ -45,7 +45,7 @@ describe('SelectedRowsActions', () => {
 
     beforeEach(() => {
       api = {
-        addModule: jest.fn(() => Promise.resolve(null)),
+        addStep: jest.fn(() => Promise.resolve(null)),
         setStepParams: jest.fn(() => Promise.resolve(null)),
         setSelectedStep: jest.fn(() => Promise.resolve(null))
       }
@@ -91,7 +91,7 @@ describe('SelectedRowsActions', () => {
       expect(w.find('button')).toHaveLength(1)
     })
 
-    it('should use addModuleAction', async () => {
+    it('should use addStepAction', async () => {
       generateSlug.mockImplementation(prefix => prefix + 'X')
 
       const w = wrapper({
@@ -115,7 +115,7 @@ describe('SelectedRowsActions', () => {
       // Check that the reducer did its stuff. We don't test that store.state
       // is changed because the fact these methods were called implies the
       // reducer was invoked correctly.
-      expect(api.addModule).toHaveBeenCalledWith('tab-1', 'step-X', 'dobar', 1, { rows: '2, 4-5' })
+      expect(api.addStep).toHaveBeenCalledWith('tab-1', 'step-X', 'dobar', 1, { rows: '2, 4-5' })
     })
 
     it('should use setStepParams action, fromInput', async () => {

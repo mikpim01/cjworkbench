@@ -311,7 +311,7 @@ describe('Step, not read-only mode', () => {
   it('applies a quick fix', () => {
     // Scenario: user is on linechart and chose non-numeric Y axis
     mockApi.setSelectedStep = jest.fn(() => Promise.resolve(null))
-    mockApi.addModule = jest.fn(() => Promise.resolve(null))
+    mockApi.addStep = jest.fn(() => Promise.resolve(null))
     generateSlug.mockImplementation(prefix => prefix + 'X')
     const quickFix = {
       buttonText: 'Fix it',
@@ -368,7 +368,7 @@ describe('Step, not read-only mode', () => {
     )
 
     w.find('button.quick-fix').simulate('click')
-    expect(mockApi.addModule).toHaveBeenCalledWith('tab-11', 'step-X', 'dosomething', 1, { A: 'B' })
+    expect(mockApi.addStep).toHaveBeenCalledWith('tab-11', 'step-X', 'dosomething', 1, { A: 'B' })
   })
 
   describe('lesson highlights', () => {

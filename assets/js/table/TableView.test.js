@@ -78,7 +78,7 @@ describe('TableView', () => {
   it('reorders columns', async () => {
     // integration-test style -- these moving parts tend to rely on one another
     // lots: ignoring workflow-reducer means tests miss bugs.
-    const api = { addModule: jest.fn(() => Promise.resolve(null)) }
+    const api = { addStep: jest.fn(() => Promise.resolve(null)) }
     generateSlug.mockImplementationOnce(prefix => prefix + 'X')
     const store = mockStore({
       workflow: {
@@ -102,7 +102,7 @@ describe('TableView', () => {
 
     await tick()
 
-    expect(api.addModule).toHaveBeenCalledWith('tab-1', 'step-X', 'reordercolumns', 1, {
+    expect(api.addStep).toHaveBeenCalledWith('tab-1', 'step-X', 'reordercolumns', 1, {
       'reorder-history': JSON.stringify([{ column: 'a', to: 1, from: 0 }])
     })
 
@@ -112,7 +112,7 @@ describe('TableView', () => {
   it('edits cells', async () => {
     // integration-test style -- these moving parts tend to rely on one another
     // lots: ignoring workflow-reducer means tests miss bugs.
-    const api = { addModule: jest.fn().mockImplementation(() => Promise.resolve(null)) }
+    const api = { addStep: jest.fn().mockImplementation(() => Promise.resolve(null)) }
     generateSlug.mockImplementationOnce(prefix => prefix + 'X')
     const store = mockStore({
       workflow: {
@@ -141,7 +141,7 @@ describe('TableView', () => {
       updated: { b: 'b2' }
     })
 
-    expect(api.addModule).toHaveBeenCalledWith('tab-1', 'step-X', 'editcells', 1, {
+    expect(api.addStep).toHaveBeenCalledWith('tab-1', 'step-X', 'editcells', 1, {
       celledits: [{ row: 0, col: 'b', value: 'b2' }]
     })
 

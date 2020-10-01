@@ -8,15 +8,18 @@ import { reducerFunctions as FileReducerFunctions } from './params/File/actions'
 
 // Workflow
 const SET_WORKFLOW_NAME = 'SET_WORKFLOW_NAME'
-const UPDATE_MODULE = 'UPDATE_MODULE'
-const ADD_MODULE = 'ADD_MODULE'
 const SET_SELECTED_MODULE = 'SET_SELECTED_MODULE'
 const MOVE_MODULE = 'MOVE_MODULE'
 
 // Delta: workflow+step changes
 const APPLY_DELTA = 'APPLY_DELTA'
 
+// Module: changes to Workbench modules
+const UPDATE_MODULE = 'UPDATE_MODULE'
+
 // Step
+const ADD_STEP = 'ADD_STEP'
+const DELETE_STEP = 'DELETE_STEP'
 const SET_STEP_NOTES = 'SET_STEP_NOTES'
 const SET_STEP_COLLAPSED = 'SET_STEP_COLLAPSED'
 const REQUEST_STEP_FETCH = 'REQUEST_STEP_FETCH'
@@ -24,7 +27,6 @@ const SET_STEP_PARAMS = 'SET_STEP_PARAMS'
 const TRY_SET_STEP_AUTOFETCH = 'TRY_SET_STEP_AUTOFETCH'
 const SET_STEP_NOTIFICATIONS = 'SET_STEP_NOTIFICATIONS'
 const SET_STEP_SECRET = 'SET_STEP_SECRET'
-const DELETE_STEP = 'DELETE_STEP'
 
 // Data versions/notifications
 const SET_DATA_VERSION = 'SET_DATA_VERSION'
@@ -243,10 +245,10 @@ registerReducerFunc(MOVE_MODULE + '_PENDING', (state, action) => {
   }
 })
 
-// ADD_MODULE
+// ADD_STEP
 /**
  * Add a placeholder (phony String Step ID) to tab.step_ids and
- * send an API request to add the module; on completion, add to steps and
+ * send an API request to add the step; on completion, add to steps and
  * replace the placeholder in tab.step_ids with the new step ID.
  *
  * Parameters:
@@ -258,7 +260,7 @@ registerReducerFunc(MOVE_MODULE + '_PENDING', (state, action) => {
  * @param parameterValues {idName:value} Object of parameters for the
  *                        newly-created Step.
  */
-export function addModuleAction (moduleIdName, position, parameterValues) {
+export function addStepAction (moduleIdName, position, parameterValues) {
   return (dispatch, getState, api) => {
     const { tabs, steps } = getState()
     const nonce = generateNonce(steps, moduleIdName)
@@ -278,7 +280,7 @@ export function addModuleAction (moduleIdName, position, parameterValues) {
       if (position.beforeStepId) {
         const previous = tab.step_ids.indexOf(position.beforeStepId)
         if (previous === -1) {
-          console.warn('Ignoring addModuleAction with invalid position', position)
+          console.warn('Ignoring addStepAction with invalid position', position)
           return
         }
         index = previous
@@ -286,7 +288,7 @@ export function addModuleAction (moduleIdName, position, parameterValues) {
       if (position.afterStepId) {
         const previous = tab.step_ids.indexOf(position.afterStepId)
         if (previous === -1) {
-          console.warn('Ignoring addModuleAction with invalid position', position)
+          console.warn('Ignoring addStepAction with invalid position', position)
           return
         }
         index = previous + 1
@@ -294,10 +296,10 @@ export function addModuleAction (moduleIdName, position, parameterValues) {
     }
 
     return dispatch({
-      type: ADD_MODULE,
+      type: ADD_STEP,
       payload: {
         promise: (
-          api.addModule(tabSlug, slug, moduleIdName, index, parameterValues || {})
+          api.addStep(tabSlug, slug, moduleIdName, index, parameterValues || {})
             .then(response => {
               return {
                 tabSlug,
@@ -318,7 +320,7 @@ export function addModuleAction (moduleIdName, position, parameterValues) {
   }
 }
 
-registerReducerFunc(ADD_MODULE + '_PENDING', (state, action) => {
+registerReducerFunc(ADD_STEP + '_PENDING', (state, action) => {
   const { tabs } = state
   const { tabSlug, index, nonce } = action.payload
   const tab = tabs[tabSlug]
@@ -805,7 +807,7 @@ export function deleteSecretAction (stepId, param) {
 }
 
 function quickFixPrependStep (stepId, { moduleSlug, partialParams }) {
-  return addModuleAction(moduleSlug, { beforeStepId: stepId }, partialParams)
+  return addStepAction(moduleSlug, { beforeStepId: stepId }, partialParams)
 }
 
 export function quickFixAction (stepId, action) {

@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import { UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem } from '../components/Dropdown'
 import { connect } from 'react-redux'
 import { createSelector } from 'reselect'
-import { addModuleAction, setStepParamsAction, setSelectedStepAction } from '../workflow-reducer'
+import { addStepAction, setStepParamsAction, setSelectedStepAction } from '../workflow-reducer'
 import { Plural, t } from '@lingui/macro'
 import { withI18n } from '@lingui/react'
 
@@ -200,7 +200,7 @@ function ensureStepForRowsAction (currentStepId, moduleIdName, rowsString) {
 
     // Fallback behavior: add new module with the given rows.
     function simplyAdd () {
-      return dispatch(addModuleAction(
+      return dispatch(addStepAction(
         moduleIdName,
         { afterStepId: currentStepId },
         { rows: rowsString }

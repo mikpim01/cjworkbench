@@ -1,4 +1,4 @@
-import { addModuleAction, setStepParamsAction, setSelectedStepAction } from '../workflow-reducer'
+import { addStepAction, setStepParamsAction, setSelectedStepAction } from '../workflow-reducer'
 
 /**
  * Module param-building functions per id_name.
@@ -88,7 +88,7 @@ function findStepWithIds (state, focusStepId, moduleIdName) {
 /**
  * Adds or edits a module, given `stepId` as the selected table.
  *
- * This is a reducer action that delegates to `addModuleAction`, `setSelectedStepAction` and `
+ * This is a reducer action that delegates to `addStepAction`, `setSelectedStepAction` and `
  */
 export function updateTableAction (stepId, idName, forceNewModule, params) {
   return (dispatch, getState) => {
@@ -114,7 +114,7 @@ export function updateTableAction (stepId, idName, forceNewModule, params) {
         dispatch(setStepParamsAction(existingStep.id, newParams))
       }
     } else {
-      dispatch(addModuleAction(idName, { afterStepId: stepId }, newParams))
+      dispatch(addStepAction(idName, { afterStepId: stepId }, newParams))
     }
   }
 }

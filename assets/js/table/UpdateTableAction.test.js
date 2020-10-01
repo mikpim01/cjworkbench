@@ -1,12 +1,12 @@
 /* globals it, jest, expect, describe, beforeEach, afterEach */
 import { updateTableAction } from './UpdateTableAction'
-import { addModuleAction, setStepParamsAction, setSelectedStepAction } from '../workflow-reducer'
+import { addStepAction, setStepParamsAction, setSelectedStepAction } from '../workflow-reducer'
 
 jest.mock('../workflow-reducer')
 
 describe('UpdateTableAction actions', () => {
   beforeEach(() => {
-    addModuleAction.mockImplementation((...args) => ['addModuleAction', ...args])
+    addStepAction.mockImplementation((...args) => ['addStepAction', ...args])
     setStepParamsAction.mockImplementation((...args) => ['setStepParamsAction', ...args])
     setSelectedStepAction.mockImplementation((...args) => ['setSelectedStepAction', ...args])
   })
@@ -75,7 +75,7 @@ describe('UpdateTableAction actions', () => {
     })
     const dispatch = jest.fn()
     updateTableAction(11, 'clean-text', false, { columnKey: 'B' })(dispatch, getState)
-    expect(dispatch).toHaveBeenCalledWith(['addModuleAction', 'clean-text', { afterStepId: 11 }, { colnames: ['B'] }])
+    expect(dispatch).toHaveBeenCalledWith(['addStepAction', 'clean-text', { afterStepId: 11 }, { colnames: ['B'] }])
     expect(dispatch).toHaveBeenCalledTimes(1) // no 'select' call
   })
 
@@ -114,7 +114,7 @@ describe('UpdateTableAction actions', () => {
     })
     const dispatch = jest.fn()
     updateTableAction(10, 'filter', true, { columnKey: 'B' })(dispatch, getState)
-    expect(dispatch).toHaveBeenCalledWith(['addModuleAction', 'filter', { afterStepId: 10 }, {
+    expect(dispatch).toHaveBeenCalledWith(['addStepAction', 'filter', { afterStepId: 10 }, {
       filters: {
         operator: 'and',
         filters: [
@@ -150,7 +150,7 @@ describe('UpdateTableAction actions', () => {
     })
     const dispatch = jest.fn()
     updateTableAction(11, 'filter', false, { columnKey: 'B' })(dispatch, getState)
-    expect(dispatch).toHaveBeenCalledWith(['addModuleAction', 'filter', { afterStepId: 11 }, {
+    expect(dispatch).toHaveBeenCalledWith(['addStepAction', 'filter', { afterStepId: 11 }, {
       filters: {
         operator: 'and',
         filters: [
