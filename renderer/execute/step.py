@@ -43,7 +43,7 @@ SaveResult = namedtuple("SaveResult", ["cached_render_result", "maybe_delta"])
 
 @contextlib.contextmanager
 def locked_step(workflow, step):
-    """Concurrency guarantees for execute_wfmodule().
+    """Concurrency guarantees for execute_step().
 
     Usage:
 
@@ -209,7 +209,7 @@ class ExecuteStepPreResult(NamedTuple):
 
 
 @database_sync_to_async
-def _execute_wfmodule_pre(
+def _execute_step_pre(
     basedir: Path,
     exit_stack: contextlib.ExitStack,
     workflow: Workflow,
@@ -219,7 +219,7 @@ def _execute_wfmodule_pre(
     input_table: ArrowTable,
     tab_results: Dict[Tab, Optional[RenderResult]],
 ) -> ExecuteStepPreResult:
-    """First step of execute_wfmodule().
+    """First step of execute_step().
 
     Raise TabCycleError or TabOutputUnreachableError if the module depends on
     tabs with errors. (We won't call the render() method in that case.)
@@ -256,7 +256,7 @@ def _execute_wfmodule_pre(
 
 
 @database_sync_to_async
-def _execute_wfmodule_save(
+def _execute_step_save(
     workflow: Workflow, step: Step, result: RenderResult
 ) -> SaveResult:
     """Call rendercache.cache_render_result() and build notifications.OutputDelta.
@@ -336,7 +336,7 @@ def _execute_wfmodule_save(
         return SaveResult(safe_step.cached_render_result, maybe_delta)
 
 
-async def _render_wfmodule(
+async def _render_step(
     chroot_context: ChrootContext,
     workflow: Workflow,
     step: Step,
@@ -374,7 +374,7 @@ async def _render_wfmodule(
         try:
             # raise UnneededExecution, TabCycleError, TabOutputUnreachableError,
             # PromptingError
-            fetch_result, params = await _execute_wfmodule_pre(
+            fetch_result, params = await _execute_step_pre(
                 basedir,
                 exit_stack,
                 workflow,
@@ -429,7 +429,7 @@ async def _render_wfmodule(
         )
 
 
-async def execute_wfmodule(
+async def execute_step(
     chroot_context: ChrootContext,
     workflow: Workflow,
     step: Step,
@@ -451,7 +451,7 @@ async def execute_wfmodule(
       the database entirely.
     * It checks with the database that `step` hasn't been modified. (It
       is very common for a user to request a module's output -- kicking off a
-      sequence of `execute_wfmodule` -- and then change a param in a prior
+      sequence of `execute_step` -- and then change a param in a prior
       module, making all those calls obsolete.
     * It locks the workflow while collecting `render()` input data.
     * When writing results to the database, it avoids writing if the module has
@@ -468,7 +468,7 @@ async def execute_wfmodule(
     Raises `UnneededExecution` when the input Step should not be rendered.
     """
     # may raise UnneededExecution
-    result = await _render_wfmodule(
+    result = await _render_step(
         chroot_context=chroot_context,
         workflow=workflow,
         step=step,
@@ -481,7 +481,7 @@ async def execute_wfmodule(
     )
 
     # may raise UnneededExecution
-    crr, output_delta = await _execute_wfmodule_save(workflow, step, result)
+    crr, output_delta = await _execute_step_save(workflow, step, result)
 
     update = clientside.Update(
         steps={

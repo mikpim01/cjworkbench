@@ -10,7 +10,7 @@ from cjwstate.rendercache import load_cached_render_result, CorruptCacheError
 from cjwstate.models import Step, Workflow
 from cjwstate.modules.param_dtype import ParamDType
 from cjwstate.modules.types import ModuleZipfile
-from .step import execute_wfmodule, locked_step
+from .step import execute_step, locked_step
 
 
 logger = logging.getLogger(__name__)
@@ -218,7 +218,7 @@ async def execute_tab_flow(
 
         for step, step_output_path in zip(flow.steps[step_index:], step_output_paths):
             step_output_path.write_bytes(b"")  # don't leak data from two steps ago
-            next_result = await execute_wfmodule(
+            next_result = await execute_step(
                 chroot_context=chroot_context,
                 workflow=workflow,
                 step=step.step,

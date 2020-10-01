@@ -4,7 +4,7 @@ import Param from './Param'
 import ParamsFormFooter from './ParamsFormFooter'
 import deepEqual from 'fast-deep-equal'
 import { paramFieldToParamProps } from './util'
-import { QuickFixPropTypes } from '../WorkflowEditor/wfmodule/QuickFix'
+import { QuickFixPropTypes } from '../WorkflowEditor/step/QuickFix'
 
 /**
  * Displays Params and user's "edits".

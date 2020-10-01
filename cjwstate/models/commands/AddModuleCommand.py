@@ -10,7 +10,7 @@ class AddModuleCommand(ChangesStepOutputs, Delta):
     """Create a `Step` and insert it into the Workflow.
 
     Our "backwards()" logic is to "soft-delete": set
-    `wfmodule.is_deleted=True`. Most facets of Workbench's API should pretend a
+    `step.is_deleted=True`. Most facets of Workbench's API should pretend a
     soft-deleted Steps does not exist.
     """
 

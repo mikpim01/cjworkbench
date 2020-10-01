@@ -190,7 +190,7 @@ _Tables = [
     "server_addtabcommand",
     "server_changedataversioncommand",
     "server_changeparameterscommand",
-    "server_changewfmodulenotescommand",
+    "server_changestepnotescommand",
     "server_changeworkflowtitlecommand",
     "server_deletemodulecommand",
     "server_deletetabcommand",

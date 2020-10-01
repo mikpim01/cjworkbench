@@ -6,7 +6,7 @@ from ..step import Step
 class ChangeStepNotesCommand(Delta):
     class Meta:
         app_label = "server"
-        db_table = "server_changewfmodulenotescommand"
+        db_table = "server_changestepnotescommand"
 
     step = models.ForeignKey(Step, on_delete=models.PROTECT)
     new_value = models.TextField("new_value")

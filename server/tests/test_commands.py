@@ -107,7 +107,7 @@ class DeltaTest(DbTestCase):
 
         delta2.refresh_from_db()  # do not crash
 
-    def test_delete_deletes_soft_deleted_wfmodule(self):
+    def test_delete_deletes_soft_deleted_step(self):
         workflow = Workflow.create_and_init()
         # Here's a soft-deleted module
         step = workflow.tabs.first().steps.create(
@@ -148,7 +148,7 @@ class DeltaTest(DbTestCase):
         with self.assertRaises(Tab.DoesNotExist):
             tab.refresh_from_db()
 
-    def test_delete_protects_non_deleted_wfmodule(self):
+    def test_delete_protects_non_deleted_step(self):
         workflow = Workflow.create_and_init()
         # Here's a soft-deleted module
         step = workflow.tabs.first().steps.create(
@@ -167,7 +167,7 @@ class DeltaTest(DbTestCase):
 
         step.refresh_from_db()  # no DoesNotExist: it's not deleted
 
-    def test_delete_protects_soft_deleted_wfmodule_with_reference(self):
+    def test_delete_protects_soft_deleted_step_with_reference(self):
         workflow = Workflow.create_and_init()
         # Here's a soft-deleted module
         step = workflow.tabs.first().steps.create(

@@ -118,7 +118,7 @@ def _init_workflow_for_lesson(workflow, lesson):
     # Create each step of each tab
     tab_dicts = lesson.initial_workflow.tabs
     for position, tab_dict in enumerate(tab_dicts):
-        # Set selected module to last wfmodule in stack
+        # Set selected module to last step in stack
         tab = workflow.tabs.create(
             position=position,
             slug=f"tab-{position + 1}",

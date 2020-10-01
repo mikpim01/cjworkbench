@@ -2,7 +2,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import Button from './Button'
-import Step from '../wfmodule/Step'
+import Step from '../step/Step'
 
 const AddData = React.memo(function AddData ({ tabSlug, isLessonHighlight, isReadOnly, step, isZenMode, removeModule, isSelected, api, setZenMode, paneRef }) {
   if (step) {

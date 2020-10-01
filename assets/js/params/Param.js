@@ -19,7 +19,7 @@ import StaticText from './StaticText'
 import String_ from './String'
 import Tab from './Tab'
 import List from './List'
-import { QuickFixPropTypes } from '../WorkflowEditor/wfmodule/QuickFix'
+import { QuickFixPropTypes } from '../WorkflowEditor/step/QuickFix'
 
 function onDragStartPreventDrag (dragEvent) {
   dragEvent.preventDefault()

@@ -61,7 +61,7 @@ def _with_step_for_read(fn):
 
             return fn(request, step, *args, **kwargs)
         except (Workflow.DoesNotExist, Tab.DoesNotExist, Step.DoesNotExist):
-            raise Http404()  # race: tab/wfmodule was deleted
+            raise Http404()  # race: tab/step was deleted
 
     return inner
 
@@ -111,7 +111,7 @@ def int_or_none(x):
 @api_view(["GET"])
 @renderer_classes((JSONRenderer,))
 @_with_step_for_read
-def wfmodule_render(request: HttpRequest, step: Step, format=None):
+def step_render(request: HttpRequest, step: Step, format=None):
     # Get first and last row from query parameters, or default to all if not
     # specified
     try:
@@ -149,7 +149,7 @@ def wfmodule_render(request: HttpRequest, step: Step, format=None):
 @api_view(["GET"])
 @xframe_options_exempt
 @_with_step_for_read
-def wfmodule_output(request: HttpRequest, step: Step, format=None):
+def step_output(request: HttpRequest, step: Step, format=None):
     try:
         module_zipfile = MODULE_REGISTRY.latest(step.module_id_name)
         html = module_zipfile.get_optional_html()
@@ -161,7 +161,7 @@ def wfmodule_output(request: HttpRequest, step: Step, format=None):
 @api_view(["GET"])
 @renderer_classes((JSONRenderer,))
 @_with_step_for_read
-def wfmodule_embeddata(request: HttpRequest, step: Step):
+def step_embeddata(request: HttpRequest, step: Step):
     # Speedy bypassing of locks: we don't care if we get out-of-date data
     # because we assume the client will re-request when it gets a new
     # cached_render_result_delta_id.
@@ -178,7 +178,7 @@ def wfmodule_embeddata(request: HttpRequest, step: Step):
 @api_view(["GET"])
 @renderer_classes((JSONRenderer,))
 @_with_step_for_read
-def wfmodule_value_counts(request: HttpRequest, step: Step):
+def step_value_counts(request: HttpRequest, step: Step):
     try:
         colname = request.GET["column"]
     except KeyError:
@@ -305,7 +305,7 @@ class SubprocessOutputFileLike(io.RawIOBase):
 
 @api_view(["GET"])
 @_with_step_for_read
-def wfmodule_public_json(request: HttpRequest, step: Step):
+def step_public_json(request: HttpRequest, step: Step):
     def schedule_render_and_suggest_retry():
         """Schedule a render and return a response asking the user to retry.
 
@@ -347,7 +347,7 @@ def wfmodule_public_json(request: HttpRequest, step: Step):
 
 
 @_with_step_for_read
-def wfmodule_public_csv(request: HttpRequest, step: Step):
+def step_public_csv(request: HttpRequest, step: Step):
     def schedule_render_and_suggest_retry():
         """Schedule a render and return a response asking the user to retry.
 

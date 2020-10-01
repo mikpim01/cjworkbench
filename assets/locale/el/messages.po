@@ -490,49 +490,49 @@ msgstr "Μετονομασία"
 msgid "js.WorkflowEditor.Tabs.create.defaultPrefix"
 msgstr "Καρτέλα"
 
-#: assets/js/WorkflowEditor/wfmodule/DeprecationNotice.js:12
-msgid "js.WorkflowEditor.wfmodule.DeprecationNotice.learnHowToReplace"
+#: assets/js/WorkflowEditor/step/DeprecationNotice.js:12
+msgid "js.WorkflowEditor.step.DeprecationNotice.learnHowToReplace"
 msgstr "Μάθετε πώς να αντικαταστήσετε αυτό το βήμα"
 
-#: assets/js/WorkflowEditor/wfmodule/Step.js:355
-msgid "js.WorkflowEditor.wfmodule.EditableNotes.placeholder"
+#: assets/js/WorkflowEditor/step/Step.js:355
+msgid "js.WorkflowEditor.step.EditableNotes.placeholder"
 msgstr "Πληκτρολογήστε μια σημείωση..."
 
 #. When clicked, this opens a menu with more actions.
-#: assets/js/WorkflowEditor/wfmodule/StepContextMenu.js:17
-msgid "js.WorkflowEditor.wfmodule.StepContextMenu.more.hoverText"
+#: assets/js/WorkflowEditor/step/StepContextMenu.js:17
+msgid "js.WorkflowEditor.step.StepContextMenu.more.hoverText"
 msgstr "περισσότερα"
 
-#: assets/js/WorkflowEditor/wfmodule/Step.js:240
-msgid "js.WorkflowEditor.wfmodule.ZenMode.enter"
+#: assets/js/WorkflowEditor/step/Step.js:240
+msgid "js.WorkflowEditor.step.ZenMode.enter"
 msgstr "είσοδος σε λειτουργία Zen"
 
-#: assets/js/WorkflowEditor/wfmodule/Step.js:240
-msgid "js.WorkflowEditor.wfmodule.ZenMode.exit"
+#: assets/js/WorkflowEditor/step/Step.js:240
+msgid "js.WorkflowEditor.step.ZenMode.exit"
 msgstr "έξοδος από λειτουργία Zen"
 
-#: assets/js/WorkflowEditor/wfmodule/Step.js:372
-msgid "js.WorkflowEditor.wfmodule.alert.disabled"
+#: assets/js/WorkflowEditor/step/Step.js:372
+msgid "js.WorkflowEditor.step.alert.disabled"
 msgstr "Οι ειδοποιήσεις ηλ. ταχυδρομείου έχουν απενεργοποιηθεί"
 
-#: assets/js/WorkflowEditor/wfmodule/Step.js:372
-msgid "js.WorkflowEditor.wfmodule.alert.enabled"
+#: assets/js/WorkflowEditor/step/Step.js:372
+msgid "js.WorkflowEditor.step.alert.enabled"
 msgstr "Οι ειδοποιήσεις ηλ. ταχυδρομείου είναι ενεργοποιημένες"
 
-#: assets/js/WorkflowEditor/wfmodule/Step.js:384
-msgid "js.WorkflowEditor.wfmodule.help.hoverText"
+#: assets/js/WorkflowEditor/step/Step.js:384
+msgid "js.WorkflowEditor.step.help.hoverText"
 msgstr "Βοήθεια για αυτή τη μονάδα (module)"
 
-#: assets/js/WorkflowEditor/wfmodule/Step.js:394
-msgid "js.WorkflowEditor.wfmodule.notes.edit.hoverText"
+#: assets/js/WorkflowEditor/step/Step.js:394
+msgid "js.WorkflowEditor.step.notes.edit.hoverText"
 msgstr "Επεξεργασία σημείωσης"
 
-#: assets/js/WorkflowEditor/wfmodule/StepContextMenu.js:22
-msgid "js.WorkflowEditor.wfmodule.stepContextMenu.delete"
+#: assets/js/WorkflowEditor/step/StepContextMenu.js:22
+msgid "js.WorkflowEditor.step.stepContextMenu.delete"
 msgstr "Διαγραφή"
 
-#: assets/js/WorkflowEditor/wfmodule/StepContextMenu.js:21
-msgid "js.WorkflowEditor.wfmodule.stepContextMenu.exportData"
+#: assets/js/WorkflowEditor/step/StepContextMenu.js:21
+msgid "js.WorkflowEditor.step.stepContextMenu.exportData"
 msgstr "Εξαγωγή δεδομένων"
 
 #: assets/js/WorkflowNavBar.js:22

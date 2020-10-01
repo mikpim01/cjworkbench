@@ -9,7 +9,7 @@ export default function DeprecationMessage ({ helpUrl, message }) {
     <div className='module-deprecated'>
       <p>{message}</p>
       <a target='_blank' rel='noopener noreferrer' href={helpUrl}>
-        <Trans id='js.WorkflowEditor.wfmodule.DeprecationNotice.learnHowToReplace'>Learn how to replace this step</Trans>
+        <Trans id='js.WorkflowEditor.step.DeprecationNotice.learnHowToReplace'>Learn how to replace this step</Trans>
       </a>
     </div>
   )

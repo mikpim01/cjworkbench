@@ -123,7 +123,7 @@ class ReorderModulesCommandTest(DbTestCase):
                 )
             )
 
-    def test_not_enough_wfmodules_valueerror(self):
+    def test_not_enough_steps_valueerror(self):
         step1 = self.tab.steps.create(
             order=0, slug="step-1", last_relevant_delta_id=self.delta.id
         )
@@ -141,7 +141,7 @@ class ReorderModulesCommandTest(DbTestCase):
                 )
             )
 
-    def test_repeated_wfmodules_valueerror(self):
+    def test_repeated_steps_valueerror(self):
         step1 = self.tab.steps.create(
             order=0, slug="step-1", last_relevant_delta_id=self.delta.id
         )

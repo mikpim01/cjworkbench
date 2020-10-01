@@ -12,7 +12,7 @@ from cjwstate.storedobjects import create_stored_object
 from cjwstate.models import Workflow
 from cjwstate.tests.utils import DbTestCaseWithModuleRegistry, create_module_zipfile
 from renderer import notifications
-from renderer.execute.step import execute_wfmodule
+from renderer.execute.step import execute_step
 
 
 async def noop(*args, **kwargs):
@@ -46,7 +46,7 @@ class StepTests(DbTestCaseWithModuleRegistry):
             last_relevant_delta_id=workflow.last_delta_id,
         )
         result = self.run_with_async_db(
-            execute_wfmodule(
+            execute_step(
                 self.chroot_context,
                 workflow,
                 step,
@@ -92,7 +92,7 @@ class StepTests(DbTestCaseWithModuleRegistry):
         )
         with self.assertLogs(level=logging.INFO):
             self.run_with_async_db(
-                execute_wfmodule(
+                execute_step(
                     self.chroot_context,
                     workflow,
                     step,
@@ -145,7 +145,7 @@ class StepTests(DbTestCaseWithModuleRegistry):
 
         with self.assertLogs(level=logging.ERROR):
             self.run_with_async_db(
-                execute_wfmodule(
+                execute_step(
                     self.chroot_context,
                     workflow,
                     step,
@@ -194,7 +194,7 @@ class StepTests(DbTestCaseWithModuleRegistry):
 
         with self.assertLogs(level=logging.INFO):
             self.run_with_async_db(
-                execute_wfmodule(
+                execute_step(
                     self.chroot_context,
                     workflow,
                     step,
@@ -236,7 +236,7 @@ class StepTests(DbTestCaseWithModuleRegistry):
         step.save(update_fields=["last_relevant_delta_id"])
 
         self.run_with_async_db(
-            execute_wfmodule(
+            execute_step(
                 self.chroot_context,
                 workflow,
                 step,
@@ -284,7 +284,7 @@ class StepTests(DbTestCaseWithModuleRegistry):
 
         with self.assertLogs(level=logging.INFO):
             self.run_with_async_db(
-                execute_wfmodule(
+                execute_step(
                     self.chroot_context,
                     workflow,
                     step,
@@ -332,7 +332,7 @@ class StepTests(DbTestCaseWithModuleRegistry):
 
         with self.assertLogs(level=logging.INFO):
             self.run_with_async_db(
-                execute_wfmodule(
+                execute_step(
                     self.chroot_context,
                     workflow,
                     step,
@@ -389,7 +389,7 @@ class StepTests(DbTestCaseWithModuleRegistry):
 
         with self.assertLogs(level=logging.INFO):
             self.run_with_async_db(
-                execute_wfmodule(
+                execute_step(
                     self.chroot_context,
                     workflow,
                     step,
@@ -437,7 +437,7 @@ class StepTests(DbTestCaseWithModuleRegistry):
 
         with self.assertLogs(level=logging.INFO):
             self.run_with_async_db(
-                execute_wfmodule(
+                execute_step(
                     self.chroot_context,
                     workflow,
                     step,
@@ -478,7 +478,7 @@ class StepTests(DbTestCaseWithModuleRegistry):
 
         with self.assertLogs(level=logging.INFO):
             self.run_with_async_db(
-                execute_wfmodule(
+                execute_step(
                     self.chroot_context,
                     workflow,
                     step,
@@ -516,7 +516,7 @@ class StepTests(DbTestCaseWithModuleRegistry):
 
         with self.assertLogs(level=logging.INFO):
             self.run_with_async_db(
-                execute_wfmodule(
+                execute_step(
                     self.chroot_context,
                     workflow,
                     step,
@@ -558,7 +558,7 @@ class StepTests(DbTestCaseWithModuleRegistry):
 
         with self.assertLogs(level=logging.INFO):
             self.run_with_async_db(
-                execute_wfmodule(
+                execute_step(
                     self.chroot_context,
                     workflow,
                     step,
@@ -588,7 +588,7 @@ class StepTests(DbTestCaseWithModuleRegistry):
 
         with self.assertLogs(level=logging.INFO):
             result = self.run_with_async_db(
-                execute_wfmodule(
+                execute_step(
                     self.chroot_context,
                     workflow,
                     step,

@@ -30,7 +30,7 @@ class DisableStaleAutoUpdateTests(DbTestCase):
         self.assertEqual(step.auto_update_data, False)
         self.assertIsNone(step.next_update)
 
-    def test_ignore_non_auto_update_wfmodule(self):
+    def test_ignore_non_auto_update_step(self):
         workflow = Workflow.create_and_init(
             last_viewed_at=(timezone.now() - StaleTimedelta),
             lesson_slug="analyze-live-twitter",
@@ -49,7 +49,7 @@ class DisableStaleAutoUpdateTests(DbTestCase):
         self.assertEqual(step.auto_update_data, False)
         self.assertIsNone(step.next_update)
 
-    def test_ignore_deleted_wfmodule(self):
+    def test_ignore_deleted_step(self):
         workflow = Workflow.create_and_init(
             last_viewed_at=(timezone.now() - StaleTimedelta),
             lesson_slug="analyze-live-twitter",

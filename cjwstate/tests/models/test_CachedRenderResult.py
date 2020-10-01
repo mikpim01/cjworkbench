@@ -28,7 +28,7 @@ class CachedRenderResultTests(DbTestCase):
     def test_none(self):
         self.assertIsNone(self.step.cached_render_result)
 
-    def test_delete_wfmodule(self):
+    def test_delete_step(self):
         result = RenderResult(
             arrow_table({"A": [1]}), [RenderError(I18nMessage("X", []), [])], {}
         )

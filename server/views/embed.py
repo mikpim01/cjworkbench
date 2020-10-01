@@ -10,9 +10,9 @@ from server.serializers import (
 
 
 @xframe_options_exempt
-def embed(request, wfmodule_id):
+def embed(request, step_id):
     try:
-        step = Step.objects.get(pk=wfmodule_id, is_deleted=False)
+        step = Step.objects.get(pk=step_id, is_deleted=False)
     except Step.DoesNotExist:
         step = None
 

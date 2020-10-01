@@ -90,12 +90,12 @@ urlpatterns = [
     url(r"^api/importfromgithub/?$", views.import_from_github),
     # Steps
     # TODO: "render" and "output" are bad names. Differentiate them.
-    path("api/wfmodules/<int:step_id>/render", views.wfmodule_render),
-    path("api/wfmodules/<int:step_id>/output", views.wfmodule_output),
-    path("api/wfmodules/<int:step_id>/embeddata", views.wfmodule_embeddata),
-    path("api/wfmodules/<int:step_id>/value-counts", views.wfmodule_value_counts),
-    path("public/moduledata/live/<int:step_id>.csv", views.wfmodule_public_csv),
-    path("public/moduledata/live/<int:step_id>.json", views.wfmodule_public_json),
+    path("api/wfmodules/<int:step_id>/render", views.step_render),
+    path("api/wfmodules/<int:step_id>/output", views.step_output),
+    path("api/wfmodules/<int:step_id>/embeddata", views.step_embeddata),
+    path("api/wfmodules/<int:step_id>/value-counts", views.step_value_counts),
+    path("public/moduledata/live/<int:step_id>.csv", views.step_public_csv),
+    path("public/moduledata/live/<int:step_id>.json", views.step_public_json),
     # Parameters
     url(
         r"^oauth/create-secret/(?P<workflow_id>[0-9]+)/(?P<step_id>[0-9]+)/(?P<param>[-_a-zA-Z0-9]+)/",
@@ -103,7 +103,7 @@ urlpatterns = [
     ),
     url(r"^oauth/?$", oauth.finish_authorize),
     # Embeds
-    url(r"^embed/(?P<wfmodule_id>[0-9]+)/?$", views.embed),
+    url(r"^embed/(?P<step_id>[0-9]+)/?$", views.embed),
     url(r"^healthz$", health.healthz),
     # 404
     url(r"^404/$", TemplateView.as_view(template_name="404.html")),

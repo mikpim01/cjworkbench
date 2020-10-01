@@ -12,7 +12,7 @@ export class OutputIframe extends React.PureComponent {
   static propTypes = {
     visible: PropTypes.bool.isRequired, // false means, "zero height"
     deltaId: PropTypes.number, // null if added to empty workflow
-    stepId: PropTypes.number, // null if no wfmodule
+    stepId: PropTypes.number, // null if no step
     isPublic: PropTypes.bool.isRequired,
     workflowId: PropTypes.number.isRequired
   }

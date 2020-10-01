@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import AceEditor from 'react-ace/lib/ace'
 import memoize from 'memoize-one'
 import { Trans } from '@lingui/macro'
-import { QuickFixPropTypes } from '../../../WorkflowEditor/wfmodule/QuickFix'
+import { QuickFixPropTypes } from '../../../WorkflowEditor/step/QuickFix'
 
 import 'ace-builds/src-noconflict/mode-python'
 import 'ace-builds/src-noconflict/mode-sql'

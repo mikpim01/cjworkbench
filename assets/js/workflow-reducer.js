@@ -14,7 +14,7 @@ const DELETE_MODULE = 'DELETE_MODULE'
 const SET_SELECTED_MODULE = 'SET_SELECTED_MODULE'
 const MOVE_MODULE = 'MOVE_MODULE'
 
-// Delta: workflow+wfmodule changes
+// Delta: workflow+step changes
 const APPLY_DELTA = 'APPLY_DELTA'
 
 // Step
