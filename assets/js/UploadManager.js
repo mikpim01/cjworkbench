@@ -19,11 +19,9 @@ export default class UploadManager {
    * 3. Client starts uploading to S3 -- and registers a cancel callback in this.inProgress.
    * 4. Client finishes uploading
    *
-   * * The server only tracks one file upload per WfModule -- there's no way
-   *   for two users to upload concurrently. That makes `cancel()`
-   *   straightforward.
-   * * When completing, the server will send a Delta, adding the new files to
-   *   the WfModule.
+   * * The server only tracks one file upload per Step -- there's no way
+   *   for two users to upload concurrently. That makes `cancel()` straightforward.
+   * * When completing, the server will send a Delta, adding the new files to the Step.
    * * The Promise returned will resolve to `{uuid: uuid}`; if the user aborts,
    *   it will resolve to `null`.
    * * `onProgress(nBytesUploaded)` will be called periodically.

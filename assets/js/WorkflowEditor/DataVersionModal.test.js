@@ -26,8 +26,8 @@ describe('DataVersionModal', () => {
   const wrapper = (extraProps) => {
     _wrapper = mountWithI18n(
       <DataVersionModal
-        fetchWfModuleId={123}
-        fetchWfModuleName='fetch'
+        fetchStepId={123}
+        fetchStepName='fetch'
         fetchVersions={Versions}
         selectedFetchVersionId='1000'
         wfModuleId={124}
@@ -103,7 +103,7 @@ describe('DataVersionModal', () => {
         selected_tab_position: 0
       },
       tabs: {
-        'tab-11': { wf_module_ids: [123, 124] }
+        'tab-11': { step_ids: [123, 124] }
       },
       modules: {
         fetch: { name: 'Fetch Stuff', loads_data: true },

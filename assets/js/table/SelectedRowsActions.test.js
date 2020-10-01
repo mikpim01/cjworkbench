@@ -46,8 +46,8 @@ describe('SelectedRowsActions', () => {
     beforeEach(() => {
       api = {
         addModule: jest.fn(() => Promise.resolve(null)),
-        setWfModuleParams: jest.fn(() => Promise.resolve(null)),
-        setSelectedWfModule: jest.fn(() => Promise.resolve(null))
+        setStepParams: jest.fn(() => Promise.resolve(null)),
+        setSelectedStep: jest.fn(() => Promise.resolve(null))
       }
     })
 
@@ -95,7 +95,7 @@ describe('SelectedRowsActions', () => {
       generateSlug.mockImplementation(prefix => prefix + 'X')
 
       const w = wrapper({
-        tabs: { 'tab-1': { wf_module_ids: [2] } },
+        tabs: { 'tab-1': { step_ids: [2] } },
         wfModules: {
           2: { module: 'dofoo', tab_slug: 'tab-1' }
         },
@@ -118,10 +118,10 @@ describe('SelectedRowsActions', () => {
       expect(api.addModule).toHaveBeenCalledWith('tab-1', 'step-X', 'dobar', 1, { rows: '2, 4-5' })
     })
 
-    it('should use setWfModuleParams action, fromInput', async () => {
+    it('should use setStepParams action, fromInput', async () => {
       const w = wrapper({
         workflow: { tab_slugs: ['tab-1'] },
-        tabs: { 'tab-1': { wf_module_ids: [2, 3] } },
+        tabs: { 'tab-1': { step_ids: [2, 3] } },
         wfModules: {
           2: { module: 'dofoo', tab_slug: 'tab-1' },
           3: { module: 'dobaz', tab_slug: 'tab-1', params: { foo20: 'bar20' } }
@@ -143,17 +143,17 @@ describe('SelectedRowsActions', () => {
       // Check that the reducer did its stuff. We don't test that store.state
       // is changed because the fact these methods were called implies the
       // reducer was invoked correctly.
-      expect(api.setSelectedWfModule).toHaveBeenCalledWith(3)
-      expect(api.setWfModuleParams).toHaveBeenCalledWith(
+      expect(api.setSelectedStep).toHaveBeenCalledWith(3)
+      expect(api.setStepParams).toHaveBeenCalledWith(
         3,
         { oldParams: { foo20: 'bar20' }, rows: '2, 4-5', fromInput: true }
       )
     })
 
-    it('should use setWfModuleParams action, fromInput=false (from output)', async () => {
+    it('should use setStepParams action, fromInput=false (from output)', async () => {
       const w = wrapper({
         workflow: { tab_slugs: ['tab-1'] },
-        tabs: { 'tab-1': { wf_module_ids: [2, 3] } },
+        tabs: { 'tab-1': { step_ids: [2, 3] } },
         wfModules: {
           2: { module: 'dobaz', tab_slug: 'tab-1', params: { foo10: 'bar10' } },
           3: { module: 'dofoo', tab_slug: 'tab-1' }
@@ -175,7 +175,7 @@ describe('SelectedRowsActions', () => {
       // Check that the reducer did its stuff. We don't test that store.state
       // is changed because the fact these methods were called implies the
       // reducer was invoked correctly.
-      expect(api.setWfModuleParams).toHaveBeenCalledWith(
+      expect(api.setStepParams).toHaveBeenCalledWith(
         2,
         { oldParams: { foo10: 'bar10' }, rows: '2, 4-5', fromInput: false }
       )

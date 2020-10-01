@@ -23,16 +23,15 @@ from cjwstate.rendercache import (
     open_cached_render_result,
     read_cached_render_result_slice_as_text,
 )
-from cjwstate.models import Tab, WfModule, Workflow
+from cjwstate.models import Tab, Step, Workflow
 from cjwstate.models.module_registry import MODULE_REGISTRY
 
 
 _MaxNRowsPerRequest = 300
 
 
-def _with_wf_module_for_read(fn):
-    """
-    Decorate: `fn(request, wf_module_id, ...)` becomes `fn(request, wf_module, ...)`
+def _with_step_for_read(fn):
+    """Decorate: `fn(request, step_id, ...)` becomes `fn(request, step, ...)`
 
     The inner function will be wrapped in a cooperative lock.
 
@@ -40,14 +39,14 @@ def _with_wf_module_for_read(fn):
     or PermissionDenied if the person requesting does not have read access.
     """
 
-    def inner(request: HttpRequest, wf_module_id: int, *args, **kwargs):
+    def inner(request: HttpRequest, step_id: int, *args, **kwargs):
         # TODO simplify this a ton by putting `workflow` in the URL. That way,
         # we can lock it _before_ we query it, so we won't have to check any of
         # the zillions of races herein.
-        wf_module = get_object_or_404(WfModule, id=wf_module_id, is_deleted=False)
+        step = get_object_or_404(Step, id=step_id, is_deleted=False)
         try:
             # raise Tab.DoesNotExist, Workflow.DoesNotExist
-            workflow = wf_module.workflow
+            workflow = step.workflow
             if workflow is None:
                 raise Http404()  # race: workflow is gone
 
@@ -56,12 +55,12 @@ def _with_wf_module_for_read(fn):
                 if not workflow_lock.workflow.request_authorized_read(request):
                     raise PermissionDenied()
 
-                wf_module.refresh_from_db()  # raise WfModule.DoesNotExist
-                if wf_module.is_deleted or wf_module.tab.is_deleted:
-                    raise Http404()  # race: WfModule/Tab deleted
+                step.refresh_from_db()  # raise Step.DoesNotExist
+                if step.is_deleted or step.tab.is_deleted:
+                    raise Http404()  # race: Step/Tab deleted
 
-            return fn(request, wf_module, *args, **kwargs)
-        except (Workflow.DoesNotExist, Tab.DoesNotExist, WfModule.DoesNotExist):
+            return fn(request, step, *args, **kwargs)
+        except (Workflow.DoesNotExist, Tab.DoesNotExist, Step.DoesNotExist):
             raise Http404()  # race: tab/wfmodule was deleted
 
     return inner
@@ -111,8 +110,8 @@ def int_or_none(x):
 # /render: return output table of this module
 @api_view(["GET"])
 @renderer_classes((JSONRenderer,))
-@_with_wf_module_for_read
-def wfmodule_render(request: HttpRequest, wf_module: WfModule, format=None):
+@_with_step_for_read
+def wfmodule_render(request: HttpRequest, step: Step, format=None):
     # Get first and last row from query parameters, or default to all if not
     # specified
     try:
@@ -124,9 +123,9 @@ def wfmodule_render(request: HttpRequest, wf_module: WfModule, format=None):
             status=status.HTTP_400_BAD_REQUEST,
         )
 
-    with wf_module.workflow.cooperative_lock():
-        wf_module.refresh_from_db()
-        cached_result = wf_module.cached_render_result
+    with step.workflow.cooperative_lock():
+        step.refresh_from_db()
+        cached_result = step.cached_render_result
         if cached_result is None:
             # assume we'll get another request after execute finishes
             return JsonResponse({"start_row": 0, "end_row": 0, "rows": []})
@@ -149,10 +148,10 @@ def wfmodule_render(request: HttpRequest, wf_module: WfModule, format=None):
 
 @api_view(["GET"])
 @xframe_options_exempt
-@_with_wf_module_for_read
-def wfmodule_output(request: HttpRequest, wf_module: WfModule, format=None):
+@_with_step_for_read
+def wfmodule_output(request: HttpRequest, step: Step, format=None):
     try:
-        module_zipfile = MODULE_REGISTRY.latest(wf_module.module_id_name)
+        module_zipfile = MODULE_REGISTRY.latest(step.module_id_name)
         html = module_zipfile.get_optional_html()
     except KeyError:
         html = None
@@ -161,14 +160,14 @@ def wfmodule_output(request: HttpRequest, wf_module: WfModule, format=None):
 
 @api_view(["GET"])
 @renderer_classes((JSONRenderer,))
-@_with_wf_module_for_read
-def wfmodule_embeddata(request: HttpRequest, wf_module: WfModule):
+@_with_step_for_read
+def wfmodule_embeddata(request: HttpRequest, step: Step):
     # Speedy bypassing of locks: we don't care if we get out-of-date data
     # because we assume the client will re-request when it gets a new
     # cached_render_result_delta_id.
     try:
         result_json = json.loads(
-            bytes(wf_module.cached_render_result_json), encoding="utf-8"
+            bytes(step.cached_render_result_json), encoding="utf-8"
         )
     except ValueError:
         result_json = None
@@ -178,8 +177,8 @@ def wfmodule_embeddata(request: HttpRequest, wf_module: WfModule):
 
 @api_view(["GET"])
 @renderer_classes((JSONRenderer,))
-@_with_wf_module_for_read
-def wfmodule_value_counts(request: HttpRequest, wf_module: WfModule):
+@_with_step_for_read
+def wfmodule_value_counts(request: HttpRequest, step: Step):
     try:
         colname = request.GET["column"]
     except KeyError:
@@ -189,7 +188,7 @@ def wfmodule_value_counts(request: HttpRequest, wf_module: WfModule):
         # User has not yet chosen a column. Empty response.
         return JsonResponse({"values": {}})
 
-    cached_result = wf_module.cached_render_result
+    cached_result = step.cached_render_result
     if cached_result is None:
         # assume we'll get another request after execute finishes
         return JsonResponse({"values": {}})
@@ -242,8 +241,7 @@ def wfmodule_value_counts(request: HttpRequest, wf_module: WfModule):
 
 
 class SubprocessOutputFileLike(io.RawIOBase):
-    """
-    Run a subrocess; .read() reads its stdout and stderr (combined).
+    """Run a subrocess; .read() reads its stdout and stderr (combined).
 
     __init__() will only return after the process starts producing output.
     This requirement lets us raise OSError during startup; it also means a
@@ -306,11 +304,10 @@ class SubprocessOutputFileLike(io.RawIOBase):
 
 
 @api_view(["GET"])
-@_with_wf_module_for_read
-def wfmodule_public_json(request: HttpRequest, wf_module: WfModule):
+@_with_step_for_read
+def wfmodule_public_json(request: HttpRequest, step: Step):
     def schedule_render_and_suggest_retry():
-        """
-        Schedule a render and return a response asking the user to retry.
+        """Schedule a render and return a response asking the user to retry.
 
         It is a *bug* that we publish URLs that aren't guaranteed to work.
         Because we publish URLs that do not work, let's be transparent and
@@ -318,14 +315,14 @@ def wfmodule_public_json(request: HttpRequest, wf_module: WfModule):
         """
         # We don't have a cached result, and we don't know how long it'll
         # take to get one. The user will simply need to try again....
-        nonlocal wf_module
-        workflow = wf_module.workflow
+        nonlocal step
+        workflow = step.workflow
         async_to_sync(rabbitmq.queue_render)(workflow.id, workflow.last_delta_id)
         response = JsonResponse([], safe=False, status=503)
         response["Retry-After"] = "30"
         return response
 
-    cached_result = wf_module.cached_render_result
+    cached_result = step.cached_render_result
     if not cached_result:
         return schedule_render_and_suggest_retry()
 
@@ -343,17 +340,16 @@ def wfmodule_public_json(request: HttpRequest, wf_module: WfModule):
         as_attachment=True,
         filename=(
             "Workflow %d - %s-%d.json"
-            % (cached_result.workflow_id, wf_module.module_id_name, wf_module.id)
+            % (cached_result.workflow_id, step.module_id_name, step.id)
         ),
         content_type="application/json",
     )
 
 
-@_with_wf_module_for_read
-def wfmodule_public_csv(request: HttpRequest, wf_module: WfModule):
+@_with_step_for_read
+def wfmodule_public_csv(request: HttpRequest, step: Step):
     def schedule_render_and_suggest_retry():
-        """
-        Schedule a render and return a response asking the user to retry.
+        """Schedule a render and return a response asking the user to retry.
 
         It is a *bug* that we publish URLs that aren't guaranteed to work.
         Because we publish URLs that do not work, let's be transparent and
@@ -361,14 +357,14 @@ def wfmodule_public_csv(request: HttpRequest, wf_module: WfModule):
         """
         # We don't have a cached result, and we don't know how long it'll
         # take to get one. The user will simply need to try again....
-        nonlocal wf_module
-        workflow = wf_module.workflow
+        nonlocal step
+        workflow = step.workflow
         async_to_sync(rabbitmq.queue_render)(workflow.id, workflow.last_delta_id)
         response = HttpResponse(b"", content_type="text/csv", status=503)
         response["Retry-After"] = "30"
         return response
 
-    cached_result = wf_module.cached_render_result
+    cached_result = step.cached_render_result
     if not cached_result:
         return schedule_render_and_suggest_retry()
 
@@ -386,7 +382,7 @@ def wfmodule_public_csv(request: HttpRequest, wf_module: WfModule):
         as_attachment=True,
         filename=(
             "Workflow %d - %s-%d.csv"
-            % (cached_result.workflow_id, wf_module.module_id_name, wf_module.id)
+            % (cached_result.workflow_id, step.module_id_name, step.id)
         ),
         content_type="text/csv; charset=utf-8; header=present",
     )

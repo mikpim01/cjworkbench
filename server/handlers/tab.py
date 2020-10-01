@@ -21,7 +21,7 @@ import server.utils
 
 @database_sync_to_async
 def _load_tab(workflow: Workflow, tab_slug: int) -> Tab:
-    """Returns a WfModule or raises HandlerError."""
+    """Returns a Step or raises HandlerError."""
     try:
         return workflow.live_tabs.get(slug=tab_slug)
     except Tab.DoesNotExist:

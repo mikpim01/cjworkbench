@@ -19,7 +19,7 @@ from .workflow import Workflow
 logger = logging.getLogger(__name__)
 
 
-class WfModule(models.Model):
+class Step(models.Model):
     """An instance of a Module in a Workflow."""
 
     class Meta:
@@ -52,12 +52,12 @@ class WfModule(models.Model):
                 name="cached_migrated_params_consistency_check",
             ),
             models.UniqueConstraint(
-                # Really, we want WfModule slug to be unique by _workflow_, not
+                # Really, we want Step slug to be unique by _workflow_, not
                 # by tab. But that's not reasonable with Postgres CHECK constraints.
                 # We'll do the heavy lifting in software ... and leave this
                 # less-useful check as a constraint as documentation and for the index.
                 fields=["tab_id", "slug"],
-                name="unique_wf_module_slug",
+                name="unique_step_slug",
             ),
         ]
         indexes = [
@@ -82,7 +82,7 @@ class WfModule(models.Model):
     INDEX and support soft-deleting.)
     """
 
-    tab = models.ForeignKey(Tab, related_name="wf_modules", on_delete=models.CASCADE)
+    tab = models.ForeignKey(Tab, related_name="steps", on_delete=models.CASCADE)
 
     module_id_name = models.CharField(max_length=200, default="")
 
@@ -120,7 +120,7 @@ class WfModule(models.Model):
     Non-secret parameter values -- after a call to migrate_params().
 
     This may not match the current module version. And it may be `None` for
-    backwards compatibility with WfModules that did not cache migrated params.
+    backwards compatibility with Steps that did not cache migrated params.
 
     Why not just overwrite `params`? Because `params` is set by a user and
     `cached_migrated_params` is set by a machine, and let's not confuse our
@@ -166,7 +166,7 @@ class WfModule(models.Model):
 
     # Most-recent delta that may possibly affect the output of this module.
     # This isn't a ForeignKey because many deltas have a foreign key pointing
-    # to the WfModule, so we'd be left with a chicken-and-egg problem.
+    # to the Step, so we'd be left with a chicken-and-egg problem.
     last_relevant_delta_id = models.IntegerField(default=0, null=False)
 
     params = JSONField(default=dict)
@@ -204,11 +204,11 @@ class WfModule(models.Model):
 
     def __str__(self):
         # Don't use DB queries here.
-        return "wf_module[%d] at position %d" % (self.id, self.order)
+        return "step[%d] at position %d" % (self.id, self.order)
 
     @property
     def workflow(self):
-        return Workflow.objects.get(tabs__wf_modules__id=self.id)
+        return Workflow.objects.get(tabs__steps__id=self.id)
 
     @property
     def workflow_id(self):
@@ -230,11 +230,11 @@ class WfModule(models.Model):
     @classmethod
     def live_in_workflow(cls, workflow: Union[int, Workflow]) -> models.QuerySet:
         """
-        QuerySet of not-deleted WfModules in `workflow`.
+        QuerySet of not-deleted Steps in `workflow`.
 
         You may specify `workflow` by its `pk` or as an object.
 
-        Deleted WfModules and WfModules in deleted Tabs will omitted.
+        Deleted Steps and Steps in deleted Tabs will omitted.
         """
         if isinstance(workflow, int):
             workflow_id = workflow
@@ -262,7 +262,7 @@ class WfModule(models.Model):
             return crr.status
 
     # ---- Authorization ----
-    # User can access wf_module if they can access workflow
+    # User can access step if they can access workflow
     def request_authorized_read(self, request):
         return self.workflow.request_authorized_read(request)
 
@@ -290,7 +290,7 @@ class WfModule(models.Model):
         to_workflow = to_tab.workflow
 
         # Slug must be unique across the entire workflow; therefore, the
-        # duplicate WfModule must be on a different workflow. (If we need
+        # duplicate Step must be on a different workflow. (If we need
         # to duplicate within the same workflow, we'll need to change the
         # slug -- different method, please.)
         assert to_tab.workflow_id != self.workflow_id
@@ -324,7 +324,7 @@ class WfModule(models.Model):
 
     def _duplicate_with_slug_and_delta_id(self, to_tab, slug, last_relevant_delta_id):
         # Initialize but don't save
-        new_step = WfModule(
+        new_step = Step(
             tab=to_tab,
             slug=slug,
             module_id_name=self.module_id_name,
@@ -351,7 +351,7 @@ class WfModule(models.Model):
         #
         # We cannot copy the cached result if the destination Tab has a
         # different name than this one: tab_name is passed to render(), so even
-        # an exactly-duplicated WfModule can have a different output.
+        # an exactly-duplicated Step can have a different output.
         cached_result = self.cached_render_result
         if cached_result is not None and self.tab.name == to_tab.name:
             # assuming file-copy succeeds, copy cached results.
@@ -437,7 +437,7 @@ class WfModule(models.Model):
     @property
     def cached_render_result(self) -> CachedRenderResult:
         """
-        Build a CachedRenderResult with this WfModule's rendered output.
+        Build a CachedRenderResult with this Step's rendered output.
 
         Return `None` if there is a cached result but it is not fresh.
 
@@ -446,10 +446,10 @@ class WfModule(models.Model):
 
             # Lock the workflow, making sure we don't overwrite data
             with workflow.cooperative_lock():
-                wf_module.refresh_from_db()
+                step.refresh_from_db()
                 # Read from disk
                 with cjwstate.rendercache.io.open_cached_render_result(
-                    wf_module.cached_render_result
+                    step.cached_render_result
                 ) as result:
                     ...
         """
@@ -460,7 +460,7 @@ class WfModule(models.Model):
 
     def get_stale_cached_render_result(self):
         """
-        Build a CachedRenderResult with this WfModule's stale rendered output.
+        Build a CachedRenderResult with this Step's stale rendered output.
 
         Return `None` if there is a cached result but it is fresh.
 
@@ -469,10 +469,10 @@ class WfModule(models.Model):
 
             # Lock the workflow, making sure we don't overwrite data
             with workflow.cooperative_lock():
-                wf_module.refresh_from_db()
+                step.refresh_from_db()
                 # Read from disk
                 with cjwstate.rendercache.io.open_cached_render_result(
-                    wf_module.get_stale_cached_render_result()
+                    step.get_stale_cached_render_result()
                 ) as result:
                     ...
         """
@@ -483,20 +483,20 @@ class WfModule(models.Model):
 
     def _build_cached_render_result_fresh_or_not(self) -> Optional[CachedRenderResult]:
         """
-        Build a CachedRenderResult with this WfModule's rendered output.
+        Build a CachedRenderResult with this Step's rendered output.
 
         If the output is stale, return it anyway. (The return value's .delta_id
-        will not match this WfModule's .delta_id.)
+        will not match this Step's .delta_id.)
 
         This does not read the dataframe from disk. If you want a "snapshot in
         time" of the `render()` output, you need a lock, like this:
 
             # Lock the workflow, making sure we don't overwrite data
             with workflow.cooperative_lock():
-                wf_module.refresh_from_db()
+                step.refresh_from_db()
                 # Read from disk
                 with cjwstate.rendercache.io.open_cached_render_result(
-                    wf_module.get_stale_cached_render_result()
+                    step.get_stale_cached_render_result()
                 ) as result:
         """
         if self.cached_render_result_delta_id is None:
@@ -517,7 +517,7 @@ class WfModule(models.Model):
 
         return CachedRenderResult(
             workflow_id=self.workflow_id,
-            wf_module_id=self.id,
+            step_id=self.id,
             delta_id=delta_id,
             status=status,
             errors=errors,

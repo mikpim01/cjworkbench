@@ -24,7 +24,7 @@ function isFieldEditable ({ type, idName }) {
   return true
 }
 
-export default function ParamsFormFooter ({ wfModuleId, isWfModuleBusy, isReadOnly, fields, isEditing }) {
+export default function ParamsFormFooter ({ wfModuleId, isStepBusy, isReadOnly, fields, isEditing }) {
   const field = fields.find(isFieldVersionSelect)
 
   if (field) {
@@ -32,7 +32,7 @@ export default function ParamsFormFooter ({ wfModuleId, isWfModuleBusy, isReadOn
     return (
       <Component
         wfModuleId={wfModuleId}
-        isWfModuleBusy={isWfModuleBusy}
+        isStepBusy={isStepBusy}
         isReadOnly={isReadOnly}
         name={field.idName}
         label={field.name}
@@ -47,7 +47,7 @@ export default function ParamsFormFooter ({ wfModuleId, isWfModuleBusy, isReadOn
 }
 ParamsFormFooter.propTypes = {
   wfModuleId: PropTypes.number.isRequired,
-  isWfModuleBusy: PropTypes.bool.isRequired,
+  isStepBusy: PropTypes.bool.isRequired,
   isReadOnly: PropTypes.bool.isRequired,
   fields: PropTypes.arrayOf(PropTypes.shape({
     type: PropTypes.string.isRequired,

@@ -41,9 +41,9 @@ export class OutputPane extends React.Component {
   }
 
   /**
-   * Return the WfModule we want to render for the user.
+   * Return the Step we want to render for the user.
    *
-   * This will _never_ be an "error"-status WfModule. If there's an error, we
+   * This will _never_ be an "error"-status Step. If there's an error, we
    * want the user to see the input. (This component will also render a notice
    * saying it's showing the input.)
    */
@@ -57,7 +57,7 @@ export class OutputPane extends React.Component {
     } else if (wfModule && wfModule.status !== 'error') {
       return wfModule
     } else {
-      // Either there's no selected WfModule, or the selected WfModule has
+      // Either there's no selected Step, or the selected Step has
       // status === 'error' and it's the first in the tab. Either way, we want
       // to render a "placeholder" table.
       return null
@@ -158,18 +158,18 @@ function mapStateToProps (state) {
   const { workflow, wfModules, tabs, modules } = state
   const tabSlug = workflow.tab_slugs[workflow.selected_tab_position]
   const tab = tabs[tabSlug]
-  const wfModuleArray = tab.wf_module_ids.map(id => wfModules[String(id)])
+  const wfModuleArray = tab.step_ids.map(id => wfModules[String(id)])
 
-  const wfModuleIndex = tab.selected_wf_module_position
+  const wfModuleIndex = tab.selected_step_position
   let wfModule = wfModuleArray[wfModuleIndex] || null
   let wfModuleBeforeError
 
   const status = wfModule ? wfModuleStatus(wfModule) : 'busy'
 
-  if (wfModule === null && tab.wf_module_ids[wfModuleIndex]) {
+  if (wfModule === null && tab.step_ids[wfModuleIndex]) {
     // We're pointing at a "placeholder" module: its id isn't in wfModules.
     // HACK: for now, we want OutputPane to render something different (it needs
-    // to give TableSwitcher a "busy"-status WfModule).
+    // to give TableSwitcher a "busy"-status Step).
     wfModule = {
       id: -1,
       module_id_name: '',
@@ -182,7 +182,7 @@ function mapStateToProps (state) {
 
   // If we're pointing at a module that output an error, we'll want to display
   // its _input_ (the previous module's output) to help the user fix things.
-  if (status === 'error' && tab.selected_wf_module_position > 0) {
+  if (status === 'error' && tab.selected_step_position > 0) {
     const lastGood = wfModuleArray[wfModuleIndex - 1]
     wfModuleBeforeError = {
       id: lastGood.id,

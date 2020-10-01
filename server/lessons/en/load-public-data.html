@@ -18,13 +18,13 @@
       data-test="return workflow.tabs[0].wfModuleSlugs[0] === 'loadurl'"
       >Add the data source ‘Load from URL’.</li>
     <li
-      data-highlight='[{"type":"WfModule","moduleIdName":"loadurl"}]'
+      data-highlight='[{"type":"Step","moduleIdName":"loadurl"}]'
       data-test="const wfModule = workflow.tabs[0].wfModules[0]; return wfModule && wfModule.params.url === '{{LESSON_FILES_URL}}/affordable_housing_1.csv' && wfModule.selectedVersion"
       >Paste the URL of the dataset in the field. Click<kbd>Update</kbd>to load the data.
       <div class="copy-txt">{{LESSON_FILES_URL}}/affordable_housing_1.csv</div>
     </li>
     <li
-      data-highlight='[{"type":"WfModuleContextButton","moduleIdName":"loadurl","button":"notes"},{"type":"EditableNotes"}]'
+      data-highlight='[{"type":"StepContextButton","moduleIdName":"loadurl","button":"notes"},{"type":"EditableNotes"}]'
       data-test="return !!workflow.tabs[0].wfModules[0].note"
       >Add a note
       <span>
@@ -34,7 +34,7 @@
       <div class="copy-txt">Data from datasf.org</div>
     </li>
     <li
-      data-highlight='[{"type":"WfModuleContextButton","moduleIdName":"loadurl","button":"collapse"}]'
+      data-highlight='[{"type":"StepContextButton","moduleIdName":"loadurl","button":"collapse"}]'
       data-test="return workflow.tabs[0].wfModules[0].isCollapsed"
       >Collapse
       <span>
@@ -53,12 +53,12 @@
       data-test="return workflow.tabs[0].wfModuleSlugs[workflow.tabs[0].wfModules.length - 1] === 'columnchart'"
       >Add the step ‘Column Chart’ using the search</li>
     <li
-      data-highlight='[{"type":"WfModule","moduleIdName":"columnchart"}]'
+      data-highlight='[{"type":"Step","moduleIdName":"columnchart"}]'
       data-test="const wfModule = workflow.tabs[0].wfModules[workflow.tabs[0].wfModules.length - 1]; const p = wfModule.params; if (p.x_column !== 'city_neighborhood') return false; return p.y_columns.length === 1 && p.y_columns[0].column === 'affordable_units'"
       >
       Select <kbd>city_neighborhood</kbd> for the X axis and <kbd>affordable_units</kbd> for the Y axis.</li>
     <li
-      data-highlight='[{"type":"WfModule","moduleIdName":"columnchart"}]'
+      data-highlight='[{"type":"Step","moduleIdName":"columnchart"}]'
       data-test="const wfModule = workflow.tabs[0].wfModules[workflow.tabs[0].wfModules.length - 1]; const p = wfModule.params; return !!p.title && !!p.x_axis_label && !!p.y_axis_label"
       >Add a title, X-axis label and Y-axis label to the chart.</li>
   </ol>
@@ -73,12 +73,12 @@
       data-test="return workflow.tabs[0].wfModules.length > 2 && workflow.tabs[0].wfModuleSlugs[1] === 'filter'"
       >Add the step ‘Filter by condition’ between 'Load from URL' and 'Column Chart'.</li>
     <li
-      data-highlight='[{"type":"WfModule","moduleIdName":"filter"}]'
+      data-highlight='[{"type":"Step","moduleIdName":"filter"}]'
       data-test="const p = workflow.tabs[0].wfModules[1].params; if (!p.filters.filters[0] || !p.filters.filters[0].subfilters[0]) return false; const sf = p.filters.filters[0].subfilters[0]; return sf.colname === 'affordable_units' && sf.condition === 'number_is_greater_than' && sf.value === '200' && p.keep"
       >Select the column <kbd>affordable_units</kbd>, choose the condition <kbd>Greater than</kbd><br/> and enter the value <kbd>200</kbd>.</li>
     <li
-      data-highlight='[{"type":"WfModule","moduleIdName":"columnchart"}]'
-      data-test="return state.selectedWfModule && state.selectedWfModule.moduleSlug === 'columnchart'"
+      data-highlight='[{"type":"Step","moduleIdName":"columnchart"}]'
+      data-test="return state.selectedStep && state.selectedStep.moduleSlug === 'columnchart'"
       >Click the ‘Column chart’ step back to see the updated chart.
     </li>
   </ol>

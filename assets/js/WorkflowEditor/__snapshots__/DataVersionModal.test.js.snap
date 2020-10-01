@@ -16,8 +16,8 @@ exports[`DataVersionModal matches snapshot 1`] = `
       },
     ]
   }
-  fetchWfModuleId={123}
-  fetchWfModuleName="fetch"
+  fetchStepId={123}
+  fetchStepName="fetch"
   i18n={
     Object {
       "_": [Function],

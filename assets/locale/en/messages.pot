@@ -554,53 +554,53 @@ msgid "js.WorkflowEditor.wfmodule.DeprecationNotice.learnHowToReplace"
 msgstr ""
 
 #. default-message: Type a note...
-#: assets/js/WorkflowEditor/wfmodule/WfModule.js:355
+#: assets/js/WorkflowEditor/wfmodule/Step.js:355
 msgid "js.WorkflowEditor.wfmodule.EditableNotes.placeholder"
 msgstr ""
 
 #. When clicked, this opens a menu with more actions.
 #. default-message: more
-#: assets/js/WorkflowEditor/wfmodule/WfModuleContextMenu.js:17
-msgid "js.WorkflowEditor.wfmodule.WfModuleContextMenu.more.hoverText"
+#: assets/js/WorkflowEditor/wfmodule/StepContextMenu.js:17
+msgid "js.WorkflowEditor.wfmodule.StepContextMenu.more.hoverText"
 msgstr ""
 
 #. default-message: enter Zen mode
-#: assets/js/WorkflowEditor/wfmodule/WfModule.js:240
+#: assets/js/WorkflowEditor/wfmodule/Step.js:240
 msgid "js.WorkflowEditor.wfmodule.ZenMode.enter"
 msgstr ""
 
 #. default-message: exit Zen mode
-#: assets/js/WorkflowEditor/wfmodule/WfModule.js:240
+#: assets/js/WorkflowEditor/wfmodule/Step.js:240
 msgid "js.WorkflowEditor.wfmodule.ZenMode.exit"
 msgstr ""
 
 #. default-message: Email alerts disabled
-#: assets/js/WorkflowEditor/wfmodule/WfModule.js:372
+#: assets/js/WorkflowEditor/wfmodule/Step.js:372
 msgid "js.WorkflowEditor.wfmodule.alert.disabled"
 msgstr ""
 
 #. default-message: Email alerts enabled
-#: assets/js/WorkflowEditor/wfmodule/WfModule.js:372
+#: assets/js/WorkflowEditor/wfmodule/Step.js:372
 msgid "js.WorkflowEditor.wfmodule.alert.enabled"
 msgstr ""
 
 #. default-message: Help for this module
-#: assets/js/WorkflowEditor/wfmodule/WfModule.js:384
+#: assets/js/WorkflowEditor/wfmodule/Step.js:384
 msgid "js.WorkflowEditor.wfmodule.help.hoverText"
 msgstr ""
 
 #. default-message: Edit Note
-#: assets/js/WorkflowEditor/wfmodule/WfModule.js:394
+#: assets/js/WorkflowEditor/wfmodule/Step.js:394
 msgid "js.WorkflowEditor.wfmodule.notes.edit.hoverText"
 msgstr ""
 
 #. default-message: Delete
-#: assets/js/WorkflowEditor/wfmodule/WfModuleContextMenu.js:22
+#: assets/js/WorkflowEditor/wfmodule/StepContextMenu.js:22
 msgid "js.WorkflowEditor.wfmodule.wfModuleContextMenu.delete"
 msgstr ""
 
 #. default-message: Export data
-#: assets/js/WorkflowEditor/wfmodule/WfModuleContextMenu.js:21
+#: assets/js/WorkflowEditor/wfmodule/StepContextMenu.js:21
 msgid "js.WorkflowEditor.wfmodule.wfModuleContextMenu.exportData"
 msgstr ""
 
@@ -2357,23 +2357,23 @@ msgid "py.renderer.execute.types.PromptingError.WrongColumnType.as_error_message
 msgstr ""
 
 #. default-message: Something unexpected happened. We have been notified and are working to fix it. If this persists, contact us. Error code: {message}
-#: renderer/execute/wf_module.py:141
-msgid "py.renderer.execute.wf_module.user_visible_bug_during_render"
+#: renderer/execute/step.py:141
+msgid "py.renderer.execute.step.user_visible_bug_during_render"
 msgstr ""
 
 #. default-message: Please delete this step: an administrator uninstalled its code.
-#: renderer/execute/wf_module.py:372
-msgid "py.renderer.execute.wf_module.noModule"
+#: renderer/execute/step.py:372
+msgid "py.renderer.execute.step.noModule"
 msgstr ""
 
 #. default-message: The chosen tab depends on this one. Please choose another tab.
-#: renderer/execute/wf_module.py:399
-msgid "py.renderer.execute.wf_module.TabCycleError"
+#: renderer/execute/step.py:399
+msgid "py.renderer.execute.step.TabCycleError"
 msgstr ""
 
 #. default-message: The chosen tab has no output. Please select another one.
-#: renderer/execute/wf_module.py:410
-msgid "py.renderer.execute.wf_module.TabOutputUnreachableError"
+#: renderer/execute/step.py:410
+msgid "py.renderer.execute.step.TabOutputUnreachableError"
 msgstr ""
 
 #. default-message: 403 Forbidden

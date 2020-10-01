@@ -123,16 +123,16 @@ def _init_workflow_for_lesson(workflow, lesson):
             position=position,
             slug=f"tab-{position + 1}",
             name=tab_dict["name"],
-            selected_wf_module_position=len(tab_dict["wfModules"]) - 1,
+            selected_step_position=len(tab_dict["wfModules"]) - 1,
         )
 
         for order, step in enumerate(tab_dict["wfModules"]):
-            _add_wf_module_to_tab(step, order, tab, workflow.last_delta_id, lesson)
+            _add_step_to_tab(step, order, tab, workflow.last_delta_id, lesson)
 
 
-def _add_wf_module_to_tab(step_dict, order, tab, delta_id, lesson):
+def _add_step_to_tab(step_dict, order, tab, delta_id, lesson):
     """
-    Deserialize a WfModule from lesson initial_workflow.
+    Deserialize a Step from lesson initial_workflow.
 
     Raise `KeyError` if a module ID is invalid.
     """
@@ -170,7 +170,7 @@ def _add_wf_module_to_tab(step_dict, order, tab, delta_id, lesson):
     # TODO testme
     module_spec.get_param_schema().validate(params)  # raises ValueError
 
-    return tab.wf_modules.create(
+    return tab.steps.create(
         order=order,
         slug=slug,
         module_id_name=id_name,
@@ -187,7 +187,7 @@ def _queue_workflow_updates(workflow: Workflow) -> None:
     have_a_fetch_module = False
 
     for tab in workflow.tabs.all():
-        for step in tab.wf_modules.all():
+        for step in tab.steps.all():
             have_a_module = True
             # If this module fetches, do the fetch now (so e.g. Loadurl loads
             # immediately)

@@ -212,7 +212,7 @@ describe('ModuleSearch Popup', () => {
       const store = mockStore({
         tabs: {
           'tab-1': {
-            wf_module_ids: [1, 2]
+            step_ids: [1, 2]
           }
         },
         wfModules: {
@@ -250,7 +250,7 @@ describe('ModuleSearch Popup', () => {
           selected_tab_position: 0
         },
         tabs: {
-          'tab-1': { wf_module_ids: [] }
+          'tab-1': { step_ids: [] }
         },
         modules: {
           a: { id_name: 'a', name: 'AAA', category: 'Analyze', uses_data: true, description: 'A A', icon: 'a' },

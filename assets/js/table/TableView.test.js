@@ -40,7 +40,7 @@ describe('TableView', () => {
       store = mockStore({
         modules: {},
         workflow: {
-          wf_modules: [99, 100, 101]
+          steps: [99, 100, 101]
         }
       })
     }
@@ -86,7 +86,7 @@ describe('TableView', () => {
         selected_tab_position: 0
       },
       tabs: {
-        'tab-1': { wf_module_ids: [2, 3], selected_wf_module_position: 0 }
+        'tab-1': { step_ids: [2, 3], selected_step_position: 0 }
       },
       wfModules: {
         2: { tab_slug: 'tab-1' },
@@ -120,7 +120,7 @@ describe('TableView', () => {
         selected_tab_position: 0
       },
       tabs: {
-        'tab-1': { wf_module_ids: [2, 3], selected_wf_module_position: 0 }
+        'tab-1': { step_ids: [2, 3], selected_step_position: 0 }
       },
       wfModules: {
         2: { tab_slug: 'tab-1' },

@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`WfModule, not read-only mode matches snapshot 1`] = `
+exports[`Step, not read-only mode matches snapshot 1`] = `
 <div
   className="wf-module status-ok selected"
   data-module-name="Load from URL"
@@ -43,7 +43,7 @@ exports[`WfModule, not read-only mode matches snapshot 1`] = `
         <div
           className="controls"
         >
-          <WfModuleCollapseButton
+          <StepCollapseButton
             isCollapsed={false}
             isLessonHighlight={false}
             onCollapse={[Function]}
@@ -162,10 +162,10 @@ exports[`WfModule, not read-only mode matches snapshot 1`] = `
             }
             files={Array []}
             inputDeltaId={null}
-            inputWfModuleId={123}
+            inputStepId={123}
             isOwner={true}
             isReadOnly={false}
-            isWfModuleBusy={false}
+            isStepBusy={false}
             isZenMode={false}
             onChange={[Function]}
             onSubmit={[Function]}

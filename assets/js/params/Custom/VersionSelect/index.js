@@ -12,14 +12,14 @@ import UpdateFrequencySelect from './UpdateFrequencySelect'
 export default class VersionSelect extends React.PureComponent {
   static propTypes = {
     wfModuleId: PropTypes.number.isRequired,
-    isWfModuleBusy: PropTypes.bool.isRequired,
+    isStepBusy: PropTypes.bool.isRequired,
     isReadOnly: PropTypes.bool.isRequired,
     name: PropTypes.string.isRequired, // e.g., "version_select"
     label: PropTypes.string.isRequired // e.g., "Update"
   }
 
   renderMaybeButton () {
-    const { isReadOnly, name, label, isWfModuleBusy } = this.props
+    const { isReadOnly, name, label, isStepBusy } = this.props
 
     if (isReadOnly) return null
 
@@ -27,9 +27,9 @@ export default class VersionSelect extends React.PureComponent {
       <button
         name={name}
         type='submit'
-        disabled={isWfModuleBusy}
+        disabled={isStepBusy}
       >
-        {isWfModuleBusy ? <i className='spinner' /> : null}
+        {isStepBusy ? <i className='spinner' /> : null}
         {label}
       </button>
     )

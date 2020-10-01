@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-export default class WfModuleHeader extends React.Component {
+export default class StepHeader extends React.Component {
   constructor (props) {
     super(props)
     this.setModuleRef = this.setModuleRef.bind(this)
@@ -34,7 +34,7 @@ export default class WfModuleHeader extends React.Component {
   }
 }
 
-WfModuleHeader.propTypes = {
+StepHeader.propTypes = {
   isSelected: PropTypes.bool,
   moduleIcon: PropTypes.string,
   moduleName: PropTypes.string

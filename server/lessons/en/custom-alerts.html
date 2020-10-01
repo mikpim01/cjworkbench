@@ -20,13 +20,13 @@
       >Add the data source 'Load from URL'.
     </li>
     <li
-      data-highlight='[{"type":"WfModule","moduleIdName":"loadurl"}]'
+      data-highlight='[{"type":"Step","moduleIdName":"loadurl"}]'
       data-test="const wfModule = workflow.tabs[0].wfModules[0]; return wfModule.params.url === 'https://data.cityofnewyork.us/resource/7x9x-zpz6.json?$order=cmplnt_fr_dt%20DESC' && wfModule.selectedVersion"
     >Paste in the following URL and click <kbd>Update</kbd> to load the data.
       <div class="copy-txt">https://data.cityofnewyork.us/resource/7x9x-zpz6.json?$order=cmplnt_fr_dt%20DESC</div>
     </li>
     <li
-      data-highlight='[{"type":"WfModule","moduleIdName":"loadurl"}]'
+      data-highlight='[{"type":"Step","moduleIdName":"loadurl"}]'
       data-test="
         const wfModule = workflow.tabs[0].wfModules[0]
         return wfModule.updateInterval === 18000

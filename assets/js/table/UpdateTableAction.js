@@ -1,4 +1,4 @@
-import { addModuleAction, setWfModuleParamsAction, setSelectedWfModuleAction } from '../workflow-reducer'
+import { addModuleAction, setStepParamsAction, setSelectedStepAction } from '../workflow-reducer'
 
 /**
  * Module param-building functions per id_name.
@@ -34,31 +34,31 @@ export const moduleParamsBuilders = {
 }
 
 /**
- * Return { id, params, isNext } of _this_ WfModule or the one _after_ it, matching moduleIdName.
+ * Return { id, params, isNext } of _this_ Step or the one _after_ it, matching moduleIdName.
  *
- * Return `null` if this or the next WfModule does not match moduleIdName.
+ * Return `null` if this or the next Step does not match moduleIdName.
  */
-function findWfModuleWithIds (state, focusWfModuleId, moduleIdName) {
+function findStepWithIds (state, focusStepId, moduleIdName) {
   const { tabs, wfModules, modules } = state
 
   if (!(moduleIdName in modules)) {
     throw new Error(`Cannot find module '${moduleIdName}'`)
   }
 
-  const wfModule = wfModules[String(focusWfModuleId)]
+  const wfModule = wfModules[String(focusStepId)]
   const tabSlug = wfModule.tab_slug
   const tab = tabs[tabSlug]
 
   // validIdsOrNulls: [ 2, null, null, 65 ] means indices 0 and 3 are for
   // desired module (and have wfModuleIds 2 and 64), 1 and 2 aren't for
   // desired module
-  const validIdsOrNulls = tab.wf_module_ids
+  const validIdsOrNulls = tab.step_ids
     .map(id => wfModules[String(id)].module === moduleIdName ? id : null)
 
-  const focusIndex = tab.wf_module_ids.indexOf(focusWfModuleId)
+  const focusIndex = tab.step_ids.indexOf(focusStepId)
   if (focusIndex === -1) return null
 
-  // Are we already focused on a valid WfModule?
+  // Are we already focused on a valid Step?
   const atFocusIndex = validIdsOrNulls[focusIndex]
   if (atFocusIndex !== null) {
     const wfModule = wfModules[String(atFocusIndex)]
@@ -88,7 +88,7 @@ function findWfModuleWithIds (state, focusWfModuleId, moduleIdName) {
 /**
  * Adds or edits a module, given `wfModuleId` as the selected table.
  *
- * This is a reducer action that delegates to `addModuleAction`, `setSelectedWfModuleAction` and `
+ * This is a reducer action that delegates to `addModuleAction`, `setSelectedStepAction` and `
  */
 export function updateTableAction (wfModuleId, idName, forceNewModule, params) {
   return (dispatch, getState) => {
@@ -99,22 +99,22 @@ export function updateTableAction (wfModuleId, idName, forceNewModule, params) {
       return
     }
 
-    const existingWfModule = forceNewModule ? null : findWfModuleWithIds(state, wfModuleId, idName)
+    const existingStep = forceNewModule ? null : findStepWithIds(state, wfModuleId, idName)
     const newParams = moduleParamsBuilders[idName](
-      existingWfModule ? existingWfModule.params : null,
+      existingStep ? existingStep.params : null,
       params,
-      existingWfModule ? existingWfModule.isNext : false
+      existingStep ? existingStep.isNext : false
     )
 
-    if (existingWfModule && !forceNewModule) {
-      if (existingWfModule.id !== wfModuleId) {
-        dispatch(setSelectedWfModuleAction(existingWfModule.id))
+    if (existingStep && !forceNewModule) {
+      if (existingStep.id !== wfModuleId) {
+        dispatch(setSelectedStepAction(existingStep.id))
       }
       if (newParams) {
-        dispatch(setWfModuleParamsAction(existingWfModule.id, newParams))
+        dispatch(setStepParamsAction(existingStep.id, newParams))
       }
     } else {
-      dispatch(addModuleAction(idName, { afterWfModuleId: wfModuleId }, newParams))
+      dispatch(addModuleAction(idName, { afterStepId: wfModuleId }, newParams))
     }
   }
 }

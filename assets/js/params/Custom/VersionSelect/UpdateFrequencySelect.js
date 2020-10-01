@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import UpdateFrequencySelectModal from './UpdateFrequencySelectModal'
 import { timeDifference } from '../../../utils'
-import { trySetWfModuleAutofetchAction, setWfModuleNotificationsAction } from '../../../workflow-reducer'
+import { trySetStepAutofetchAction, setStepNotificationsAction } from '../../../workflow-reducer'
 import { connect } from 'react-redux'
 import { Trans, t } from '@lingui/macro'
 import { withI18n } from '@lingui/react'
@@ -119,8 +119,8 @@ const mapStateToProps = (state, ownProps) => {
 }
 
 const mapDispatchToProps = {
-  trySetAutofetch: trySetWfModuleAutofetchAction,
-  setEmailUpdates: setWfModuleNotificationsAction
+  trySetAutofetch: trySetStepAutofetchAction,
+  setEmailUpdates: setStepNotificationsAction
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(UpdateFrequencySelect)

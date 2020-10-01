@@ -1,12 +1,12 @@
 /* globals describe, it, expect */
 import React from 'react'
-import WfModuleHeader from './WfModuleHeader'
+import StepHeader from './StepHeader'
 import { mount } from 'enzyme'
 
-describe('WfModuleHeader', () => {
+describe('StepHeader', () => {
   it('Mounts selected', () => {
     const wrapper = mount(
-      <WfModuleHeader
+      <StepHeader
         status='busy'
         isSelected
         moduleName='Some module name'
@@ -20,7 +20,7 @@ describe('WfModuleHeader', () => {
 
   it('Mounts unselected', () => {
     const wrapper = mount(
-      <WfModuleHeader
+      <StepHeader
         status='busy'
         isSelected={false}
         moduleName='Some module name'

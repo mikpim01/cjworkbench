@@ -53,8 +53,8 @@ export default class Param extends React.PureComponent {
     value: PropTypes.any, // local value: `null` if server hasn't been contacted or if actual value is `null`
     wfModuleId: PropTypes.number, // `null` if the server hasn't been contacted; otherwise, ID
     wfModuleOutputErrors: PropTypes.arrayOf(PropTypes.shape({ message: PropTypes.string.isRequired, quickFixes: PropTypes.arrayOf(PropTypes.shape(QuickFixPropTypes)).isRequired }).isRequired).isRequired, // may be empty
-    isWfModuleBusy: PropTypes.bool.isRequired,
-    inputWfModuleId: PropTypes.number, // or `null`
+    isStepBusy: PropTypes.bool.isRequired,
+    inputStepId: PropTypes.number, // or `null`
     inputDeltaId: PropTypes.number, // or `null` ... TODO nix by making 0 fields depend on it
     inputColumns: PropTypes.arrayOf(PropTypes.shape({
       name: PropTypes.string.isRequired,

@@ -66,7 +66,7 @@ class TestTabs(WorkbenchBase):
 
         self.add_data_step("Paste data")
         b.fill_in("csv", "foo,bar\n1,2", wait=True)
-        self.submit_wf_module()
+        self.submit_step()
 
         # Switch to Tab 2
         b.click_button("Create tab")
@@ -76,7 +76,7 @@ class TestTabs(WorkbenchBase):
         # Load data from tab 1
         self.add_data_step("Start from tab")
         self.select_tab_param("Start from tab", "tab", "Tab 1")
-        self.submit_wf_module()
+        self.submit_step()
         # Wait for data to load from tab 1
         b.assert_element(".data-grid-column-header", text="bar", wait=True)
 
@@ -85,7 +85,7 @@ class TestTabs(WorkbenchBase):
         # Tab2's output changed, too.
         self._select_tab("Tab 1")
         b.fill_in("csv", "bar,baz\n1,2", wait=True)
-        self.submit_wf_module()
+        self.submit_step()
         self._select_tab("Tab 2")
         # Wait for tab1's data to go away (in case there's a race somewhere)
         b.assert_no_element(".data-grid-column-header", text="foo", wait=True)
@@ -107,13 +107,13 @@ class TestTabs(WorkbenchBase):
         # make Tab 1 depend on Tab 2
         self.add_data_step("Start from tab")
         self.select_tab_param("Start from tab", "tab", "Tab 2")
-        self.submit_wf_module()
+        self.submit_step()
 
         # Now make Tab 2 depend on Tab 1
         self._select_tab("Tab 2")
         self.add_data_step("Start from tab")
         self.select_tab_param("Start from tab", "tab", "Tab 1")
-        self.submit_wf_module(wait=True)  # wait for previous render to end
+        self.submit_step(wait=True)  # wait for previous render to end
 
         b.assert_element(
             ".wf-module-error-msg", text="The chosen tab depends on this one", wait=True
@@ -139,7 +139,7 @@ class TestTabs(WorkbenchBase):
         # make Tab 1 depend on Tab 2
         self.add_data_step("Start from tab")
         self.select_tab_param("Start from tab", "tab", "Tab 2")
-        self.submit_wf_module()
+        self.submit_step()
 
         b.assert_element(
             ".wf-module-error-msg", text="The chosen tab has no output. ", wait=True
@@ -153,7 +153,7 @@ class TestTabs(WorkbenchBase):
         self.import_module("pastecsv")
         self.add_data_step("Paste data")
         b.fill_in("csv", "foo,bar\n1,2", wait=True)
-        self.submit_wf_module()
+        self.submit_step()
 
         # duplicate tab
         b.click_whatever(".tabs>ul>li.selected button.toggle")

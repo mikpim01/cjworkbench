@@ -1,7 +1,7 @@
 /* globals describe, it, expect, jest, beforeEach, afterEach */
 import React from 'react'
 import { act } from 'react-dom/test-utils'
-import ConnectedWfModule, { WfModule } from './WfModule'
+import ConnectedStep, { Step } from './Step'
 import DataVersionModal from '../DataVersionModal'
 import { mockStore } from '../../test-utils'
 import { shallowWithI18n, mountWithI18n } from '../../i18n/test-utils'
@@ -16,7 +16,7 @@ import StatusLine from './StatusLine'
 jest.mock('../../utils')
 jest.mock('../../lessons/lessonSelector', () => jest.fn()) // same mock in every test :( ... we'll live
 
-describe('WfModule, not read-only mode', () => {
+describe('Step, not read-only mode', () => {
   let mockApi
 
   beforeEach(() => {
@@ -68,7 +68,7 @@ describe('WfModule, not read-only mode', () => {
 
   const wrapper = (extraProps = {}) => {
     return shallowWithI18n(
-      <WfModule
+      <Step
         isOwner
         isReadOnly={false}
         isAnonymous={false}
@@ -78,7 +78,7 @@ describe('WfModule, not read-only mode', () => {
         workflowId={99}
         wfModule={wfModule}
         removeModule={jest.fn()}
-        inputWfModule={{ id: 123, last_relevant_delta_id: 707 }}
+        inputStep={{ id: 123, last_relevant_delta_id: 707 }}
         isSelected
         isAfterSelected={false}
         api={mockApi}
@@ -92,10 +92,10 @@ describe('WfModule, not read-only mode', () => {
         isLessonHighlightNotes={false}
         fetchModuleExists={false}
         clearNotifications={jest.fn()}
-        setSelectedWfModule={jest.fn()}
-        setWfModuleCollapsed={jest.fn()}
-        setWfModuleParams={jest.fn()}
-        setWfModuleNotes={jest.fn()}
+        setSelectedStep={jest.fn()}
+        setStepCollapsed={jest.fn()}
+        setStepParams={jest.fn()}
+        setStepNotes={jest.fn()}
         maybeRequestFetch={jest.fn()}
         setZenMode={jest.fn()}
         applyQuickFix={jest.fn()}
@@ -111,7 +111,7 @@ describe('WfModule, not read-only mode', () => {
   it('is has .status-busy', () => {
     const w = wrapper({ wfModule: { ...wfModule, output_status: 'busy' } })
     expect(w.hasClass('status-busy')).toBe(true)
-    expect(w.find('ParamsForm').prop('isWfModuleBusy')).toBe(true)
+    expect(w.find('ParamsForm').prop('isStepBusy')).toBe(true)
     expect(w.find(StatusLine).prop('status')).toEqual('busy')
 
     w.setProps({ wfModule: { ...wfModule, output_status: 'ok' } })
@@ -119,7 +119,7 @@ describe('WfModule, not read-only mode', () => {
     expect(w.hasClass('status-busy')).toBe(false)
     expect(w.hasClass('status-ok')).toBe(true)
 
-    expect(w.find('ParamsForm').prop('isWfModuleBusy')).toBe(false)
+    expect(w.find('ParamsForm').prop('isStepBusy')).toBe(false)
     expect(w.find(StatusLine).prop('status')).toEqual('ok')
     expect(w.hasClass('status-ok')).toBe(true)
     expect(w.hasClass('status-busy')).toBe(false)
@@ -199,7 +199,7 @@ describe('WfModule, not read-only mode', () => {
     w.find('EditableNotes').simulate('change', { target: { value: 'new note' } })
     w.find('EditableNotes').simulate('blur')
 
-    expect(w.instance().props.setWfModuleNotes).toHaveBeenCalledWith(wfModule.id, 'new note')
+    expect(w.instance().props.setStepNotes).toHaveBeenCalledWith(wfModule.id, 'new note')
   })
 
   it('deletes a note', () => {
@@ -210,7 +210,7 @@ describe('WfModule, not read-only mode', () => {
     w.find('EditableNotes').simulate('change', { target: { value: '' } })
     w.find('EditableNotes').simulate('blur')
 
-    expect(w.instance().props.setWfModuleNotes).toHaveBeenCalledWith(wfModule.id, '')
+    expect(w.instance().props.setStepNotes).toHaveBeenCalledWith(wfModule.id, '')
   })
 
   it('does not show old value during edit when editing ""', () => {
@@ -238,16 +238,16 @@ describe('WfModule, not read-only mode', () => {
       ...module,
       param_fields: [pspec('a', 'string'), pspec('b', 'string')]
     }
-    // Make setWfModuleParams() return a thennable -- a fake promise.
-    // It'll set onSetWfModuleParamsDone, which we can call synchronously.
+    // Make setStepParams() return a thennable -- a fake promise.
+    // It'll set onSetStepParamsDone, which we can call synchronously.
     // (This is white-box testing -- we assume the .then() and the sync
     // call.)
-    let onSetWfModuleParamsDone = null
-    const setWfModuleParams = jest.fn(() => ({ then: (fn) => { onSetWfModuleParamsDone = fn } }))
+    let onSetStepParamsDone = null
+    const setStepParams = jest.fn(() => ({ then: (fn) => { onSetStepParamsDone = fn } }))
     const w = wrapper({
       wfModule,
       module: aModule,
-      setWfModuleParams
+      setStepParams
     })
 
     w.find('ParamsForm').prop('onChange')({ a: 'C' })
@@ -255,18 +255,18 @@ describe('WfModule, not read-only mode', () => {
     expect(w.find('ParamsForm').prop('edits')).toEqual({ a: 'C' })
 
     // not submitted to the server
-    expect(setWfModuleParams).not.toHaveBeenCalled()
+    expect(setStepParams).not.toHaveBeenCalled()
     expect(w.prop('className')).toMatch(/\bediting\b/)
 
     w.find('ParamsForm').prop('onSubmit')()
-    expect(setWfModuleParams).toHaveBeenCalledWith(999, { a: 'C' })
+    expect(setStepParams).toHaveBeenCalledWith(999, { a: 'C' })
 
     // a bit of a white-box test: state should be cleared ... but only
-    // after a tick, so Redux can do its magic in setWfModuleParams
+    // after a tick, so Redux can do its magic in setStepParams
     expect(w.prop('className')).toMatch(/\bediting\b/)
     expect(w.state('edits')).toEqual({ a: 'C' })
     w.setProps({ wfModule: { ...wfModule, params: { a: 'C' } } })
-    act(onSetWfModuleParamsDone)
+    act(onSetStepParamsDone)
     expect(w.state('edits')).toEqual({})
     expect(w.prop('className')).not.toMatch(/\bediting\b/)
   })
@@ -287,30 +287,30 @@ describe('WfModule, not read-only mode', () => {
       files: [],
       output_errors: []
     }
-    const setWfModuleParams = jest.fn(() => ({ then: jest.fn() })) // dummy promise
+    const setStepParams = jest.fn(() => ({ then: jest.fn() })) // dummy promise
     const aModule = {
       ...module,
       param_fields: [pspec('url', 'string'), pspec('version_select', 'custom')]
     }
-    const w = wrapper({ wfModule, module: aModule, setWfModuleParams })
+    const w = wrapper({ wfModule, module: aModule, setStepParams })
 
     w.find('ParamsForm').prop('onChange')({ url: 'http://example.org' })
     w.find('ParamsForm').prop('onSubmit')()
 
-    expect(setWfModuleParams).toHaveBeenCalledWith(999, { url: 'http://example.org' })
+    expect(setStepParams).toHaveBeenCalledWith(999, { url: 'http://example.org' })
     expect(w.instance().props.maybeRequestFetch).toHaveBeenCalledWith(999)
   })
 
   it('overrides status to busy when a fetch is pending', () => {
     const w = wrapper({ wfModule: { ...wfModule, nClientRequests: 1 } })
-    expect(w.find('ParamsForm').prop('isWfModuleBusy')).toBe(true)
+    expect(w.find('ParamsForm').prop('isStepBusy')).toBe(true)
     expect(w.find(StatusLine).prop('status')).toEqual('busy')
     expect(w.prop('className')).toMatch(/\bstatus-busy\b/)
   })
 
   it('applies a quick fix', () => {
     // Scenario: user is on linechart and chose non-numeric Y axis
-    mockApi.setSelectedWfModule = jest.fn(() => Promise.resolve(null))
+    mockApi.setSelectedStep = jest.fn(() => Promise.resolve(null))
     mockApi.addModule = jest.fn(() => Promise.resolve(null))
     generateSlug.mockImplementation(prefix => prefix + 'X')
     const quickFix = {
@@ -327,8 +327,8 @@ describe('WfModule, not read-only mode', () => {
         selected_tab_position: 0
       },
       tabs: {
-        'tab-11': { slug: 'tab-11', name: 'Tab 1', wf_module_ids: [10, 20] },
-        'tab-12': { slug: 'tab-12', name: 'Tab 2', wf_module_ids: [] }
+        'tab-11': { slug: 'tab-11', name: 'Tab 1', step_ids: [10, 20] },
+        'tab-12': { slug: 'tab-12', name: 'Tab 2', step_ids: [] }
       },
       wfModules: {
         10: { id: 10, slug: 'step-10', tab_slug: 'tab-11' },
@@ -352,7 +352,7 @@ describe('WfModule, not read-only mode', () => {
 
     const w = mountWithI18n(
       <Provider store={store}>
-        <ConnectedWfModule
+        <ConnectedStep
           isZenMode={false}
           isZenModeAllowed={false}
           index={1}
@@ -401,7 +401,7 @@ describe('WfModule, not read-only mode', () => {
           selected_tab_position: 0
         },
         tabs: {
-          'tab-11': { slug: 'tab-11', name: 'Tab 1', wf_module_ids: [1, 2, 999] }
+          'tab-11': { slug: 'tab-11', name: 'Tab 1', step_ids: [1, 2, 999] }
         },
         wfModules: {
           999: { slug: 'step-99', module: 'loadurl', params: {}, secrets: {} }
@@ -422,7 +422,7 @@ describe('WfModule, not read-only mode', () => {
 
       wrapper = mountWithI18n(
         <Provider store={store}>
-          <ConnectedWfModule
+          <ConnectedStep
             isZenMode={false}
             isZenModeAllowed={false}
             index={1}
@@ -444,40 +444,40 @@ describe('WfModule, not read-only mode', () => {
       }
     })
 
-    it('highlights a WfModule', () => {
-      highlight([{ type: 'WfModule', index: 1, moduleIdName: 'loadurl' }])
+    it('highlights a Step', () => {
+      highlight([{ type: 'Step', index: 1, moduleIdName: 'loadurl' }])
       expect(wrapper.find('.wf-module').prop('className')).toMatch(/\blesson-highlight\b/)
     })
 
-    it('unhighlights a WfModule', () => {
+    it('unhighlights a Step', () => {
       // wrong name
-      highlight([{ type: 'WfModule', index: 1, moduleIdName: 'TestModule2' }])
+      highlight([{ type: 'Step', index: 1, moduleIdName: 'TestModule2' }])
       expect(wrapper.find('.wf-module').prop('className')).not.toMatch(/\blesson-highlight\b/)
     })
 
     it('highlights the "collapse" button', () => {
-      highlight([{ type: 'WfModuleContextButton', index: 1, moduleIdName: 'loadurl', button: 'collapse' }])
+      highlight([{ type: 'StepContextButton', index: 1, moduleIdName: 'loadurl', button: 'collapse' }])
       expect(wrapper.find('i.context-collapse-button').prop('className')).toMatch(/\blesson-highlight\b/)
     })
 
     it('unhighlights the "collapse" button', () => {
       // wrong moduleIdName
-      highlight([{ type: 'WfModuleContextButton', index: 1, moduleIdName: 'TestModule2', button: 'collapse' }])
+      highlight([{ type: 'StepContextButton', index: 1, moduleIdName: 'TestModule2', button: 'collapse' }])
       expect(wrapper.find('i.context-collapse-button').prop('className')).not.toMatch(/\blesson-highlight\b/)
 
       // wrong button
-      highlight([{ type: 'WfModuleContextButton', index: 1, moduleIdName: 'loadurl', button: 'notes' }])
+      highlight([{ type: 'StepContextButton', index: 1, moduleIdName: 'loadurl', button: 'notes' }])
       expect(wrapper.find('i.context-collapse-button').prop('className')).not.toMatch(/\blesson-highlight\b/)
     })
 
     it('highlights the notes button', () => {
-      highlight([{ type: 'WfModuleContextButton', index: 1, moduleIdName: 'loadurl', button: 'notes' }])
+      highlight([{ type: 'StepContextButton', index: 1, moduleIdName: 'loadurl', button: 'notes' }])
       expect(wrapper.find('button.edit-note').prop('className')).toMatch(/\blesson-highlight\b/)
     })
 
     it('unhighlights the notes button', () => {
       // wrong moduleName
-      highlight([{ type: 'WfModuleContextButton', index: 1, moduleName: 'TestModule2', button: 'notes' }])
+      highlight([{ type: 'StepContextButton', index: 1, moduleName: 'TestModule2', button: 'notes' }])
       expect(wrapper.find('button.edit-note').prop('className')).not.toMatch(/\blesson-highlight\b/)
     })
   })

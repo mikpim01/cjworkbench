@@ -73,7 +73,7 @@ describe('UpdateFrequencySelect', () => {
         tab_slugs: ['tab-11', 'tab-12']
       },
       tabs: {
-        'tab-11': { wf_modules: [1, 212] }
+        'tab-11': { steps: [1, 212] }
       },
       wfModules: {
         1: { id: 1, tab_slug: 'tab-11', name: 'Ignore this one' },
@@ -107,7 +107,7 @@ describe('UpdateFrequencySelect', () => {
       // can this even happen?
       const store = {
         getState: () => ({
-          workflow: { id: 123, read_only: false, is_anonymous: false, wf_modules: ['nonce_212'] },
+          workflow: { id: 123, read_only: false, is_anonymous: false, steps: ['nonce_212'] },
           wfModules: {}
         }),
         dispatch: jest.fn(),
@@ -126,7 +126,7 @@ describe('UpdateFrequencySelect', () => {
 
     it('should set autofetch (calling API method)', () => {
       const api = {
-        trySetWfModuleAutofetch: jest.fn(() => Promise.resolve({ isAutofetch: true, fetchInterval: 7200 }))
+        trySetStepAutofetch: jest.fn(() => Promise.resolve({ isAutofetch: true, fetchInterval: 7200 }))
       }
       const store = mockStore(sampleState, api)
       wrapper = mountWithI18n(
@@ -140,12 +140,12 @@ describe('UpdateFrequencySelect', () => {
       wrapper.find('a[title="change auto-update settings"]').simulate('click')
       const modal = wrapper.find('UpdateFrequencySelectModal')
       modal.prop('trySetAutofetch')(true, 7600)
-      expect(api.trySetWfModuleAutofetch).toHaveBeenCalledWith(212, true, 7600)
+      expect(api.trySetStepAutofetch).toHaveBeenCalledWith(212, true, 7600)
     })
 
     it('should dispatch setNotifications (and call the API method)', () => {
       const api = {
-        setWfModuleNotifications: jest.fn(() => Promise.resolve(null))
+        setStepNotifications: jest.fn(() => Promise.resolve(null))
       }
       const store = mockStore(sampleState, api)
       wrapper = mountWithI18n(
@@ -159,7 +159,7 @@ describe('UpdateFrequencySelect', () => {
       wrapper.find('a[title="change auto-update settings"]').simulate('click')
       const modal = wrapper.find('UpdateFrequencySelectModal')
       modal.prop('setEmailUpdates')(false)
-      expect(api.setWfModuleNotifications).toHaveBeenCalledWith(212, false)
+      expect(api.setStepNotifications).toHaveBeenCalledWith(212, false)
     })
   })
 })

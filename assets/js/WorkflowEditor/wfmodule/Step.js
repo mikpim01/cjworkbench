@@ -3,7 +3,7 @@
 import React from 'react'
 import DataVersionModal from '../DataVersionModal'
 import ErrorBoundary from '../../ErrorBoundary'
-import WfModuleContextMenu from './WfModuleContextMenu'
+import StepContextMenu from './StepContextMenu'
 import ParamsForm from '../../params/ParamsForm'
 import EditableNotes from '../../EditableNotes'
 import DeprecationNotice from './DeprecationNotice'
@@ -12,13 +12,13 @@ import {
   clearNotificationsAction,
   startCreateSecretAction,
   deleteSecretAction,
-  maybeRequestWfModuleFetchAction,
+  maybeRequestStepFetchAction,
   quickFixAction,
-  setSelectedWfModuleAction,
-  setWfModuleParamsAction,
-  setWfModuleSecretAction,
-  setWfModuleCollapsedAction,
-  setWfModuleNotesAction
+  setSelectedStepAction,
+  setStepParamsAction,
+  setStepSecretAction,
+  setStepCollapsedAction,
+  setStepNotesAction
 } from '../../workflow-reducer'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
@@ -30,9 +30,9 @@ import { t } from '@lingui/macro'
 
 const numberFormat = new Intl.NumberFormat()
 
-// ---- WfModule ----
+// ---- Step ----
 
-export class WfModule extends React.PureComponent {
+export class Step extends React.PureComponent {
   static propTypes = {
     isOwner: PropTypes.bool.isRequired, // if true, !isReadOnly and user may edit secrets
     isReadOnly: PropTypes.bool.isRequired,
@@ -63,7 +63,7 @@ export class WfModule extends React.PureComponent {
       params: PropTypes.object.isRequired,
       secrets: PropTypes.object.isRequired
     }), // null if loading
-    inputWfModule: PropTypes.shape({
+    inputStep: PropTypes.shape({
       id: PropTypes.number.isRequired,
       last_relevant_delta_id: PropTypes.number,
       cached_render_result_delta_id: PropTypes.number, // or null
@@ -74,11 +74,11 @@ export class WfModule extends React.PureComponent {
     }), // or null
     isSelected: PropTypes.bool.isRequired,
     isAfterSelected: PropTypes.bool.isRequired,
-    setWfModuleParams: PropTypes.func, // func(wfModuleId, { paramidname: newVal }) => undefined
-    setWfModuleSecret: PropTypes.func, // func(wfModuleId, param, secret) => undefined
+    setStepParams: PropTypes.func, // func(wfModuleId, { paramidname: newVal }) => undefined
+    setStepSecret: PropTypes.func, // func(wfModuleId, param, secret) => undefined
     removeModule: PropTypes.func,
     api: PropTypes.object.isRequired,
-    onDragStart: PropTypes.func, // func({ type:'WfModule',id,index }) => undefined; null if not draggable
+    onDragStart: PropTypes.func, // func({ type:'Step',id,index }) => undefined; null if not draggable
     onDragEnd: PropTypes.func, // func() => undefined
     isLessonHighlight: PropTypes.bool.isRequired,
     isLessonHighlightNotes: PropTypes.bool.isRequired,
@@ -86,11 +86,11 @@ export class WfModule extends React.PureComponent {
     fetchModuleExists: PropTypes.bool.isRequired, // there is a fetch module anywhere in the workflow
     clearNotifications: PropTypes.func.isRequired, // func() => undefined
     maybeRequestFetch: PropTypes.func.isRequired, // func(wfModuleId) => undefined
-    setSelectedWfModule: PropTypes.func.isRequired, // func(wfModuleId) => undefined
-    setWfModuleCollapsed: PropTypes.func.isRequired, // func(wfModuleId, isCollapsed, isReadOnly) => undefined
+    setSelectedStep: PropTypes.func.isRequired, // func(wfModuleId) => undefined
+    setStepCollapsed: PropTypes.func.isRequired, // func(wfModuleId, isCollapsed, isReadOnly) => undefined
     setZenMode: PropTypes.func.isRequired, // func(wfModuleId, bool) => undefined
     applyQuickFix: PropTypes.func.isRequired, // func(wfModuleId, action) => undefined
-    setWfModuleNotes: PropTypes.func.isRequired, // func(wfModuleId, notes) => undefined
+    setStepNotes: PropTypes.func.isRequired, // func(wfModuleId, notes) => undefined
     i18n: PropTypes.shape({
       // i18n object injected by LinguiJS withI18n()
       _: PropTypes.func.isRequired
@@ -125,7 +125,7 @@ export class WfModule extends React.PureComponent {
   // We become the selected module on any click
   handleMouseDown = () => {
     if (!this.props.isSelected) {
-      this.props.setSelectedWfModule(this.props.wfModule.id)
+      this.props.setSelectedStep(this.props.wfModule.id)
     }
   }
 
@@ -141,7 +141,7 @@ export class WfModule extends React.PureComponent {
 
   handleDragStart = (ev) => {
     const dragObject = {
-      type: 'WfModule',
+      type: 'Step',
       index: this.props.index,
       id: this.props.wfModule.id
     }
@@ -170,7 +170,7 @@ export class WfModule extends React.PureComponent {
   // Optimistically updates the state, and then sends the new state to the server,
   // where it's persisted across sessions and through time.
   setCollapsed (isCollapsed) {
-    this.props.setWfModuleCollapsed(this.props.wfModule.id, isCollapsed, this.props.isReadOnly)
+    this.props.setStepCollapsed(this.props.wfModule.id, isCollapsed, this.props.isReadOnly)
   }
 
   handleClickCollapse = () => {
@@ -207,7 +207,7 @@ export class WfModule extends React.PureComponent {
       if (state.editedNotes === null) {
         // we canceled
       } else {
-        props.setWfModuleNotes(props.wfModule.id, state.editedNotes)
+        props.setStepNotes(props.wfModule.id, state.editedNotes)
       }
       return { editedNotes: null }
     })
@@ -252,13 +252,13 @@ export class WfModule extends React.PureComponent {
   }
 
   submitSecret = (param, secret) => {
-    const { setWfModuleSecret, wfModule } = this.props
+    const { setStepSecret, wfModule } = this.props
     if (!wfModule) return
-    setWfModuleSecret(wfModule.id, param, secret)
+    setStepSecret(wfModule.id, param, secret)
   }
 
   handleSubmitParams = () => {
-    const { wfModule, setWfModuleParams, maybeRequestFetch } = this.props
+    const { wfModule, setStepParams, maybeRequestFetch } = this.props
 
     // We sometimes call onSubmit() _immediately_ after onChange(). onChange()
     // sets this.state.edits, and then onSubmit() should submit them. To make
@@ -266,12 +266,12 @@ export class WfModule extends React.PureComponent {
     // (this.state.edits is the pre-onChange() data.)
     this.setState(({ edits }) => {
       if (Object.keys(edits).length > 0) {
-        setWfModuleParams(wfModule.id, edits).then(() => this.clearUpToDateEdits())
+        setStepParams(wfModule.id, edits).then(() => this.clearUpToDateEdits())
       }
 
       maybeRequestFetch(wfModule.id)
 
-      // Do not clear "edits" here: at this point, setWfModuleParams() has
+      // Do not clear "edits" here: at this point, setStepParams() has
       // not updated the Redux state yet, so the edits will flicker away
       // for a fraction of a second. A simple test to prove the problem
       // with `return { edits: {} }`:
@@ -283,9 +283,9 @@ export class WfModule extends React.PureComponent {
       //
       // Expected results: refine values stay put. If we were to
       // `return { edits: {} }`, the refine values would disappear because
-      // setWfModuleParams() has not adjusted the state yet, so
+      // setStepParams() has not adjusted the state yet, so
       // `reduxState.edits.column` is `""`; we must ensure
-      // `this.state.edits.column` is `"A"` until `setWfModuleParams()`
+      // `this.state.edits.column` is `"A"` until `setStepParams()`
       // completes.
       //
       // We call `this.clearUpToDateEdits()` elsewhere to make sure the edits
@@ -338,7 +338,7 @@ export class WfModule extends React.PureComponent {
   }
 
   render () {
-    const { isReadOnly, index, wfModule, module, inputWfModule, tabs, currentTab, i18n } = this.props
+    const { isReadOnly, index, wfModule, module, inputStep, tabs, currentTab, i18n } = this.props
 
     const moduleSlug = module ? module.id_name : '_undefined'
     const moduleName = module ? module.name : '_undefined'
@@ -403,7 +403,7 @@ export class WfModule extends React.PureComponent {
     let contextMenu = null
     if (!this.props.isReadOnly) {
       contextMenu = (
-        <WfModuleContextMenu
+        <StepContextMenu
           removeModule={this.removeModule}
           id={wfModule.id}
         />
@@ -457,7 +457,7 @@ export class WfModule extends React.PureComponent {
           <div className='module-card' draggable={!isReadOnly && !!this.props.onDragStart} onDragStart={this.handleDragStart} onDragEnd={this.handleDragEnd}>
             <div className='module-card-header'>
               <div className='controls'>
-                <WfModuleCollapseButton
+                <StepCollapseButton
                   isCollapsed={wfModule.is_collapsed}
                   isLessonHighlight={this.props.isLessonHighlightCollapse}
                   onCollapse={this.handleClickCollapse}
@@ -508,10 +508,10 @@ export class WfModule extends React.PureComponent {
                     wfModuleId={this.props.wfModule ? this.props.wfModule.id : null}
                     wfModuleSlug={this.props.wfModule ? this.props.wfModule.slug : null}
                     wfModuleOutputErrors={this.props.wfModule ? this.props.wfModule.output_errors : []}
-                    isWfModuleBusy={this.wfModuleStatus === 'busy'}
-                    inputWfModuleId={inputWfModule ? inputWfModule.id : null}
-                    inputDeltaId={inputWfModule ? (inputWfModule.cached_render_result_delta_id || null) : null}
-                    inputColumns={inputWfModule ? inputWfModule.output_columns : null}
+                    isStepBusy={this.wfModuleStatus === 'busy'}
+                    inputStepId={inputStep ? inputStep.id : null}
+                    inputDeltaId={inputStep ? (inputStep.cached_render_result_delta_id || null) : null}
+                    inputColumns={inputStep ? inputStep.output_columns : null}
                     tabs={tabs}
                     currentTab={currentTab}
                     applyQuickFix={this.applyQuickFix}
@@ -532,7 +532,7 @@ export class WfModule extends React.PureComponent {
   }
 }
 
-class WfModuleCollapseButton extends React.PureComponent {
+class StepCollapseButton extends React.PureComponent {
   static propTypes = {
     isCollapsed: PropTypes.bool.isRequired,
     isLessonHighlight: PropTypes.bool.isRequired,
@@ -564,18 +564,18 @@ const getReadyAndPendingTabs = createSelector([getReadyTabs, getPendingTabs], (r
     ...readyTabs
   }
 })
-const getWfModules = ({ wfModules }) => wfModules
-const getTabs = createSelector([getWorkflow, getReadyAndPendingTabs, getWfModules], (workflow, tabs, wfModules) => {
+const getSteps = ({ wfModules }) => wfModules
+const getTabs = createSelector([getWorkflow, getReadyAndPendingTabs, getSteps], (workflow, tabs, wfModules) => {
   return workflow.tab_slugs.map(slug => {
     const tab = tabs[slug]
     let outputColumns = null
-    if (tab.wf_module_ids.length > 0) {
-      const lastIndex = tab.wf_module_ids.length - 1
+    if (tab.step_ids.length > 0) {
+      const lastIndex = tab.step_ids.length - 1
       if (lastIndex >= 0) {
-        const lastWfModuleId = tab.wf_module_ids[lastIndex]
-        const lastWfModule = wfModules[lastWfModuleId] // null if placeholder
-        if (lastWfModule && lastWfModule.last_relevant_delta_id === lastWfModule.cached_render_result_delta_id) {
-          outputColumns = lastWfModule.output_columns
+        const lastStepId = tab.step_ids[lastIndex]
+        const lastStep = wfModules[lastStepId] // null if placeholder
+        if (lastStep && lastStep.last_relevant_delta_id === lastStep.cached_render_result_delta_id) {
+          outputColumns = lastStep.output_columns
         }
       }
     }
@@ -593,10 +593,10 @@ const getCurrentTab = createSelector([getWorkflow, getReadyAndPendingTabs], (wor
 const getModules = ({ modules }) => modules
 
 /**
- * Find first WfModule index that has a `.loads_data` ModuleVersion, or `null`
+ * Find first Step index that has a `.loads_data` ModuleVersion, or `null`
  */
-const firstFetchIndex = createSelector([getCurrentTab, getWfModules, getModules], (tab, wfModules, modules) => {
-  const index = tab.wf_module_ids.findIndex(id => {
+const firstFetchIndex = createSelector([getCurrentTab, getSteps, getModules], (tab, wfModules, modules) => {
+  const index = tab.step_ids.findIndex(id => {
     const wfModule = wfModules[String(id)]
     if (!wfModule) return false // add-module not yet loaded
     const module = modules[wfModule.module]
@@ -617,9 +617,9 @@ function mapStateToProps (state, ownProps) {
     tabs: getTabs(state),
     currentTab: getCurrentTab(state).slug,
     isZenModeAllowed: module ? !!module.has_zen_mode : false,
-    isLessonHighlight: testHighlight({ type: 'WfModule', index, moduleIdName }),
-    isLessonHighlightCollapse: testHighlight({ type: 'WfModuleContextButton', button: 'collapse', index, moduleIdName }),
-    isLessonHighlightNotes: testHighlight({ type: 'WfModuleContextButton', button: 'notes', index, moduleIdName }),
+    isLessonHighlight: testHighlight({ type: 'Step', index, moduleIdName }),
+    isLessonHighlightCollapse: testHighlight({ type: 'StepContextButton', button: 'collapse', index, moduleIdName }),
+    isLessonHighlightNotes: testHighlight({ type: 'StepContextButton', button: 'notes', index, moduleIdName }),
     isOwner: state.workflow.is_owner,
     isReadOnly: state.workflow.read_only,
     isAnonymous: state.workflow.is_anonymous,
@@ -630,13 +630,13 @@ function mapStateToProps (state, ownProps) {
 
 const mapDispatchToProps = {
   clearNotifications: clearNotificationsAction,
-  setSelectedWfModule: setSelectedWfModuleAction,
-  setWfModuleCollapsed: setWfModuleCollapsedAction,
-  setWfModuleParams: setWfModuleParamsAction,
-  setWfModuleSecret: setWfModuleSecretAction,
-  maybeRequestFetch: maybeRequestWfModuleFetchAction,
+  setSelectedStep: setSelectedStepAction,
+  setStepCollapsed: setStepCollapsedAction,
+  setStepParams: setStepParamsAction,
+  setStepSecret: setStepSecretAction,
+  maybeRequestFetch: maybeRequestStepFetchAction,
   applyQuickFix: quickFixAction,
-  setWfModuleNotes: setWfModuleNotesAction,
+  setStepNotes: setStepNotesAction,
   deleteSecret: deleteSecretAction,
   startCreateSecret: startCreateSecretAction
 }
@@ -644,4 +644,4 @@ const mapDispatchToProps = {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(withI18n()(WfModule))
+)(withI18n()(Step))

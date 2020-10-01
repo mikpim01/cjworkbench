@@ -18,7 +18,7 @@ class TestQuickFix(LoggedInIntegrationTest):
         self.import_module("pastecsv")
         self.add_data_step("Paste data")
         b.fill_in("csv", csv_data, wait=True)
-        self.submit_wf_module()
+        self.submit_step()
 
         # Wait for table to load
         for expected_colname_and_type in expected_colnames_and_types:
@@ -37,9 +37,9 @@ class TestQuickFix(LoggedInIntegrationTest):
         self.import_module("convert-date")
         self.import_module("countbydate")
 
-        self.add_wf_module("Group by date")
+        self.add_step("Group by date")
         self.select_column("Group by date", "column", "A")
-        self.submit_wf_module()
+        self.submit_step()
 
         # Wait for error to occur
         b = self.browser
@@ -75,10 +75,10 @@ class TestQuickFix(LoggedInIntegrationTest):
         self.import_module("converttexttonumber")
 
         # Try to format numbers. (It won't work because the input is text.)
-        self.add_wf_module("Format numbers")
+        self.add_step("Format numbers")
         self.select_column("Format numbers", "colnames", "Num")
         b.select("format", "Currency")
-        self.submit_wf_module()
+        self.submit_step()
         # Wait for error
         b.assert_element(
             ".wf-module-error-msg",
@@ -92,7 +92,7 @@ class TestQuickFix(LoggedInIntegrationTest):
         b.assert_element(".module-name", text="Convert to number", wait=True)
         # The conversion won't work until we check an option.
         b.check("Ignore non-numeric characters")
-        self.submit_wf_module()
+        self.submit_step()
 
         # Now, the "Format numbers" module will have the correct output.
         b.click_whatever(".module-name", text="Format numbers")
@@ -109,17 +109,17 @@ class TestQuickFix(LoggedInIntegrationTest):
 
         # 'Accidentally' convert 'Num2' to Timestamp
         self.import_module("convert-date")
-        self.add_wf_module("Convert to timestamp")
+        self.add_step("Convert to timestamp")
         self.select_column("Convert to timestamp", "colnames", "Num2")
-        self.submit_wf_module()
+        self.submit_step()
 
         # Try to format numbers. (It won't work because the inputs are text and timestamp.)
         self.import_module("formatnumbers")
-        self.add_wf_module("Format numbers")
+        self.add_step("Format numbers")
         self.select_column("Format numbers", "colnames", "Num1")
         self.select_column("Format numbers", "colnames", "Num2")
         b.select("format", "Currency")
-        self.submit_wf_module()
+        self.submit_step()
 
         # Wait for errors
         b.assert_element(

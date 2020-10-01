@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Modal, ModalHeader, ModalBody, ModalFooter } from '../components/Modal'
 import memoize from 'memoize-one'
-import { setDataVersionAction, setWfModuleNotificationsAction } from '../workflow-reducer'
+import { setDataVersionAction, setStepNotificationsAction } from '../workflow-reducer'
 import { connect } from 'react-redux'
 import { createSelector } from 'reselect'
 import { Trans } from '@lingui/macro'
@@ -115,7 +115,7 @@ class NotificationsForm extends React.PureComponent {
 
 export class DataVersionModal extends React.PureComponent {
   static propTypes = {
-    fetchWfModuleId: PropTypes.number.isRequired,
+    fetchStepId: PropTypes.number.isRequired,
     fetchVersions: PropTypes.arrayOf(PropTypes.shape({
       id: PropTypes.string.isRequired,
       date: PropTypes.instanceOf(Date).isRequired,
@@ -124,7 +124,7 @@ export class DataVersionModal extends React.PureComponent {
     selectedFetchVersionId: PropTypes.string, // null for no selection
     wfModuleId: PropTypes.number.isRequired,
     isAnonymous: PropTypes.bool.isRequired,
-    notificationsEnabled: PropTypes.bool.isRequired, // whether enabled on selectedWfModule
+    notificationsEnabled: PropTypes.bool.isRequired, // whether enabled on selectedStep
     onClose: PropTypes.func.isRequired, // func() => undefined
     onChangeFetchVersionId: PropTypes.func.isRequired, // func(wfModuleId, versionId) => undefined
     onChangeNotificationsEnabled: PropTypes.func.isRequired // func(wfModuleId, isEnabled) => undefined
@@ -145,8 +145,8 @@ export class DataVersionModal extends React.PureComponent {
 
   handleSubmit = () => {
     if (this.state.selectedFetchVersionId !== this.props.selectedFetchVersionId) {
-      const { fetchWfModuleId, onChangeFetchVersionId } = this.props
-      onChangeFetchVersionId(fetchWfModuleId, this.state.selectedFetchVersionId)
+      const { fetchStepId, onChangeFetchVersionId } = this.props
+      onChangeFetchVersionId(fetchStepId, this.state.selectedFetchVersionId)
     }
 
     this.props.onClose()
@@ -207,15 +207,15 @@ const getTabs = ({ tabs }) => tabs
 const getSelectedTab = createSelector([getWorkflow, getTabs], (workflow, tabs) => {
   return tabs[workflow.tab_slugs[workflow.selected_tab_position]]
 })
-const getWfModules = ({ wfModules }) => wfModules
-const getSelectedTabWfModules = createSelector([getSelectedTab, getWfModules], (tab, wfModules) => {
-  return tab.wf_module_ids.map(id => wfModules[String(id)] || null)
+const getSteps = ({ wfModules }) => wfModules
+const getSelectedTabSteps = createSelector([getSelectedTab, getSteps], (tab, wfModules) => {
+  return tab.step_ids.map(id => wfModules[String(id)] || null)
 })
 const getModules = ({ modules }) => modules
 /**
- * Find first (WfModule, Module) that has a `.loads_data` ModuleVersion.
+ * Find first (Step, Module) that has a `.loads_data` ModuleVersion.
  */
-const getFetchWfModule = createSelector([getSelectedTabWfModules, getModules], (wfModules, modules) => {
+const getFetchStep = createSelector([getSelectedTabSteps, getModules], (wfModules, modules) => {
   for (const wfModule of wfModules) {
     const module = modules[wfModule.module] || {}
     if (module.loads_data) {
@@ -244,14 +244,14 @@ const getFetchVersions = memoize(versions => {
 })
 
 function mapStateToProps (state, { wfModuleId }) {
-  const fetchWfModule = getFetchWfModule(state)
+  const fetchStep = getFetchStep(state)
   const wfModule = state.wfModules[String(wfModuleId)]
   const notificationsEnabled = wfModule ? wfModule.notifications : false
 
   return {
-    fetchWfModuleId: fetchWfModule ? fetchWfModule.id : null,
-    fetchVersions: fetchWfModule ? getFetchVersions(fetchWfModule.versions.versions || []) : null,
-    selectedFetchVersionId: fetchWfModule ? fetchWfModule.versions.selected : null,
+    fetchStepId: fetchStep ? fetchStep.id : null,
+    fetchVersions: fetchStep ? getFetchVersions(fetchStep.versions.versions || []) : null,
+    selectedFetchVersionId: fetchStep ? fetchStep.versions.selected : null,
     isAnonymous: state.workflow.is_anonymous,
     notificationsEnabled
   }
@@ -259,7 +259,7 @@ function mapStateToProps (state, { wfModuleId }) {
 
 const mapDispatchToProps = {
   onChangeFetchVersionId: setDataVersionAction,
-  onChangeNotificationsEnabled: setWfModuleNotificationsAction
+  onChangeNotificationsEnabled: setStepNotificationsAction
 }
 
 export default connect(

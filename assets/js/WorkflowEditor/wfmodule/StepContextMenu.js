@@ -6,7 +6,7 @@ import ExportModal from '../../ExportModal'
 import { Trans, t } from '@lingui/macro'
 import { withI18n } from '@lingui/react'
 
-const WfModuleContextMenu = React.memo(function WfModuleContextMenu ({ i18n, removeModule, id }) {
+const StepContextMenu = React.memo(function StepContextMenu ({ i18n, removeModule, id }) {
   const [isExportModalOpen, setExportModalOpen] = React.useState(false)
   const handleClickOpenExportModal = React.useCallback(() => setExportModalOpen(true))
   const handleCloseExportModal = React.useCallback(() => setExportModalOpen(false))
@@ -14,7 +14,7 @@ const WfModuleContextMenu = React.memo(function WfModuleContextMenu ({ i18n, rem
 
   return (
     <UncontrolledDropdown>
-      <DropdownToggle title={i18n._(/* i18n: When clicked, this opens a menu with more actions. */t('js.WorkflowEditor.wfmodule.WfModuleContextMenu.more.hoverText')`more`)} className='context-button'>
+      <DropdownToggle title={i18n._(/* i18n: When clicked, this opens a menu with more actions. */t('js.WorkflowEditor.wfmodule.StepContextMenu.more.hoverText')`more`)} className='context-button'>
         <i className='icon-more' />
       </DropdownToggle>
       <DropdownMenu>
@@ -25,8 +25,8 @@ const WfModuleContextMenu = React.memo(function WfModuleContextMenu ({ i18n, rem
     </UncontrolledDropdown>
   )
 })
-WfModuleContextMenu.propTypes = {
+StepContextMenu.propTypes = {
   removeModule: PropTypes.func,
   id: PropTypes.number
 }
-export default withI18n()(WfModuleContextMenu)
+export default withI18n()(StepContextMenu)

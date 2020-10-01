@@ -1,7 +1,7 @@
 from integrationtests.utils import LoggedInIntegrationTest
 
 
-class TestWfModule(LoggedInIntegrationTest):
+class TestStep(LoggedInIntegrationTest):
     def setUp(self):
         super().setUp()
 

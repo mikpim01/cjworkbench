@@ -5,7 +5,7 @@ from cjwstate import clientside
 
 
 class Tab(models.Model):
-    """A sequence of WfModules in a Workflow."""
+    """A sequence of Steps in a Workflow."""
 
     class Meta:
         app_label = "server"
@@ -32,12 +32,12 @@ class Tab(models.Model):
 
     name = models.TextField()
     position = models.IntegerField()
-    selected_wf_module_position = models.IntegerField(null=True)
+    selected_step_position = models.IntegerField(null=True)
     is_deleted = models.BooleanField(default=False)
 
     @property
-    def live_wf_modules(self):
-        return self.wf_modules.filter(is_deleted=False)
+    def live_steps(self):
+        return self.steps.filter(is_deleted=False)
 
     def duplicate_into_new_workflow(self, to_workflow: Workflow) -> None:
         """Deep-copy this Tab to a new Tab in `to_workflow`."""
@@ -47,11 +47,11 @@ class Tab(models.Model):
             slug=self.slug,
             name=self.name,
             position=self.position,
-            selected_wf_module_position=self.selected_wf_module_position,
+            selected_step_position=self.selected_step_position,
         )
-        wf_modules = list(self.live_wf_modules)
-        for wf_module in wf_modules:
-            wf_module.duplicate_into_new_workflow(new_tab)
+        steps = list(self.live_steps)
+        for step in steps:
+            step.duplicate_into_new_workflow(new_tab)
 
     def to_arrow(self) -> ArrowTab:
         return ArrowTab(self.slug, self.name)
@@ -60,6 +60,6 @@ class Tab(models.Model):
         return clientside.TabUpdate(
             slug=self.slug,
             name=self.name,
-            selected_step_index=self.selected_wf_module_position,
-            step_ids=list(self.live_wf_modules.values_list("id", flat=True)),
+            selected_step_index=self.selected_step_position,
+            step_ids=list(self.live_steps.values_list("id", flat=True)),
         )

@@ -64,7 +64,7 @@ describe('DataVersionSelect', () => {
     const IdealState = {
       workflow: {
         read_only: false,
-        wf_modules: [123, 124]
+        steps: [123, 124]
       },
       wfModules: {
         123: {

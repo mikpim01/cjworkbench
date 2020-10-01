@@ -93,7 +93,7 @@ class Delta(PolymorphicModel):
         Assumes a Delta with a higher ID is a successor.
 
         Consider calling `workflow.delete_orphan_soft_deleted_models()` after
-        calling this method: it may leave behind Tab and WfModule objects that
+        calling this method: it may leave behind Tab and Step objects that
         nothing refers to, if they previously had `.is_deleted == True`.
         """
         # Oh, Did You Know: django-polymorphic does not have a "delete"

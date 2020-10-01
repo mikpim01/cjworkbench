@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`WfModuleContextMenu should match snapshot 1`] = `
+exports[`StepContextMenu should match snapshot 1`] = `
 <WithI18n
   className="menu-test-class"
   i18n={
@@ -36,7 +36,7 @@ exports[`WfModuleContextMenu should match snapshot 1`] = `
     update={true}
     withHash={true}
   >
-    <Memo(WfModuleContextMenu)
+    <Memo(StepContextMenu)
       className="menu-test-class"
       i18n={
         Object {
@@ -105,7 +105,7 @@ exports[`WfModuleContextMenu should match snapshot 1`] = `
           </div>
         </Dropdown>
       </UncontrolledDropdown>
-    </Memo(WfModuleContextMenu)>
+    </Memo(StepContextMenu)>
   </I18n>
 </WithI18n>
 `;

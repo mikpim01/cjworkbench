@@ -24,7 +24,7 @@ class TestPythonCode(LoggedInIntegrationTest):
         b.click_whatever("#code-editor")
 
         # Code set. Run it!
-        self.submit_wf_module()
+        self.submit_step()
 
     def test_return_dataframe(self):
         self._execute_code(

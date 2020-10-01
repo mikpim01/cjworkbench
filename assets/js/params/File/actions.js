@@ -29,7 +29,7 @@ export function upload (wfModuleId, file) {
 /**
  * Modify wfModule.inProgressUpload in `state`.
  */
-function updateWfModuleInProgressFileUpload (state, wfModuleId, updateOrNull) {
+function updateStepInProgressFileUpload (state, wfModuleId, updateOrNull) {
   const { wfModules } = state
   const wfModule = wfModules[String(wfModuleId)]
   return {
@@ -50,12 +50,12 @@ function updateWfModuleInProgressFileUpload (state, wfModuleId, updateOrNull) {
 function reduceUploadPending (state, action) {
   const { wfModuleId, name, size } = action.payload
   // `nBytesUploaded === null` will render as an "indeterminate" progressbar.
-  return updateWfModuleInProgressFileUpload(state, wfModuleId, { name, size, nBytesUploaded: null })
+  return updateStepInProgressFileUpload(state, wfModuleId, { name, size, nBytesUploaded: null })
 }
 
 function reduceUploadFulfilled (state, action) {
   const { wfModuleId } = action.payload
-  return updateWfModuleInProgressFileUpload(state, wfModuleId, null)
+  return updateStepInProgressFileUpload(state, wfModuleId, null)
 }
 
 /**
@@ -77,12 +77,12 @@ export function cancel (wfModuleId) {
 function reduceCancelPending (state, action) {
   const { wfModuleId } = action.payload
   // `nBytesUploaded === null` will render as an "indeterminate" progressbar.
-  return updateWfModuleInProgressFileUpload(state, wfModuleId, { nBytesUploaded: null })
+  return updateStepInProgressFileUpload(state, wfModuleId, { nBytesUploaded: null })
 }
 
 function reduceCancelFulfilled (state, action) {
   const { wfModuleId } = action.payload
-  return updateWfModuleInProgressFileUpload(state, wfModuleId, null)
+  return updateStepInProgressFileUpload(state, wfModuleId, null)
 }
 
 /**
@@ -97,7 +97,7 @@ export function setProgress (wfModuleId, nBytesUploaded) {
 
 function reduceSetProgress (state, action) {
   const { wfModuleId, nBytesUploaded } = action.payload
-  return updateWfModuleInProgressFileUpload(state, wfModuleId, { nBytesUploaded })
+  return updateStepInProgressFileUpload(state, wfModuleId, { nBytesUploaded })
 }
 
 /**
@@ -113,7 +113,7 @@ export function getApiToken (wfModuleId) {
     return dispatch({
       type: API_TOKEN_NO_OP,
       payload: {
-        promise: api.getWfModuleFileUploadApiToken(wfModuleId)
+        promise: api.getStepFileUploadApiToken(wfModuleId)
       }
     })
   }
@@ -132,7 +132,7 @@ export function resetApiToken (wfModuleId) {
     return dispatch({
       type: API_TOKEN_NO_OP,
       payload: {
-        promise: api.resetWfModuleFileUploadApiToken(wfModuleId)
+        promise: api.resetStepFileUploadApiToken(wfModuleId)
       }
     })
   }
@@ -149,7 +149,7 @@ export function clearApiToken (wfModuleId) {
     return dispatch({
       type: API_TOKEN_NO_OP,
       payload: {
-        promise: api.clearWfModuleFileUploadApiToken(wfModuleId)
+        promise: api.clearStepFileUploadApiToken(wfModuleId)
       }
     })
   }

@@ -13,9 +13,9 @@ class UploadedFile(models.Model):
         db_table = "server_uploadedfile"
         ordering = ["-created_at"]
 
-    # delete this object if its WfModule deleted
-    wf_module = models.ForeignKey(
-        "WfModule", related_name="uploaded_files", on_delete=models.CASCADE
+    # delete this object if its Step deleted
+    step = models.ForeignKey(
+        "Step", related_name="uploaded_files", on_delete=models.CASCADE
     )
 
     created_at = models.DateTimeField(default=timezone.now, null=True)

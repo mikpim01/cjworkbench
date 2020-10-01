@@ -21,8 +21,8 @@ export class StateWithHelpers {
     return this.workflow.selectedTab
   }
 
-  get selectedWfModule () {
-    return this.selectedTab.selectedWfModule
+  get selectedStep () {
+    return this.selectedTab.selectedStep
   }
 }
 
@@ -49,8 +49,8 @@ export class WorkflowWithHelpers {
     return new TabWithHelpers(tab, this.state)
   }
 
-  get selectedWfModule () {
-    return this.selectedTab.selectedWfModule
+  get selectedStep () {
+    return this.selectedTab.selectedStep
   }
 }
 
@@ -61,7 +61,7 @@ export class TabWithHelpers {
   }
 
   get wfModules () {
-    return this.tab.wf_module_ids.map(stepId => {
+    return this.tab.step_ids.map(stepId => {
       const wfModule = this.state.wfModules[String(stepId)] || null
       return new WorkflowModuleWithHelpers(wfModule, this.state)
     })
@@ -75,19 +75,19 @@ export class TabWithHelpers {
     return this.wfModules.map(step => step.moduleSlug)
   }
 
-  get selectedWfModule () {
+  get selectedStep () {
     const { wfModules } = this.state
-    const position = this.tab.selected_wf_module_position
+    const position = this.tab.selected_step_position
     if (position === null || position === undefined) return null
 
-    const wfModule = wfModules[String(this.tab.wf_module_ids[position])] || null
+    const wfModule = wfModules[String(this.tab.step_ids[position])] || null
     return new WorkflowModuleWithHelpers(wfModule, this.state)
   }
 }
 
 export class WorkflowModuleWithHelpers {
   constructor (wfModule, state) {
-    this.wfModule = wfModule // may be null, if WfModule is being created
+    this.wfModule = wfModule // may be null, if Step is being created
     this.state = state
   }
 

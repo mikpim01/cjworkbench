@@ -3,8 +3,8 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import AddData from './AddData'
 import ModuleSearch from './ModuleSearch'
-import WfModule from './wfmodule/WfModule'
-import WfModuleHeader from './wfmodule/WfModuleHeader'
+import Step from './wfmodule/Step'
+import StepHeader from './wfmodule/StepHeader'
 import { deleteModuleAction, moveModuleAction } from '../workflow-reducer'
 import { scrollTo } from '../utils'
 import { connect } from 'react-redux'
@@ -150,7 +150,7 @@ function EmptyReadOnlyModuleStack () {
  * differentiate: the user may end up with a Tab that has many `usesDataStep`s
  * and no `addDataStep`, and the server will actually try and render that.
  */
-function partitionWfModules (wfModules, modules) {
+function partitionSteps (wfModules, modules) {
   if (wfModules[0] && modules[wfModules[0].module] && modules[wfModules[0].module].loads_data) {
     return [wfModules[0], wfModules.slice(1)]
   } else {
@@ -162,7 +162,7 @@ export class ModuleStack extends React.Component {
   static propTypes = {
     api: PropTypes.object.isRequired,
     tabSlug: PropTypes.string,
-    selected_wf_module_position: PropTypes.number,
+    selected_step_position: PropTypes.number,
     wfModules: PropTypes.arrayOf(PropTypes.object).isRequired,
     modules: PropTypes.objectOf(PropTypes.shape({ loads_data: PropTypes.bool.isRequired })).isRequired,
     moveModuleByIndex: PropTypes.func.isRequired, // func(tabSlug, oldIndex, newIndex) => undefined
@@ -177,23 +177,23 @@ export class ModuleStack extends React.Component {
   // Don't store it in this.state because we never want it to lead to a render
   scrollRef = React.createRef()
 
-  lastScrolledWfModule = { tabSlug: null, index: null } // or { tabSlug, index } pair
+  lastScrolledStep = { tabSlug: null, index: null } // or { tabSlug, index } pair
 
   state = {
     isDraggingModuleAtIndex: null,
-    zenModeWfModuleId: null
+    zenModeStepId: null
   }
 
   componentDidUpdate () {
     const tabSlug = this.props.tabSlug
-    const index = this.props.selected_wf_module_position
+    const index = this.props.selected_step_position
 
     if (
-      tabSlug !== this.lastScrolledWfModule.tabSlug ||
-      index !== this.lastScrolledWfModule.index
+      tabSlug !== this.lastScrolledStep.tabSlug ||
+      index !== this.lastScrolledStep.index
     ) {
       // We selected a different module. Scroll to it.
-      this.lastScrolledWfModule = { tabSlug, index }
+      this.lastScrolledStep = { tabSlug, index }
 
       const containerEl = this.scrollRef.current
       const moduleEl = containerEl.querySelectorAll('.wf-module')[index]
@@ -214,19 +214,19 @@ export class ModuleStack extends React.Component {
    * 2 exits Zen mode.
    */
   setZenMode = (wfModuleId, isZenMode) => {
-    const oldId = this.state.zenModeWfModuleId
+    const oldId = this.state.zenModeStepId
     if (!isZenMode && wfModuleId === oldId) {
-      this.setState({ zenModeWfModuleId: null })
+      this.setState({ zenModeStepId: null })
     } else if (isZenMode && oldId === null) {
-      this.setState({ zenModeWfModuleId: wfModuleId })
+      this.setState({ zenModeStepId: wfModuleId })
     }
   }
 
   static getDerivedStateFromProps (props, state) {
     // If we delete a zen-mode while in zen mode, exit zen mode
-    const zenId = state.zenModeWfModuleId
+    const zenId = state.zenModeStepId
     if (zenId && !props.wfModules.find(step => step.id === zenId)) {
-      return { zenModeWfModuleId: null }
+      return { zenModeStepId: null }
     } else {
       return null
     }
@@ -250,10 +250,10 @@ export class ModuleStack extends React.Component {
 
   render () {
     const { isReadOnly, tabSlug, paneRef, wfModules, modules } = this.props
-    const [addDataWfModule, useDataWfModules] = partitionWfModules(wfModules, modules)
+    const [addDataStep, useDataSteps] = partitionSteps(wfModules, modules)
 
-    const spotsAndItems = useDataWfModules.map((item, i) => {
-      if (addDataWfModule) {
+    const spotsAndItems = useDataSteps.map((item, i) => {
+      if (addDataStep) {
         // We partitioned away wfModules[0] because it'll be an <AddData>
         // component. So increment `i`, setting up the index correctly for
         // each _non-first_ wfModule.
@@ -273,7 +273,7 @@ export class ModuleStack extends React.Component {
               moveModuleByIndex={this.moveModuleByIndex}
               isLessonHighlight={this.props.testLessonHighlightIndex(i)}
             />
-            <WfModuleHeader
+            <StepHeader
               tabSlug={this.props.tabSlug}
               moduleName=''
               moduleIcon=''
@@ -293,14 +293,14 @@ export class ModuleStack extends React.Component {
               moveModuleByIndex={this.moveModuleByIndex}
               isLessonHighlight={this.props.testLessonHighlightIndex(i)}
             />
-            <WfModule
+            <Step
               isReadOnly={isReadOnly}
-              isZenMode={this.state.zenModeWfModuleId === item.id}
+              isZenMode={this.state.zenModeStepId === item.id}
               wfModule={item}
               removeModule={this.props.removeModule}
-              inputWfModule={i === 0 ? null : wfModules[i - 1]}
-              isSelected={i === this.props.selected_wf_module_position}
-              isAfterSelected={i > this.props.selected_wf_module_position}
+              inputStep={i === 0 ? null : wfModules[i - 1]}
+              isSelected={i === this.props.selected_step_position}
+              isAfterSelected={i > this.props.selected_step_position}
               api={this.props.api}
               index={i}
               setZenMode={this.setZenMode}
@@ -313,7 +313,7 @@ export class ModuleStack extends React.Component {
     })
 
     let className = 'module-stack'
-    if (this.state.zenModeWfModuleId !== null) className += ' zen-mode'
+    if (this.state.zenModeStepId !== null) className += ' zen-mode'
 
     return (
       <div className={className} ref={this.scrollRef}>
@@ -326,9 +326,9 @@ export class ModuleStack extends React.Component {
               tabSlug={tabSlug}
               isLessonHighlight={this.props.testLessonHighlightIndex(0)}
               isReadOnly={this.props.isReadOnly}
-              wfModule={addDataWfModule}
-              isSelected={!!addDataWfModule && this.props.selected_wf_module_position === 0}
-              isZenMode={addDataWfModule && this.state.zenModeWfModuleId === addDataWfModule.id}
+              wfModule={addDataStep}
+              isSelected={!!addDataStep && this.props.selected_step_position === 0}
+              isZenMode={addDataStep && this.state.zenModeStepId === addDataStep.id}
               api={this.props.api}
               removeModule={this.props.removeModule}
               setZenMode={this.setZenMode}
@@ -360,10 +360,10 @@ const mapStateToProps = (state) => {
   const tabPosition = state.workflow.selected_tab_position
   const tabSlug = state.workflow.tab_slugs[tabPosition]
   const tab = state.tabs[tabSlug]
-  const wfModules = tab.wf_module_ids.map(id => state.wfModules[String(id)])
+  const wfModules = tab.step_ids.map(id => state.wfModules[String(id)])
   return {
     workflow: state.workflow,
-    selected_wf_module_position: tab.selected_wf_module_position,
+    selected_step_position: tab.selected_step_position,
     tabSlug,
     wfModules,
     modules,

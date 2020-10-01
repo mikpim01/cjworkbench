@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 import File from './File'
-import { setWfModuleParamsAction } from '../../workflow-reducer'
+import { setStepParamsAction } from '../../workflow-reducer'
 import { upload, cancel } from './actions'
 
 const mapStateToProps = (state, ownProps) => {
@@ -14,7 +14,7 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = {
   uploadFile: upload,
   cancelUpload: cancel,
-  setWfModuleParams: setWfModuleParamsAction
+  setStepParams: setStepParamsAction
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(File)

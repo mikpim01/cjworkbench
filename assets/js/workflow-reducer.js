@@ -17,7 +17,7 @@ const MOVE_MODULE = 'MOVE_MODULE'
 // Delta: workflow+wfmodule changes
 const APPLY_DELTA = 'APPLY_DELTA'
 
-// WfModule
+// Step
 const SET_WF_MODULE_NOTES = 'SET_WF_MODULE_NOTES'
 const SET_WF_MODULE_COLLAPSED = 'SET_WF_MODULE_COLLAPSED'
 const REQUEST_WF_MODULE_FETCH = 'REQUEST_WF_MODULE_FETCH'
@@ -81,7 +81,7 @@ function generateNonce (invalidValues, prefix) {
 
 // -- Workflow actions --
 
-// 'data' is { updateWorkflow, updateWfModules, updateTabs, clearTabSlugs, clearWfModuleIds }, all
+// 'data' is { updateWorkflow, updateSteps, updateTabs, clearTabSlugs, clearStepIds }, all
 // optional
 export function applyDeltaAction (data) {
   return { type: APPLY_DELTA, payload: data }
@@ -98,21 +98,21 @@ registerReducerFunc(APPLY_DELTA, (state, action) => {
     }
   }
 
-  if (data.updateWfModules || data.clearWfModuleIds) {
+  if (data.updateSteps || data.clearStepIds) {
     wfModules = { ...wfModules }
 
-    if (data.updateWfModules) {
-      for (const wfModuleId in (data.updateWfModules || {})) {
+    if (data.updateSteps) {
+      for (const wfModuleId in (data.updateSteps || {})) {
         wfModules[wfModuleId] = {
           ...wfModules[wfModuleId],
-          ...data.updateWfModules[wfModuleId]
+          ...data.updateSteps[wfModuleId]
         }
       }
     }
 
-    if (data.clearWfModuleIds) {
+    if (data.clearStepIds) {
       wfModules = { ...wfModules }
-      for (const wfModuleId of (data.clearWfModuleIds || [])) {
+      for (const wfModuleId of (data.clearStepIds || [])) {
         delete wfModules[String(wfModuleId)]
       }
     }
@@ -124,16 +124,16 @@ registerReducerFunc(APPLY_DELTA, (state, action) => {
 
     for (const tabSlug in (data.updateTabs || {})) {
       const update = data.updateTabs[tabSlug]
-      const oldPosition = tabs[tabSlug] ? tabs[tabSlug].selected_wf_module_position : null
+      const oldPosition = tabs[tabSlug] ? tabs[tabSlug].selected_step_position : null
       tabs[tabSlug] = {
         ...tabs[tabSlug],
         ...update
       }
       if (oldPosition !== null) {
-        // Server updates shouldn't overwrite selected_wf_module_position ...
+        // Server updates shouldn't overwrite selected_step_position ...
         // _except_ if the client doesn't actually have a position set (such as
         // when duplicate succeeds and the new tab is one we haven't seen).
-        tabs[tabSlug].selected_wf_module_position = oldPosition
+        tabs[tabSlug].selected_step_position = oldPosition
       }
       delete pendingTabs[tabSlug] // if it's a pendingTab
     }
@@ -207,13 +207,13 @@ export function moveModuleAction (tabSlug, oldIndex, newIndex) {
     const { tabs } = getState()
     const tab = tabs[tabSlug]
 
-    const newIds = tab.wf_module_ids.slice()
+    const newIds = tab.step_ids.slice()
     newIds.splice(newIndex, 0, ...newIds.splice(oldIndex, 1))
 
     return dispatch({
       type: MOVE_MODULE,
       payload: {
-        promise: api.reorderWfModules(tabSlug, newIds),
+        promise: api.reorderSteps(tabSlug, newIds),
         data: {
           tabSlug,
           wfModuleIds: newIds
@@ -226,8 +226,8 @@ registerReducerFunc(MOVE_MODULE + '_PENDING', (state, action) => {
   const { tabSlug, wfModuleIds } = action.payload
   const tab = state.tabs[tabSlug]
 
-  const oldIndex = tab.selected_wf_module_position
-  const oldId = tab.wf_module_ids[oldIndex]
+  const oldIndex = tab.selected_step_position
+  const oldId = tab.step_ids[oldIndex]
   const newIndex = wfModuleIds.indexOf(oldId)
 
   return {
@@ -236,8 +236,8 @@ registerReducerFunc(MOVE_MODULE + '_PENDING', (state, action) => {
       ...state.tabs,
       [tabSlug]: {
         ...tab,
-        wf_module_ids: wfModuleIds,
-        selected_wf_module_position: newIndex
+        step_ids: wfModuleIds,
+        selected_step_position: newIndex
       }
     }
   }
@@ -245,18 +245,18 @@ registerReducerFunc(MOVE_MODULE + '_PENDING', (state, action) => {
 
 // ADD_MODULE
 /**
- * Add a placeholder (phony String WfModule ID) to tab.wf_module_ids and
+ * Add a placeholder (phony String Step ID) to tab.step_ids and
  * send an API request to add the module; on completion, add to wfModules and
- * replace the placeholder in tab.wf_module_ids with the new wfModule ID.
+ * replace the placeholder in tab.step_ids with the new wfModule ID.
  *
  * Parameters:
  * @param moduleId String module id_name or Number module ID.
  * @param position Object position this module should be in. One of:
  *                 * { tabSlug, index }
- *                 * { beforeWfModuleId }
- *                 * { afterWfModuleId }
+ *                 * { beforeStepId }
+ *                 * { afterStepId }
  * @param parameterValues {idName:value} Object of parameters for the
- *                        newly-created WfModule.
+ *                        newly-created Step.
  */
 export function addModuleAction (moduleIdName, position, parameterValues) {
   return (dispatch, getState, api) => {
@@ -270,21 +270,21 @@ export function addModuleAction (moduleIdName, position, parameterValues) {
       tabSlug = position.tabSlug
       index = position.index
     } else {
-      const aWfModuleId = position.beforeWfModuleId || position.afterWfModuleId
-      const aWfModule = wfModules[String(aWfModuleId)]
-      tabSlug = aWfModule.tab_slug
+      const aStepId = position.beforeStepId || position.afterStepId
+      const aStep = wfModules[String(aStepId)]
+      tabSlug = aStep.tab_slug
       const tab = tabs[tabSlug]
 
-      if (position.beforeWfModuleId) {
-        const previous = tab.wf_module_ids.indexOf(position.beforeWfModuleId)
+      if (position.beforeStepId) {
+        const previous = tab.step_ids.indexOf(position.beforeStepId)
         if (previous === -1) {
           console.warn('Ignoring addModuleAction with invalid position', position)
           return
         }
         index = previous
       }
-      if (position.afterWfModuleId) {
-        const previous = tab.wf_module_ids.indexOf(position.afterWfModuleId)
+      if (position.afterStepId) {
+        const previous = tab.step_ids.indexOf(position.afterStepId)
         if (previous === -1) {
           console.warn('Ignoring addModuleAction with invalid position', position)
           return
@@ -322,9 +322,9 @@ registerReducerFunc(ADD_MODULE + '_PENDING', (state, action) => {
   const { tabs } = state
   const { tabSlug, index, nonce } = action.payload
   const tab = tabs[tabSlug]
-  const wfModuleIds = tab.wf_module_ids.slice()
+  const wfModuleIds = tab.step_ids.slice()
 
-  // Add a nonce to wf_modules Array of IDs. Don't add anything to wfModules:
+  // Add a nonce to steps Array of IDs. Don't add anything to wfModules:
   // users must assume that if it isn't in wfModules, it's a placeholder.
   wfModuleIds.splice(index, 0, nonce)
 
@@ -334,8 +334,8 @@ registerReducerFunc(ADD_MODULE + '_PENDING', (state, action) => {
       ...tabs,
       [tabSlug]: {
         ...tab,
-        wf_module_ids: wfModuleIds,
-        selected_wf_module_position: index
+        step_ids: wfModuleIds,
+        selected_step_position: index
       }
     }
   }
@@ -361,25 +361,25 @@ registerReducerFunc(DELETE_MODULE + '_PENDING', (state, action) => {
   const wfModule = wfModules[String(wfModuleId)]
   const tab = tabs[wfModule.tab_slug]
 
-  const wfModuleIds = tab.wf_module_ids.slice()
+  const wfModuleIds = tab.step_ids.slice()
   const index = wfModuleIds.indexOf(wfModuleId)
   if (index === -1) return state
 
   wfModuleIds.splice(index, 1)
 
-  const newWfModules = { ...state.wfModules }
-  delete newWfModules[String(wfModuleId)]
+  const newSteps = { ...state.wfModules }
+  delete newSteps[String(wfModuleId)]
 
   // If we are deleting the selected module, then set the previous module
   // in stack as selected
-  let selected = tab.selected_wf_module_position
+  let selected = tab.selected_step_position
   if (selected !== null && selected >= index) {
     selected -= 1
   }
   if (selected < 0) {
     selected = 0
   }
-  if (!Object.keys(newWfModules).length) {
+  if (!Object.keys(newSteps).length) {
     selected = null
   }
 
@@ -389,17 +389,17 @@ registerReducerFunc(DELETE_MODULE + '_PENDING', (state, action) => {
       ...tabs,
       [tab.slug]: {
         ...tab,
-        wf_module_ids: wfModuleIds,
-        selected_wf_module_position: selected
+        step_ids: wfModuleIds,
+        selected_step_position: selected
       }
     },
-    wfModules: newWfModules
+    wfModules: newSteps
   }
 })
 
 // SET_SELECTED_MODULE
 // Set the selected module in the workflow
-export function setSelectedWfModuleAction (wfModuleId) {
+export function setSelectedStepAction (wfModuleId) {
   return (dispatch, getState, api) => {
     const { workflow, tabs, wfModules } = getState()
 
@@ -410,11 +410,11 @@ export function setSelectedWfModuleAction (wfModuleId) {
     const tab = tabs[tabSlug]
 
     const tabPosition = workflow.tab_slugs.indexOf(tabSlug)
-    const wfModulePosition = tab.wf_module_ids.indexOf(wfModuleId)
+    const wfModulePosition = tab.step_ids.indexOf(wfModuleId)
 
     if (
       workflow.selected_tab_position === tabPosition &&
-      tab.selected_wf_module_position === wfModulePosition
+      tab.selected_step_position === wfModulePosition
     ) {
       // avoid spurious HTTP requests and state changes
       return
@@ -422,7 +422,7 @@ export function setSelectedWfModuleAction (wfModuleId) {
 
     // Fire-and-forget: tell the server about this new selection
     // so next time we load the page it will pass it in initState.
-    const promise = workflow.read_only ? Promise.resolve(null) : api.setSelectedWfModule(wfModuleId)
+    const promise = workflow.read_only ? Promise.resolve(null) : api.setSelectedStep(wfModuleId)
     return dispatch({
       type: SET_SELECTED_MODULE,
       payload: {
@@ -439,7 +439,7 @@ registerReducerFunc(SET_SELECTED_MODULE + '_PENDING', (state, action) => {
 
   return {
     ...state,
-    selectedPane: { // so we navigate to the WfModule
+    selectedPane: { // so we navigate to the Step
       pane: 'tab',
       tabSlug
     },
@@ -451,7 +451,7 @@ registerReducerFunc(SET_SELECTED_MODULE + '_PENDING', (state, action) => {
       ...tabs,
       [tabSlug]: {
         ...tab,
-        selected_wf_module_position: wfModulePosition
+        selected_step_position: wfModulePosition
       }
     }
   }
@@ -464,7 +464,7 @@ registerReducerFunc(SET_SELECTED_MODULE + '_PENDING', (state, action) => {
  *
  * Only works if there is a 'version_select' custom parameter.
  */
-export function maybeRequestWfModuleFetchAction (wfModuleId) {
+export function maybeRequestStepFetchAction (wfModuleId) {
   return (dispatch, getState, api) => {
     const { wfModules, modules } = getState()
     const wfModule = wfModules[String(wfModuleId)]
@@ -488,7 +488,7 @@ registerReducerFunc(REQUEST_WF_MODULE_FETCH + '_PENDING', (state, action) => {
   const { wfModuleId } = action.payload
   const wfModule = state.wfModules[String(wfModuleId)]
 
-  // Set the WfModule to 'busy' on the client side.
+  // Set the Step to 'busy' on the client side.
   //
   // Don't conflict with the server side: use a client-specific variable.
   return {
@@ -509,12 +509,12 @@ registerReducerFunc(REQUEST_WF_MODULE_FETCH + '_FULFILLED', (state, action) => {
 
   if (!wfModule) return
 
-  // Set the WfModule to 'busy' on the client side.
+  // Set the Step to 'busy' on the client side.
   //
-  // A fetch might cause _all_ WfModules to become busy on the server, if it
-  // kicks off a ChangeDataVersionCommand. If it doesn't, the other WfModules
+  // A fetch might cause _all_ Steps to become busy on the server, if it
+  // kicks off a ChangeDataVersionCommand. If it doesn't, the other Steps
   // will stay as they are. Let's not pre-emptively update those _other_
-  // WfModule statuses, lest the server never tell us they won't change.
+  // Step statuses, lest the server never tell us they won't change.
   return {
     ...state,
     wfModules: {
@@ -528,9 +528,9 @@ registerReducerFunc(REQUEST_WF_MODULE_FETCH + '_FULFILLED', (state, action) => {
 })
 
 /**
- * Set whether a WfModule emails the workflow owner on update.
+ * Set whether a Step emails the workflow owner on update.
  */
-export function setWfModuleNotificationsAction (wfModuleId, isNotifications) {
+export function setStepNotificationsAction (wfModuleId, isNotifications) {
   return (dispatch, getState, api) => {
     const { wfModules } = getState()
     if (!wfModules[String(wfModuleId)]) return Promise.resolve(null)
@@ -538,7 +538,7 @@ export function setWfModuleNotificationsAction (wfModuleId, isNotifications) {
     return dispatch({
       type: SET_WF_MODULE_NOTIFICATIONS,
       payload: {
-        promise: api.setWfModuleNotifications(wfModuleId, isNotifications),
+        promise: api.setStepNotifications(wfModuleId, isNotifications),
         data: {
           wfModuleId,
           isNotifications
@@ -563,7 +563,7 @@ registerReducerFunc(SET_WF_MODULE_NOTIFICATIONS + '_PENDING', (state, action) =>
 })
 
 /**
- * Set whether a WfModule auto-fetches every `interval` seconds.
+ * Set whether a Step auto-fetches every `interval` seconds.
  *
  * `interval` must be provided even if `isAutofetch` is false. (It's visible to
  * the user either way.)
@@ -573,13 +573,13 @@ registerReducerFunc(SET_WF_MODULE_NOTIFICATIONS + '_PENDING', (state, action) =>
  * the request, a `quotaExceeded` object with { maxFetchesPerDay,
  * nFetchesPerDay, autofetches }.
  */
-export function trySetWfModuleAutofetchAction (wfModuleId, isAutofetch, fetchInterval) {
+export function trySetStepAutofetchAction (wfModuleId, isAutofetch, fetchInterval) {
   return (dispatch, _, api) => {
     return dispatch({
       type: TRY_SET_WF_MODULE_AUTOFETCH,
       payload: {
         promise: (
-          api.trySetWfModuleAutofetch(wfModuleId, isAutofetch, fetchInterval)
+          api.trySetStepAutofetch(wfModuleId, isAutofetch, fetchInterval)
             .then(obj => ({ wfModuleId, ...obj }))
         )
       }
@@ -602,12 +602,12 @@ registerReducerFunc(TRY_SET_WF_MODULE_AUTOFETCH + '_FULFILLED', (state, action) 
   }
 })
 
-export function setWfModuleNotesAction (wfModuleId, notes) {
+export function setStepNotesAction (wfModuleId, notes) {
   return (dispatch, getState, api) => {
     return dispatch({
       type: SET_WF_MODULE_NOTES,
       payload: {
-        promise: api.setWfModuleNotes(wfModuleId, notes),
+        promise: api.setStepNotes(wfModuleId, notes),
         data: { wfModuleId, notes }
       }
     })
@@ -632,13 +632,13 @@ registerReducerFunc(SET_WF_MODULE_NOTES + '_PENDING', (state, action) => {
   }
 })
 
-export function setWfModuleCollapsedAction (wfModuleId, isCollapsed, isReadOnly) {
+export function setStepCollapsedAction (wfModuleId, isCollapsed, isReadOnly) {
   return (dispatch, getState, api) => {
     let promise
     if (isReadOnly) {
       promise = Promise.resolve(null)
     } else {
-      promise = api.setWfModuleCollapsed(wfModuleId, isCollapsed)
+      promise = api.setStepCollapsed(wfModuleId, isCollapsed)
     }
 
     return dispatch({
@@ -670,12 +670,12 @@ registerReducerFunc(SET_WF_MODULE_COLLAPSED + '_PENDING', (state, action) => {
   }
 })
 
-export function setWfModuleParamsAction (wfModuleId, params) {
+export function setStepParamsAction (wfModuleId, params) {
   return (dispatch, getState, api) => {
     return dispatch({
       type: SET_WF_MODULE_PARAMS,
       payload: {
-        promise: api.setWfModuleParams(wfModuleId, params),
+        promise: api.setStepParams(wfModuleId, params),
         data: {
           wfModuleId,
           params
@@ -704,7 +704,7 @@ registerReducerFunc(SET_WF_MODULE_PARAMS + '_PENDING', (state, action) => {
   }
 })
 
-export function setWfModuleSecretAction (wfModuleId, param, secret) {
+export function setStepSecretAction (wfModuleId, param, secret) {
   return (dispatch, getState, api) => {
     return dispatch({
       type: SET_WF_MODULE_SECRET,
@@ -727,7 +727,7 @@ export function setDataVersionAction (wfModuleId, selectedVersion) {
     return dispatch({
       type: SET_DATA_VERSION,
       payload: {
-        promise: api.setWfModuleVersion(wfModuleId, selectedVersion),
+        promise: api.setStepVersion(wfModuleId, selectedVersion),
         data: {
           wfModuleId,
           selectedVersion
@@ -761,7 +761,7 @@ export function clearNotificationsAction (wfModuleId) {
     return dispatch({
       type: CLEAR_NOTIFICATIONS,
       payload: {
-        promise: api.clearWfModuleUnseenNotifications(wfModuleId),
+        promise: api.clearStepUnseenNotifications(wfModuleId),
         data: {
           wfModuleId
         }
@@ -805,7 +805,7 @@ export function deleteSecretAction (wfModuleId, param) {
 }
 
 function quickFixPrependStep (wfModuleId, { moduleSlug, partialParams }) {
-  return addModuleAction(moduleSlug, { beforeWfModuleId: wfModuleId }, partialParams)
+  return addModuleAction(moduleSlug, { beforeStepId: wfModuleId }, partialParams)
 }
 
 export function quickFixAction (wfModuleId, action) {

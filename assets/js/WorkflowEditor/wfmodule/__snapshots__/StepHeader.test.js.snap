@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`WfModuleHeader Mounts selected 1`] = `
-<WfModuleHeader
+exports[`StepHeader Mounts selected 1`] = `
+<StepHeader
   isSelected={true}
   moduleIcon="some-icon"
   moduleName="Some module name"
@@ -31,11 +31,11 @@ exports[`WfModuleHeader Mounts selected 1`] = `
       </div>
     </div>
   </div>
-</WfModuleHeader>
+</StepHeader>
 `;
 
-exports[`WfModuleHeader Mounts unselected 1`] = `
-<WfModuleHeader
+exports[`StepHeader Mounts unselected 1`] = `
+<StepHeader
   isSelected={false}
   moduleIcon="some-icon"
   moduleName="Some module name"
@@ -65,5 +65,5 @@ exports[`WfModuleHeader Mounts unselected 1`] = `
       </div>
     </div>
   </div>
-</WfModuleHeader>
+</StepHeader>
 `;

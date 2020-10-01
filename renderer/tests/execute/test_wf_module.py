@@ -12,20 +12,20 @@ from cjwstate.storedobjects import create_stored_object
 from cjwstate.models import Workflow
 from cjwstate.tests.utils import DbTestCaseWithModuleRegistry, create_module_zipfile
 from renderer import notifications
-from renderer.execute.wf_module import execute_wfmodule
+from renderer.execute.step import execute_wfmodule
 
 
 async def noop(*args, **kwargs):
     return
 
 
-class WfModuleTests(DbTestCaseWithModuleRegistry):
+class StepTests(DbTestCaseWithModuleRegistry):
     def setUp(self):
         super().setUp()
         self.ctx = contextlib.ExitStack()
         self.chroot_context = self.ctx.enter_context(EDITABLE_CHROOT.acquire_context())
         basedir = self.ctx.enter_context(
-            self.chroot_context.tempdir_context(prefix="test_wf_module-")
+            self.chroot_context.tempdir_context(prefix="test_step-")
         )
         self.output_path = self.ctx.enter_context(
             self.chroot_context.tempfile_context(prefix="output-", dir=basedir)
@@ -39,7 +39,7 @@ class WfModuleTests(DbTestCaseWithModuleRegistry):
     def test_deleted_module(self):
         workflow = Workflow.create_and_init()
         tab = workflow.tabs.first()
-        wf_module = tab.wf_modules.create(
+        step = tab.steps.create(
             order=0,
             slug="step-1",
             module_id_name="deleted_module",
@@ -49,7 +49,7 @@ class WfModuleTests(DbTestCaseWithModuleRegistry):
             execute_wfmodule(
                 self.chroot_context,
                 workflow,
-                wf_module,
+                step,
                 None,
                 {},
                 tab.to_arrow(),
@@ -59,18 +59,18 @@ class WfModuleTests(DbTestCaseWithModuleRegistry):
             )
         )
         expected = RenderResult(
-            errors=[RenderError(I18nMessage("py.renderer.execute.wf_module.noModule"))]
+            errors=[RenderError(I18nMessage("py.renderer.execute.step.noModule"))]
         )
         assert_render_result_equals(result, expected)
-        wf_module.refresh_from_db()
-        self.assertEqual(wf_module.cached_render_result.errors, expected.errors)
+        step.refresh_from_db()
+        self.assertEqual(step.cached_render_result.errors, expected.errors)
 
     @patch.object(rabbitmq, "send_update_to_workflow_clients", noop)
     @patch.object(notifications, "email_output_delta")
     def test_email_delta(self, email_delta):
         workflow = Workflow.create_and_init()
         tab = workflow.tabs.first()
-        wf_module = tab.wf_modules.create(
+        step = tab.steps.create(
             order=0,
             slug="step-1",
             module_id_name="x",
@@ -79,12 +79,12 @@ class WfModuleTests(DbTestCaseWithModuleRegistry):
         )
         rendercache.cache_render_result(
             workflow,
-            wf_module,
+            step,
             workflow.last_delta_id - 1,
             RenderResult(arrow_table({"A": [1]})),
         )
-        wf_module.last_relevant_delta_id = workflow.last_delta_id
-        wf_module.save(update_fields=["last_relevant_delta_id"])
+        step.last_relevant_delta_id = workflow.last_delta_id
+        step.save(update_fields=["last_relevant_delta_id"])
 
         module_zipfile = create_module_zipfile(
             "x",
@@ -95,7 +95,7 @@ class WfModuleTests(DbTestCaseWithModuleRegistry):
                 execute_wfmodule(
                     self.chroot_context,
                     workflow,
-                    wf_module,
+                    step,
                     module_zipfile,
                     {},
                     Tab(tab.slug, tab.name),
@@ -109,7 +109,7 @@ class WfModuleTests(DbTestCaseWithModuleRegistry):
 
         self.assertEqual(delta.user, workflow.owner)
         self.assertEqual(delta.workflow, workflow)
-        self.assertEqual(delta.wf_module, wf_module)
+        self.assertEqual(delta.step, step)
 
     @patch.object(rabbitmq, "send_update_to_workflow_clients", noop)
     @patch.object(rendercache, "downloaded_parquet_file")
@@ -118,7 +118,7 @@ class WfModuleTests(DbTestCaseWithModuleRegistry):
         read_cache.side_effect = rendercache.CorruptCacheError
         workflow = Workflow.create_and_init()
         tab = workflow.tabs.first()
-        wf_module = tab.wf_modules.create(
+        step = tab.steps.create(
             order=0,
             slug="step-1",
             module_id_name="x",
@@ -130,12 +130,12 @@ class WfModuleTests(DbTestCaseWithModuleRegistry):
         # says there's something there.
         rendercache.cache_render_result(
             workflow,
-            wf_module,
+            step,
             workflow.last_delta_id - 1,
             RenderResult(arrow_table({"A": [1]})),
         )
-        wf_module.last_relevant_delta_id = workflow.last_delta_id
-        wf_module.save(update_fields=["last_relevant_delta_id"])
+        step.last_relevant_delta_id = workflow.last_delta_id
+        step.save(update_fields=["last_relevant_delta_id"])
 
         module_zipfile = create_module_zipfile(
             "x",
@@ -148,7 +148,7 @@ class WfModuleTests(DbTestCaseWithModuleRegistry):
                 execute_wfmodule(
                     self.chroot_context,
                     workflow,
-                    wf_module,
+                    step,
                     module_zipfile,
                     {},
                     Tab(tab.slug, tab.name),
@@ -165,7 +165,7 @@ class WfModuleTests(DbTestCaseWithModuleRegistry):
     def test_email_delta_when_errors_change(self, email_delta):
         workflow = Workflow.create_and_init()
         tab = workflow.tabs.first()
-        wf_module = tab.wf_modules.create(
+        step = tab.steps.create(
             order=0,
             slug="step-1",
             module_id_name="x",
@@ -177,16 +177,14 @@ class WfModuleTests(DbTestCaseWithModuleRegistry):
         # says there's something there.
         rendercache.cache_render_result(
             workflow,
-            wf_module,
+            step,
             workflow.last_delta_id - 1,
             RenderResult(
-                errors=[
-                    RenderError(I18nMessage("py.renderer.execute.wf_module.noModule"))
-                ]
+                errors=[RenderError(I18nMessage("py.renderer.execute.step.noModule"))]
             ),
         )
-        wf_module.last_relevant_delta_id = workflow.last_delta_id
-        wf_module.save(update_fields=["last_relevant_delta_id"])
+        step.last_relevant_delta_id = workflow.last_delta_id
+        step.save(update_fields=["last_relevant_delta_id"])
 
         module_zipfile = create_module_zipfile(
             "x",
@@ -199,7 +197,7 @@ class WfModuleTests(DbTestCaseWithModuleRegistry):
                 execute_wfmodule(
                     self.chroot_context,
                     workflow,
-                    wf_module,
+                    step,
                     module_zipfile,
                     {},
                     Tab(tab.slug, tab.name),
@@ -216,7 +214,7 @@ class WfModuleTests(DbTestCaseWithModuleRegistry):
     def test_email_no_delta_when_errors_stay_the_same(self, email_delta):
         workflow = Workflow.create_and_init()
         tab = workflow.tabs.first()
-        wf_module = tab.wf_modules.create(
+        step = tab.steps.create(
             order=0,
             slug="step-1",
             module_id_name="x",
@@ -228,22 +226,20 @@ class WfModuleTests(DbTestCaseWithModuleRegistry):
         # says there's something there.
         rendercache.cache_render_result(
             workflow,
-            wf_module,
+            step,
             workflow.last_delta_id - 1,
             RenderResult(
-                errors=[
-                    RenderError(I18nMessage("py.renderer.execute.wf_module.noModule"))
-                ]
+                errors=[RenderError(I18nMessage("py.renderer.execute.step.noModule"))]
             ),
         )
-        wf_module.last_relevant_delta_id = workflow.last_delta_id
-        wf_module.save(update_fields=["last_relevant_delta_id"])
+        step.last_relevant_delta_id = workflow.last_delta_id
+        step.save(update_fields=["last_relevant_delta_id"])
 
         self.run_with_async_db(
             execute_wfmodule(
                 self.chroot_context,
                 workflow,
-                wf_module,
+                step,
                 None,  # module_zipfile
                 {},
                 Tab(tab.slug, tab.name),
@@ -261,7 +257,7 @@ class WfModuleTests(DbTestCaseWithModuleRegistry):
     def test_email_delta_when_stale_crr_is_unreachable(self, email_delta, read_cache):
         workflow = Workflow.create_and_init()
         tab = workflow.tabs.first()
-        wf_module = tab.wf_modules.create(
+        step = tab.steps.create(
             order=0,
             slug="step-1",
             module_id_name="x",
@@ -273,12 +269,12 @@ class WfModuleTests(DbTestCaseWithModuleRegistry):
         # says there's something there.
         rendercache.cache_render_result(
             workflow,
-            wf_module,
+            step,
             workflow.last_delta_id - 1,
             RenderResult(arrow_table({})),  # does not write a Parquet file
         )
-        wf_module.last_relevant_delta_id = workflow.last_delta_id
-        wf_module.save(update_fields=["last_relevant_delta_id"])
+        step.last_relevant_delta_id = workflow.last_delta_id
+        step.save(update_fields=["last_relevant_delta_id"])
 
         module_zipfile = create_module_zipfile(
             "x",
@@ -291,7 +287,7 @@ class WfModuleTests(DbTestCaseWithModuleRegistry):
                 execute_wfmodule(
                     self.chroot_context,
                     workflow,
-                    wf_module,
+                    step,
                     module_zipfile,
                     {},
                     Tab(tab.slug, tab.name),
@@ -309,7 +305,7 @@ class WfModuleTests(DbTestCaseWithModuleRegistry):
     def test_email_delta_when_fresh_crr_is_unreachable(self, email_delta):
         workflow = Workflow.create_and_init()
         tab = workflow.tabs.first()
-        wf_module = tab.wf_modules.create(
+        step = tab.steps.create(
             order=0,
             slug="step-1",
             module_id_name="x",
@@ -321,12 +317,12 @@ class WfModuleTests(DbTestCaseWithModuleRegistry):
         # says there's something there.
         rendercache.cache_render_result(
             workflow,
-            wf_module,
+            step,
             workflow.last_delta_id - 1,
             RenderResult(arrow_table({"A": [1]})),
         )
-        wf_module.last_relevant_delta_id = workflow.last_delta_id
-        wf_module.save(update_fields=["last_relevant_delta_id"])
+        step.last_relevant_delta_id = workflow.last_delta_id
+        step.save(update_fields=["last_relevant_delta_id"])
 
         module_zipfile = create_module_zipfile(
             "x",
@@ -339,7 +335,7 @@ class WfModuleTests(DbTestCaseWithModuleRegistry):
                 execute_wfmodule(
                     self.chroot_context,
                     workflow,
-                    wf_module,
+                    step,
                     module_zipfile,
                     {},
                     Tab(tab.slug, tab.name),
@@ -355,7 +351,7 @@ class WfModuleTests(DbTestCaseWithModuleRegistry):
     def test_fetch_result_happy_path(self):
         workflow = Workflow.create_and_init()
         tab = workflow.tabs.first()
-        wf_module = tab.wf_modules.create(
+        step = tab.steps.create(
             order=0,
             slug="step-1",
             module_id_name="x",
@@ -366,9 +362,9 @@ class WfModuleTests(DbTestCaseWithModuleRegistry):
             ],
         )
         with parquet_file({"A": [1]}) as path:
-            so = create_stored_object(workflow.id, wf_module.id, path)
-        wf_module.stored_data_version = so.stored_at
-        wf_module.save(update_fields=["stored_data_version"])
+            so = create_stored_object(workflow.id, step.id, path)
+        step.stored_data_version = so.stored_at
+        step.save(update_fields=["stored_data_version"])
 
         module_zipfile = create_module_zipfile(
             "x",
@@ -396,7 +392,7 @@ class WfModuleTests(DbTestCaseWithModuleRegistry):
                 execute_wfmodule(
                     self.chroot_context,
                     workflow,
-                    wf_module,
+                    step,
                     module_zipfile,
                     {},
                     Tab(tab.slug, tab.name),
@@ -410,16 +406,16 @@ class WfModuleTests(DbTestCaseWithModuleRegistry):
     def test_fetch_result_deleted_file_means_none(self):
         workflow = Workflow.create_and_init()
         tab = workflow.tabs.first()
-        wf_module = tab.wf_modules.create(
+        step = tab.steps.create(
             order=0,
             slug="step-1",
             module_id_name="x",
             last_relevant_delta_id=workflow.last_delta_id,
         )
         with parquet_file({"A": [1]}) as path:
-            so = create_stored_object(workflow.id, wf_module.id, path)
-        wf_module.stored_data_version = so.stored_at
-        wf_module.save(update_fields=["stored_data_version"])
+            so = create_stored_object(workflow.id, step.id, path)
+        step.stored_data_version = so.stored_at
+        step.save(update_fields=["stored_data_version"])
         # Now delete the file on S3 -- but leave the DB pointing to it.
         minio.remove(minio.StoredObjectsBucket, so.key)
 
@@ -444,7 +440,7 @@ class WfModuleTests(DbTestCaseWithModuleRegistry):
                 execute_wfmodule(
                     self.chroot_context,
                     workflow,
-                    wf_module,
+                    step,
                     module_zipfile,
                     {},
                     Tab(tab.slug, tab.name),
@@ -458,12 +454,12 @@ class WfModuleTests(DbTestCaseWithModuleRegistry):
     def test_fetch_result_deleted_stored_object_means_none(self):
         workflow = Workflow.create_and_init()
         tab = workflow.tabs.first()
-        wf_module = tab.wf_modules.create(
+        step = tab.steps.create(
             order=0,
             slug="step-1",
             module_id_name="x",
             last_relevant_delta_id=workflow.last_delta_id,
-            # wf_module.stored_data_version is buggy: it can point at a nonexistent
+            # step.stored_data_version is buggy: it can point at a nonexistent
             # StoredObject. Let's do that.
             stored_data_version=timezone.now(),
         )
@@ -485,7 +481,7 @@ class WfModuleTests(DbTestCaseWithModuleRegistry):
                 execute_wfmodule(
                     self.chroot_context,
                     workflow,
-                    wf_module,
+                    step,
                     module_zipfile,
                     {},
                     Tab(tab.slug, tab.name),
@@ -499,7 +495,7 @@ class WfModuleTests(DbTestCaseWithModuleRegistry):
     def test_fetch_result_no_stored_object_means_none(self):
         workflow = Workflow.create_and_init()
         tab = workflow.tabs.first()
-        wf_module = tab.wf_modules.create(
+        step = tab.steps.create(
             order=0,
             slug="step-1",
             module_id_name="x",
@@ -523,7 +519,7 @@ class WfModuleTests(DbTestCaseWithModuleRegistry):
                 execute_wfmodule(
                     self.chroot_context,
                     workflow,
-                    wf_module,
+                    step,
                     module_zipfile,
                     {},
                     Tab(tab.slug, tab.name),
@@ -537,15 +533,15 @@ class WfModuleTests(DbTestCaseWithModuleRegistry):
     def test_fetch_result_no_bucket_or_key_stored_object_means_none(self):
         workflow = Workflow.create_and_init()
         tab = workflow.tabs.first()
-        wf_module = tab.wf_modules.create(
+        step = tab.steps.create(
             order=0,
             slug="step-1",
             module_id_name="x",
             last_relevant_delta_id=workflow.last_delta_id,
             stored_data_version=timezone.now(),
         )
-        wf_module.stored_objects.create(
-            stored_at=wf_module.stored_data_version, key="", size=0, hash="whatever"
+        step.stored_objects.create(
+            stored_at=step.stored_data_version, key="", size=0, hash="whatever"
         )
 
         module_zipfile = create_module_zipfile(
@@ -565,7 +561,7 @@ class WfModuleTests(DbTestCaseWithModuleRegistry):
                 execute_wfmodule(
                     self.chroot_context,
                     workflow,
-                    wf_module,
+                    step,
                     module_zipfile,
                     {},
                     Tab(tab.slug, tab.name),
@@ -579,7 +575,7 @@ class WfModuleTests(DbTestCaseWithModuleRegistry):
     def test_report_module_error(self):
         workflow = Workflow.create_and_init()
         tab = workflow.tabs.first()
-        wf_module = tab.wf_modules.create(
+        step = tab.steps.create(
             order=0,
             slug="step-1",
             module_id_name="x",
@@ -595,7 +591,7 @@ class WfModuleTests(DbTestCaseWithModuleRegistry):
                 execute_wfmodule(
                     self.chroot_context,
                     workflow,
-                    wf_module,
+                    step,
                     module_zipfile,
                     {},
                     Tab(tab.slug, tab.name),
@@ -610,7 +606,7 @@ class WfModuleTests(DbTestCaseWithModuleRegistry):
                 errors=[
                     RenderError(
                         I18nMessage(
-                            "py.renderer.execute.wf_module.user_visible_bug_during_render",
+                            "py.renderer.execute.step.user_visible_bug_during_render",
                             {
                                 "message": "exit code 1: NameError: name 'undefined' is not defined"
                             },

@@ -72,7 +72,7 @@ export class File extends React.PureComponent {
   handleClickCloseUploadApiModal = () => this.setState({ isUploadApiModalOpen: false })
 
   _upload = (file) => {
-    const { name, uploadFile, setWfModuleParams, wfModuleId } = this.props
+    const { name, uploadFile, setStepParams, wfModuleId } = this.props
     uploadFile(wfModuleId, file)
       .then(result => {
         // The upload completed; now change the param server-side. That way
@@ -80,7 +80,7 @@ export class File extends React.PureComponent {
         //
         // Assumes ChangeParametersCommand allows partial params.
         if (result.value && result.value.uuid) { // ignore abort, which wouldn't set value/uuid
-          setWfModuleParams(wfModuleId, { [name]: result.value.uuid })
+          setStepParams(wfModuleId, { [name]: result.value.uuid })
         }
       })
   }
@@ -143,8 +143,8 @@ export class File extends React.PureComponent {
   }
 
   handleChange = (value) => {
-    const { setWfModuleParams, wfModuleId, name } = this.props
-    setWfModuleParams(wfModuleId, { [name]: value })
+    const { setStepParams, wfModuleId, name } = this.props
+    setStepParams(wfModuleId, { [name]: value })
   }
 
   handleChangeFileInput = (ev) => {

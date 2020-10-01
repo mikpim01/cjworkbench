@@ -22,7 +22,7 @@ from cjwkernel.types import (
 from cjwkernel.util import tempfile_context
 import cjwparquet
 from cjwstate import clientside, minio, rabbitmq, rendercache
-from cjwstate.models import StoredObject, WfModule, Workflow
+from cjwstate.models import StoredObject, Step, Workflow
 import cjwstate.modules
 from cjwstate.modules.types import ModuleZipfile
 from renderer import notifications
@@ -42,31 +42,30 @@ SaveResult = namedtuple("SaveResult", ["cached_render_result", "maybe_delta"])
 
 
 @contextlib.contextmanager
-def locked_wf_module(workflow, wf_module):
-    """
-    Supplies concurrency guarantees for execute_wfmodule().
+def locked_step(workflow, step):
+    """Concurrency guarantees for execute_wfmodule().
 
     Usage:
 
-    with locked_wf_module(workflow, wf_module) as safe_wf_module:
+    with locked_step(workflow, step) as safe_step:
         ...
 
-    Raises UnneededExecution if the wf_module or workflow have changed.
+    Raises UnneededExecution if the step or workflow have changed.
     """
     try:
         with workflow.cooperative_lock():
-            # safe_wf_module: locked at the database level.
-            delta_id = wf_module.last_relevant_delta_id
+            # safe_step: locked at the database level.
+            delta_id = step.last_relevant_delta_id
             try:
-                safe_wf_module = WfModule.objects.get(
-                    pk=wf_module.pk, is_deleted=False, last_relevant_delta_id=delta_id
+                safe_step = Step.objects.get(
+                    pk=step.pk, is_deleted=False, last_relevant_delta_id=delta_id
                 )
-            except WfModule.DoesNotExist:
+            except Step.DoesNotExist:
                 # Module was deleted or changed input/params _after_ we
                 # requested render but _before_ we start rendering
                 raise UnneededExecution
 
-            retval = yield safe_wf_module
+            retval = yield safe_step
     except Workflow.DoesNotExist:
         # Workflow was deleted after execute began
         raise UnneededExecution
@@ -75,10 +74,9 @@ def locked_wf_module(workflow, wf_module):
 
 
 def _load_fetch_result(
-    wf_module: WfModule, basedir: Path, exit_stack: contextlib.ExitStack
+    step: Step, basedir: Path, exit_stack: contextlib.ExitStack
 ) -> Optional[FetchResult]:
-    """
-    Download user-selected StoredObject to `basedir`, so render() can read it.
+    """Download user-selected StoredObject to `basedir`, so render() can read it.
 
     Edge cases:
 
@@ -90,9 +88,7 @@ def _load_fetch_result(
     FetchResult". The FetchResult may still have an error.
     """
     try:
-        stored_object = wf_module.stored_objects.get(
-            stored_at=wf_module.stored_data_version
-        )
+        stored_object = step.stored_objects.get(stored_at=step.stored_data_version)
     except StoredObject.DoesNotExist:
         return None
     if not stored_object.key:
@@ -124,7 +120,7 @@ def _load_fetch_result(
             # return `None`.
             return None
 
-    return FetchResult(path, wf_module.fetch_errors)
+    return FetchResult(path, step.fetch_errors)
 
 
 def _wrap_render_errors(render_call):
@@ -135,7 +131,7 @@ def _wrap_render_errors(render_call):
             errors=[
                 RenderError(
                     I18nMessage.trans(
-                        "py.renderer.execute.wf_module.user_visible_bug_during_render",
+                        "py.renderer.execute.step.user_visible_bug_during_render",
                         default="Something unexpected happened. We have been notified and are "
                         "working to fix it. If this persists, contact us. Error code: {message}",
                         args={"message": format_for_user_debugging(err)},
@@ -156,8 +152,7 @@ def invoke_render(
     fetch_result: Optional[FetchResult],
     output_filename: str,
 ) -> RenderResult:
-    """
-    Use kernel to process `table` with module `render` function.
+    """Use kernel to process `table` with module `render` function.
 
     Raise `ModuleError` on error. (This is usually the module author's fault.)
 
@@ -218,14 +213,13 @@ def _execute_wfmodule_pre(
     basedir: Path,
     exit_stack: contextlib.ExitStack,
     workflow: Workflow,
-    wf_module: WfModule,
+    step: Step,
     module_zipfile: ModuleZipfile,
     raw_params: Dict[str, Any],
     input_table: ArrowTable,
     tab_results: Dict[Tab, Optional[RenderResult]],
 ) -> ExecuteStepPreResult:
-    """
-    First step of execute_wfmodule().
+    """First step of execute_wfmodule().
 
     Raise TabCycleError or TabOutputUnreachableError if the module depends on
     tabs with errors. (We won't call the render() method in that case.)
@@ -233,7 +227,7 @@ def _execute_wfmodule_pre(
     Raise PromptingError if the module parameters are invalid. (We'll skip
     render() and prompt the user with quickfixes in that case.)
 
-    Raise UnneededExecution if `wf_module` has changed.
+    Raise UnneededExecution if `step` has changed.
 
     All this runs synchronously within a database lock. (It's a separate
     function so that when we're done awaiting it, we can continue executing in
@@ -242,13 +236,13 @@ def _execute_wfmodule_pre(
     `tab_results.keys()` must be ordered as the Workflow's tabs are.
     """
     # raises UnneededExecution
-    with locked_wf_module(workflow, wf_module) as safe_wf_module:
-        fetch_result = _load_fetch_result(safe_wf_module, basedir, exit_stack)
+    with locked_step(workflow, step) as safe_step:
+        fetch_result = _load_fetch_result(safe_step, basedir, exit_stack)
 
         module_spec = module_zipfile.get_spec()
         param_schema = module_spec.get_param_schema()
         render_context = renderprep.RenderContext(
-            wf_module.id,
+            step.id,
             input_table,
             tab_results,
             basedir,
@@ -263,22 +257,21 @@ def _execute_wfmodule_pre(
 
 @database_sync_to_async
 def _execute_wfmodule_save(
-    workflow: Workflow, wf_module: WfModule, result: RenderResult
+    workflow: Workflow, step: Step, result: RenderResult
 ) -> SaveResult:
-    """
-    Call rendercache.cache_render_result() and build notifications.OutputDelta.
+    """Call rendercache.cache_render_result() and build notifications.OutputDelta.
 
     All this runs synchronously within a database lock. (It's a separate
     function so that when we're done awaiting it, we can continue executing in
     a context that doesn't use a database thread.)
 
-    Raise UnneededExecution if the WfModule has changed in the interim.
+    Raise UnneededExecution if the Step has changed in the interim.
     """
     # raises UnneededExecution
     with contextlib.ExitStack() as exit_stack:
-        safe_wf_module = exit_stack.enter_context(locked_wf_module(workflow, wf_module))
-        if safe_wf_module.notifications:
-            stale_crr = safe_wf_module.get_stale_cached_render_result()
+        safe_step = exit_stack.enter_context(locked_step(workflow, step))
+        if safe_step.notifications:
+            stale_crr = safe_step.get_stale_cached_render_result()
             if stale_crr is None:
                 stale_parquet_file = None
             elif stale_crr.status == "ok":
@@ -290,9 +283,9 @@ def _execute_wfmodule_save(
                     # No, let's not send an email. Corrupt cache probably means
                     # we've been messing with our codebase.
                     logger.exception(
-                        "Ignoring CorruptCacheError on workflow %d, wf_module %d because we are about to overwrite it",
+                        "Ignoring CorruptCacheError on workflow %d, step %d because we are about to overwrite it",
                         workflow.id,
-                        wf_module.id,
+                        step.id,
                     )
                     stale_crr = None
                     stale_parquet_file = None
@@ -304,12 +297,12 @@ def _execute_wfmodule_save(
             stale_parquet_file = None
 
         rendercache.cache_render_result(
-            workflow, safe_wf_module, wf_module.last_relevant_delta_id, result
+            workflow, safe_step, step.last_relevant_delta_id, result
         )
 
         is_changed = False  # nothing to email, usually
         if stale_crr is not None:
-            fresh_crr = safe_wf_module.cached_render_result
+            fresh_crr = safe_step.cached_render_result
 
             if (
                 fresh_crr.status != stale_crr.status
@@ -330,23 +323,23 @@ def _execute_wfmodule_save(
                 )
 
         if is_changed:
-            safe_wf_module.has_unseen_notification = True
-            safe_wf_module.save(update_fields=["has_unseen_notification"])
+            safe_step.has_unseen_notification = True
+            safe_step.save(update_fields=["has_unseen_notification"])
             maybe_delta = notifications.OutputDelta(
-                safe_wf_module.workflow.owner,
-                safe_wf_module.workflow,
-                safe_wf_module,
+                safe_step.workflow.owner,
+                safe_step.workflow,
+                safe_step,
             )
         else:
             maybe_delta = None
 
-        return SaveResult(safe_wf_module.cached_render_result, maybe_delta)
+        return SaveResult(safe_step.cached_render_result, maybe_delta)
 
 
 async def _render_wfmodule(
     chroot_context: ChrootContext,
     workflow: Workflow,
-    wf_module: WfModule,
+    step: Step,
     module_zipfile: Optional[ModuleZipfile],
     raw_params: Dict[str, Any],
     tab: Tab,
@@ -354,15 +347,14 @@ async def _render_wfmodule(
     tab_results: Dict[Tab, Optional[RenderResult]],
     output_path: Path,
 ) -> RenderResult:
-    """
-    Prepare and call `wf_module`'s `render()`; return a RenderResult.
+    """Prepare and call `step`'s `render()`; return a RenderResult.
 
     The actual render runs in a background thread so the event loop can process
     other events.
     """
     basedir = output_path.parent
 
-    if wf_module.order > 0 and input_result.status != "ok":
+    if step.order > 0 and input_result.status != "ok":
         return RenderResult()  # 'unreachable'
 
     if module_zipfile is None:
@@ -370,7 +362,7 @@ async def _render_wfmodule(
             errors=[
                 RenderError(
                     I18nMessage.trans(
-                        "py.renderer.execute.wf_module.noModule",
+                        "py.renderer.execute.step.noModule",
                         default="Please delete this step: an administrator uninstalled its code.",
                     )
                 )
@@ -386,7 +378,7 @@ async def _render_wfmodule(
                 basedir,
                 exit_stack,
                 workflow,
-                wf_module,
+                step,
                 module_zipfile,
                 raw_params,
                 input_result.table,
@@ -397,7 +389,7 @@ async def _render_wfmodule(
                 errors=[
                     RenderError(
                         I18nMessage.trans(
-                            "py.renderer.execute.wf_module.TabCycleError",
+                            "py.renderer.execute.step.TabCycleError",
                             default="The chosen tab depends on this one. Please choose another tab.",
                         )
                     )
@@ -408,7 +400,7 @@ async def _render_wfmodule(
                 errors=[
                     RenderError(
                         I18nMessage.trans(
-                            "py.renderer.execute.wf_module.TabOutputUnreachableError",
+                            "py.renderer.execute.step.TabOutputUnreachableError",
                             default="The chosen tab has no output. Please select another one.",
                         )
                     )
@@ -440,7 +432,7 @@ async def _render_wfmodule(
 async def execute_wfmodule(
     chroot_context: ChrootContext,
     workflow: Workflow,
-    wf_module: WfModule,
+    step: Step,
     module_zipfile: Optional[ModuleZipfile],
     params: Dict[str, Any],
     tab: Tab,
@@ -448,17 +440,16 @@ async def execute_wfmodule(
     tab_results: Dict[Tab, Optional[RenderResult]],
     output_path: Path,
 ) -> RenderResult:
-    """
-    Render a single WfModule; cache, broadcast and return output.
+    """Render a single Step; cache, broadcast and return output.
 
     CONCURRENCY NOTES: This function is reasonably concurrency-friendly:
 
     * It returns a valid cache result immediately.
-    * It checks with the database that `wf_module` hasn't been deleted from
+    * It checks with the database that `step` hasn't been deleted from
       its workflow.
-    * It checks with the database that `wf_module` hasn't been deleted from
+    * It checks with the database that `step` hasn't been deleted from
       the database entirely.
-    * It checks with the database that `wf_module` hasn't been modified. (It
+    * It checks with the database that `step` hasn't been modified. (It
       is very common for a user to request a module's output -- kicking off a
       sequence of `execute_wfmodule` -- and then change a param in a prior
       module, making all those calls obsolete.
@@ -469,18 +460,18 @@ async def execute_wfmodule(
     These guarantees mean:
 
     * TODO It's relatively cheap to render twice.
-    * Users who modify a WfModule while it's rendering will be stalled -- for
+    * Users who modify a Step while it's rendering will be stalled -- for
       as short a duration as possible.
     * When a user changes a workflow significantly, all prior renders will end
       relatively cheaply.
 
-    Raises `UnneededExecution` when the input WfModule should not be rendered.
+    Raises `UnneededExecution` when the input Step should not be rendered.
     """
     # may raise UnneededExecution
     result = await _render_wfmodule(
         chroot_context=chroot_context,
         workflow=workflow,
-        wf_module=wf_module,
+        step=step,
         module_zipfile=module_zipfile,
         raw_params=params,
         tab=tab,
@@ -490,12 +481,12 @@ async def execute_wfmodule(
     )
 
     # may raise UnneededExecution
-    crr, output_delta = await _execute_wfmodule_save(workflow, wf_module, result)
+    crr, output_delta = await _execute_wfmodule_save(workflow, step, result)
 
     update = clientside.Update(
         steps={
-            wf_module.id: clientside.StepUpdate(
-                render_result=crr, module_slug=wf_module.module_id_name
+            step.id: clientside.StepUpdate(
+                render_result=crr, module_slug=step.module_id_name
             )
         }
     )

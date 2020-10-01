@@ -115,7 +115,7 @@ export default class WorkbenchAPI {
     })
   }
 
-  reorderWfModules (tabSlug, wfModuleIds) {
+  reorderSteps (tabSlug, wfModuleIds) {
     return this._callExpectingNull('tab.reorder_modules', {
       tabSlug,
       wfModuleIds
@@ -144,7 +144,7 @@ export default class WorkbenchAPI {
   }
 
   deleteModule (wfModuleId) {
-    return this._callExpectingNull('wf_module.delete', {
+    return this._callExpectingNull('step.delete', {
       wfModuleId
     })
   }
@@ -159,23 +159,23 @@ export default class WorkbenchAPI {
     return this._post(`/api/workflows/${workflowId}`, { public: isPublic })
   }
 
-  trySetWfModuleAutofetch (wfModuleId, isAutofetch, fetchInterval) {
-    return this.websocket.callServerHandler('wf_module.try_set_autofetch', {
+  trySetStepAutofetch (wfModuleId, isAutofetch, fetchInterval) {
+    return this.websocket.callServerHandler('step.try_set_autofetch', {
       wfModuleId,
       isAutofetch,
       fetchInterval
     })
   }
 
-  setWfModuleNotifications (wfModuleId, notifications) {
-    return this._callExpectingNull('wf_module.set_notifications', {
+  setStepNotifications (wfModuleId, notifications) {
+    return this._callExpectingNull('step.set_notifications', {
       wfModuleId,
       notifications
     })
   }
 
-  setWfModuleParams (wfModuleId, values) {
-    return this._callExpectingNull('wf_module.set_params', {
+  setStepParams (wfModuleId, values) {
+    return this._callExpectingNull('step.set_params', {
       wfModuleId,
       values
     })
@@ -225,22 +225,22 @@ export default class WorkbenchAPI {
     })
   }
 
-  setWfModuleVersion (wfModuleId, version) {
-    return this._callExpectingNull('wf_module.set_stored_data_version', {
+  setStepVersion (wfModuleId, version) {
+    return this._callExpectingNull('step.set_stored_data_version', {
       wfModuleId,
       version
     })
   }
 
-  setWfModuleNotes (wfModuleId, notes) {
-    return this._callExpectingNull('wf_module.set_notes', {
+  setStepNotes (wfModuleId, notes) {
+    return this._callExpectingNull('step.set_notes', {
       wfModuleId,
       notes
     })
   }
 
-  setWfModuleCollapsed (wfModuleId, isCollapsed) {
-    return this._callExpectingNull('wf_module.set_collapsed', {
+  setStepCollapsed (wfModuleId, isCollapsed) {
+    return this._callExpectingNull('step.set_collapsed', {
       wfModuleId,
       isCollapsed
     })
@@ -257,7 +257,7 @@ export default class WorkbenchAPI {
    * other shenanigans that prevent the selection from happening, as it doesn't
    * affect any data.
    */
-  setSelectedWfModule (wfModuleId) {
+  setSelectedStep (wfModuleId) {
     return this._callExpectingNull('workflow.set_position', {
       wfModuleId
     })
@@ -288,8 +288,8 @@ export default class WorkbenchAPI {
     return this._post(`/api/workflows/${workflowId}/duplicate`, null)
   }
 
-  clearWfModuleUnseenNotifications (wfModuleId) {
-    return this._callExpectingNull('wf_module.clear_unseen_notifications', { wfModuleId })
+  clearStepUnseenNotifications (wfModuleId) {
+    return this._callExpectingNull('step.clear_unseen_notifications', { wfModuleId })
   }
 
   importModuleFromGitHub (url) {
@@ -302,7 +302,7 @@ export default class WorkbenchAPI {
   }
 
   requestFetch (wfModuleId) {
-    return this._callExpectingNull('wf_module.fetch', {
+    return this._callExpectingNull('step.fetch', {
       wfModuleId
     })
   }
@@ -313,7 +313,7 @@ export default class WorkbenchAPI {
    * On auth error (or any other error), warn on console and return null.
    */
   createOauthAccessToken (wfModuleId, param) {
-    return this.websocket.callServerHandler('wf_module.generate_secret_access_token', {
+    return this.websocket.callServerHandler('step.generate_secret_access_token', {
       wfModuleId,
       param
     })
@@ -376,14 +376,14 @@ export default class WorkbenchAPI {
   }
 
   deleteSecret (wfModuleId, param) {
-    return this._callExpectingNull('wf_module.delete_secret', {
+    return this._callExpectingNull('step.delete_secret', {
       wfModuleId,
       param
     })
   }
 
   setSecret (wfModuleId, param, secret) {
-    return this._callExpectingNull('wf_module.set_secret', {
+    return this._callExpectingNull('step.set_secret', {
       wfModuleId,
       param,
       secret
@@ -408,15 +408,15 @@ export default class WorkbenchAPI {
     return uploadManager.cancel(wfModuleId)
   }
 
-  async getWfModuleFileUploadApiToken (wfModuleId) {
-    return this.websocket.callServerHandler('wf_module.get_file_upload_api_token', { wfModuleId }).then(({ apiToken }) => apiToken)
+  async getStepFileUploadApiToken (wfModuleId) {
+    return this.websocket.callServerHandler('step.get_file_upload_api_token', { wfModuleId }).then(({ apiToken }) => apiToken)
   }
 
-  async resetWfModuleFileUploadApiToken (wfModuleId) {
-    return this.websocket.callServerHandler('wf_module.reset_file_upload_api_token', { wfModuleId }).then(({ apiToken }) => apiToken)
+  async resetStepFileUploadApiToken (wfModuleId) {
+    return this.websocket.callServerHandler('step.reset_file_upload_api_token', { wfModuleId }).then(({ apiToken }) => apiToken)
   }
 
-  async clearWfModuleFileUploadApiToken (wfModuleId) {
-    return this._callExpectingNull('wf_module.clear_file_upload_api_token', { wfModuleId })
+  async clearStepFileUploadApiToken (wfModuleId) {
+    return this._callExpectingNull('step.clear_file_upload_api_token', { wfModuleId })
   }
 }

@@ -13,7 +13,7 @@ from cjwkernel.tests.util import arrow_table
 from cjwstate import commands
 from cjwstate.rendercache.io import (
     cache_render_result,
-    delete_parquet_files_for_wf_module,
+    delete_parquet_files_for_step,
 )
 from cjwstate.models import Workflow
 from cjwstate.tests.utils import LoggedInTestCase
@@ -32,17 +32,17 @@ empty_data_json = {"start_row": 0, "end_row": 0, "rows": []}
 
 @patch.object(commands, "queue_render", async_noop)
 @patch.object(commands, "websockets_notify", async_noop)
-class WfModuleTests(LoggedInTestCase):
+class StepTests(LoggedInTestCase):
     # Test workflow with modules that implement a simple pipeline on test data
     def setUp(self):
         super().setUp()  # log in
 
         self.workflow = Workflow.objects.create(name="test", owner=self.user)
         self.tab = self.workflow.tabs.create(position=0)
-        self.wf_module1 = self.tab.wf_modules.create(
+        self.step1 = self.tab.steps.create(
             order=0, slug="step-1", last_relevant_delta_id=1
         )
-        self.wf_module2 = self.tab.wf_modules.create(
+        self.step2 = self.tab.steps.create(
             order=1, slug="step-2", last_relevant_delta_id=2
         )
 
@@ -81,13 +81,13 @@ class WfModuleTests(LoggedInTestCase):
         int64 = 2 ** 62 + 10
         cache_render_result(
             self.workflow,
-            self.wf_module2,
-            self.wf_module2.last_relevant_delta_id,
+            self.step2,
+            self.step2.last_relevant_delta_id,
             RenderResult(arrow_table({"A": [1, int64]})),
         )
-        self.wf_module2.save()
+        self.step2.save()
 
-        response = self.client.get("/api/wfmodules/%d/render" % self.wf_module2.id)
+        response = self.client.get("/api/wfmodules/%d/render" % self.step2.id)
         self.assertEqual(response.status_code, 200)
 
     @override_settings(MAX_COLUMNS_PER_CLIENT_REQUEST=2)
@@ -97,22 +97,22 @@ class WfModuleTests(LoggedInTestCase):
         # assumes the client will behave differently when it has >MAX columns.)
         cache_render_result(
             self.workflow,
-            self.wf_module2,
-            self.wf_module2.last_relevant_delta_id,
+            self.step2,
+            self.step2.last_relevant_delta_id,
             RenderResult(arrow_table({"A": [1], "B": [2], "C": [3], "D": [4]})),
         )
 
-        response = self.client.get("/api/wfmodules/%d/render" % self.wf_module2.id)
+        response = self.client.get("/api/wfmodules/%d/render" % self.step2.id)
         self.assertEqual(response.status_code, 200)
         # One column more than configured limit, so client knows to display
         # "too many columns".
         self.assertEqual(len(json.loads(response.content)["rows"][0]), 3)
 
-    def test_wf_module_render(self):
+    def test_step_render(self):
         cache_render_result(
             self.workflow,
-            self.wf_module2,
-            self.wf_module2.last_relevant_delta_id,
+            self.step2,
+            self.step2.last_relevant_delta_id,
             RenderResult(
                 arrow_table(
                     {
@@ -124,7 +124,7 @@ class WfModuleTests(LoggedInTestCase):
             ),
         )
 
-        response = self.client.get("/api/wfmodules/%d/render" % self.wf_module2.id)
+        response = self.client.get("/api/wfmodules/%d/render" % self.step2.id)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(
             json.loads(response.content),
@@ -140,12 +140,12 @@ class WfModuleTests(LoggedInTestCase):
             },
         )
 
-    def test_wf_module_render_null_timestamp(self):
+    def test_step_render_null_timestamp(self):
         # Ran into problems 2019-09-06, when switching to Arrow
         cache_render_result(
             self.workflow,
-            self.wf_module2,
-            self.wf_module2.last_relevant_delta_id,
+            self.step2,
+            self.step2.last_relevant_delta_id,
             RenderResult(
                 arrow_table(
                     {
@@ -158,42 +158,42 @@ class WfModuleTests(LoggedInTestCase):
             ),
         )
 
-        response = self.client.get("/api/wfmodules/%d/render" % self.wf_module2.id)
+        response = self.client.get("/api/wfmodules/%d/render" % self.step2.id)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(
             json.loads(response.content)["rows"],
             [{"A": "2019-01-02T03:04:05.006007Z"}, {"A": None}],
         )
 
-    def test_wf_module_render_missing_parquet_file(self):
+    def test_step_render_missing_parquet_file(self):
         # https://www.pivotaltracker.com/story/show/161988744
         cache_render_result(
             self.workflow,
-            self.wf_module2,
-            self.wf_module2.last_relevant_delta_id,
+            self.step2,
+            self.step2.last_relevant_delta_id,
             RenderResult(arrow_table({"A": [1]})),
         )
 
-        # Simulate a race: we're overwriting the cache or deleting the WfModule
+        # Simulate a race: we're overwriting the cache or deleting the Step
         # or some-such.
-        delete_parquet_files_for_wf_module(self.workflow.id, self.wf_module2.id)
+        delete_parquet_files_for_step(self.workflow.id, self.step2.id)
 
-        response = self.client.get("/api/wfmodules/%d/render" % self.wf_module2.id)
+        response = self.client.get("/api/wfmodules/%d/render" % self.step2.id)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(
             json.loads(response.content), {"end_row": 0, "rows": [], "start_row": 0}
         )
 
-    def test_wf_module_render_only_rows(self):
+    def test_step_render_only_rows(self):
         cache_render_result(
             self.workflow,
-            self.wf_module2,
-            self.wf_module2.last_relevant_delta_id,
+            self.step2,
+            self.step2.last_relevant_delta_id,
             RenderResult(arrow_table({"A": [0, 1, 2, 3, 4]})),
         )
 
         response = self.client.get(
-            "/api/wfmodules/%d/render?startrow=1&endrow=3" % self.wf_module2.id
+            "/api/wfmodules/%d/render?startrow=1&endrow=3" % self.step2.id
         )
         self.assertIs(response.status_code, status.HTTP_200_OK)
         body = json.loads(response.content)
@@ -201,17 +201,17 @@ class WfModuleTests(LoggedInTestCase):
         self.assertEqual(body["start_row"], 1)
         self.assertEqual(body["end_row"], 3)
 
-    def test_wf_module_render_clip_out_of_bounds(self):
+    def test_step_render_clip_out_of_bounds(self):
         cache_render_result(
             self.workflow,
-            self.wf_module2,
-            self.wf_module2.last_relevant_delta_id,
+            self.step2,
+            self.step2.last_relevant_delta_id,
             RenderResult(arrow_table({"A": [0, 1]})),
         )
 
         # index out of bounds should clip
         response = self.client.get(
-            "/api/wfmodules/%d/render?startrow=-1&endrow=500" % self.wf_module2.id
+            "/api/wfmodules/%d/render?startrow=-1&endrow=500" % self.step2.id
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(
@@ -219,16 +219,16 @@ class WfModuleTests(LoggedInTestCase):
             {"start_row": 0, "end_row": 2, "rows": [{"A": 0}, {"A": 1}]},
         )
 
-    def test_wf_module_render_start_row_after_end_row(self):
+    def test_step_render_start_row_after_end_row(self):
         cache_render_result(
             self.workflow,
-            self.wf_module2,
-            self.wf_module2.last_relevant_delta_id,
+            self.step2,
+            self.step2.last_relevant_delta_id,
             RenderResult(arrow_table({"A": [0, 1, 2, 3, 4]})),
         )
 
         response = self.client.get(
-            "/api/wfmodules/%d/render?startrow=3&endrow=1" % self.wf_module2.id
+            "/api/wfmodules/%d/render?startrow=3&endrow=1" % self.step2.id
         )
         self.assertIs(response.status_code, status.HTTP_200_OK)
         body = json.loads(response.content)
@@ -236,23 +236,23 @@ class WfModuleTests(LoggedInTestCase):
         self.assertEqual(body["start_row"], 3)
         self.assertEqual(body["end_row"], 3)
 
-    def test_wf_module_render_invalid_endrow(self):
+    def test_step_render_invalid_endrow(self):
         # index not a number -> bad request
         response = self.client.get(
-            "/api/wfmodules/%d/render?startrow=0&endrow=frog" % self.wf_module2.id
+            "/api/wfmodules/%d/render?startrow=0&endrow=frog" % self.step2.id
         )
         self.assertIs(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_value_counts_str(self):
         cache_render_result(
             self.workflow,
-            self.wf_module2,
-            self.wf_module2.last_relevant_delta_id,
+            self.step2,
+            self.step2.last_relevant_delta_id,
             RenderResult(arrow_table({"A": ["a", "b", "b", "a", "c", None]})),
         )
 
         response = self.client.get(
-            f"/api/wfmodules/{self.wf_module2.id}/value-counts?column=A"
+            f"/api/wfmodules/{self.step2.id}/value-counts?column=A"
         )
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -263,8 +263,8 @@ class WfModuleTests(LoggedInTestCase):
     def test_value_counts_dictionary(self):
         cache_render_result(
             self.workflow,
-            self.wf_module2,
-            self.wf_module2.last_relevant_delta_id,
+            self.step2,
+            self.step2.last_relevant_delta_id,
             RenderResult(
                 arrow_table(
                     {"A": pa.array(["a", "b", "b", "a", "c", None]).dictionary_encode()}
@@ -273,7 +273,7 @@ class WfModuleTests(LoggedInTestCase):
         )
 
         response = self.client.get(
-            f"/api/wfmodules/{self.wf_module2.id}/value-counts?column=A"
+            f"/api/wfmodules/{self.step2.id}/value-counts?column=A"
         )
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -285,16 +285,16 @@ class WfModuleTests(LoggedInTestCase):
         # https://www.pivotaltracker.com/story/show/161988744
         cache_render_result(
             self.workflow,
-            self.wf_module2,
-            self.wf_module2.last_relevant_delta_id,
+            self.step2,
+            self.step2.last_relevant_delta_id,
             RenderResult(arrow_table({"A": ["a"]})),
         )
-        # Simulate a race: we're overwriting the cache or deleting the WfModule
+        # Simulate a race: we're overwriting the cache or deleting the Step
         # or some-such.
-        delete_parquet_files_for_wf_module(self.workflow.id, self.wf_module2.id)
+        delete_parquet_files_for_step(self.workflow.id, self.step2.id)
 
         response = self.client.get(
-            f"/api/wfmodules/{self.wf_module2.id}/value-counts?column=A"
+            f"/api/wfmodules/{self.step2.id}/value-counts?column=A"
         )
 
         # We _could_ return an empty result set; but our only goal here is
@@ -309,8 +309,8 @@ class WfModuleTests(LoggedInTestCase):
     def test_value_counts_disallow_non_text(self):
         cache_render_result(
             self.workflow,
-            self.wf_module2,
-            self.wf_module2.last_relevant_delta_id,
+            self.step2,
+            self.step2.last_relevant_delta_id,
             RenderResult(
                 arrow_table(
                     {"A": [1, 2, 3, 2, 1]},
@@ -320,14 +320,14 @@ class WfModuleTests(LoggedInTestCase):
         )
 
         response = self.client.get(
-            f"/api/wfmodules/{self.wf_module2.id}/value-counts?column=A"
+            f"/api/wfmodules/{self.step2.id}/value-counts?column=A"
         )
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(json.loads(response.content), {"values": {}})
 
     def test_value_counts_param_invalid(self):
-        response = self.client.get(f"/api/wfmodules/{self.wf_module2.id}/value-counts")
+        response = self.client.get(f"/api/wfmodules/{self.step2.id}/value-counts")
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(
@@ -337,13 +337,13 @@ class WfModuleTests(LoggedInTestCase):
     def test_value_counts_missing_column(self):
         cache_render_result(
             self.workflow,
-            self.wf_module2,
-            self.wf_module2.last_relevant_delta_id,
+            self.step2,
+            self.step2.last_relevant_delta_id,
             RenderResult(arrow_table({"A": ["a", "b"]})),
         )
 
         response = self.client.get(
-            f"/api/wfmodules/{self.wf_module2.id}/value-counts?column=B"
+            f"/api/wfmodules/{self.step2.id}/value-counts?column=B"
         )
 
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)

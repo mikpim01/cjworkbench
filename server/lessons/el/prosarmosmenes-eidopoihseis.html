@@ -17,12 +17,12 @@
       data-test="return workflow.tabs[0].wfModuleSlugs[0] === 'loadurl'"
       >Προσθέστε την πηγή δεδομένων &quot;Προσθήκη από URL&quot;.</li>
     <li
-      data-highlight='[{"type":"WfModule","moduleIdName":"loadurl"}]'
+      data-highlight='[{"type":"Step","moduleIdName":"loadurl"}]'
       data-test="const wfModule = workflow.tabs[0].wfModules[0]; return wfModule.params.url === 'https://data.cityofnewyork.us/resource/7x9x-zpz6.json?$order=cmplnt_fr_dt%20DESC' && wfModule.selectedVersion"
     >Επικολλήστε το ακόλουθο URL και κάντε κλικ στην <kbd>Ενημέρωση</kbd> για να φορτωθούν τα δεδομένα.<div class="copy-txt">https://data.cityofnewyork.us/resource/7x9x-zpz6.json?$order=cmplnt_fr_dt%20DESC</div>
     </li>
     <li
-      data-highlight='[{"type":"WfModule","moduleIdName":"loadurl"}]'
+      data-highlight='[{"type":"Step","moduleIdName":"loadurl"}]'
       data-test="
         const wfModule = workflow.tabs[0].wfModules[0]
         return wfModule.updateInterval === 18000

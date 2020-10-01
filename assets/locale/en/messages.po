@@ -474,44 +474,44 @@ msgstr "Tab"
 msgid "js.WorkflowEditor.wfmodule.DeprecationNotice.learnHowToReplace"
 msgstr "Learn how to replace this step"
 
-#: assets/js/WorkflowEditor/wfmodule/WfModule.js:355
+#: assets/js/WorkflowEditor/wfmodule/Step.js:355
 msgid "js.WorkflowEditor.wfmodule.EditableNotes.placeholder"
 msgstr "Type a note..."
 
 #. When clicked, this opens a menu with more actions.
-#: assets/js/WorkflowEditor/wfmodule/WfModuleContextMenu.js:17
-msgid "js.WorkflowEditor.wfmodule.WfModuleContextMenu.more.hoverText"
+#: assets/js/WorkflowEditor/wfmodule/StepContextMenu.js:17
+msgid "js.WorkflowEditor.wfmodule.StepContextMenu.more.hoverText"
 msgstr "more"
 
-#: assets/js/WorkflowEditor/wfmodule/WfModule.js:240
+#: assets/js/WorkflowEditor/wfmodule/Step.js:240
 msgid "js.WorkflowEditor.wfmodule.ZenMode.enter"
 msgstr "enter Zen mode"
 
-#: assets/js/WorkflowEditor/wfmodule/WfModule.js:240
+#: assets/js/WorkflowEditor/wfmodule/Step.js:240
 msgid "js.WorkflowEditor.wfmodule.ZenMode.exit"
 msgstr "exit Zen mode"
 
-#: assets/js/WorkflowEditor/wfmodule/WfModule.js:372
+#: assets/js/WorkflowEditor/wfmodule/Step.js:372
 msgid "js.WorkflowEditor.wfmodule.alert.disabled"
 msgstr "Email alerts disabled"
 
-#: assets/js/WorkflowEditor/wfmodule/WfModule.js:372
+#: assets/js/WorkflowEditor/wfmodule/Step.js:372
 msgid "js.WorkflowEditor.wfmodule.alert.enabled"
 msgstr "Email alerts enabled"
 
-#: assets/js/WorkflowEditor/wfmodule/WfModule.js:384
+#: assets/js/WorkflowEditor/wfmodule/Step.js:384
 msgid "js.WorkflowEditor.wfmodule.help.hoverText"
 msgstr "Help for this module"
 
-#: assets/js/WorkflowEditor/wfmodule/WfModule.js:394
+#: assets/js/WorkflowEditor/wfmodule/Step.js:394
 msgid "js.WorkflowEditor.wfmodule.notes.edit.hoverText"
 msgstr "Edit Note"
 
-#: assets/js/WorkflowEditor/wfmodule/WfModuleContextMenu.js:22
+#: assets/js/WorkflowEditor/wfmodule/StepContextMenu.js:22
 msgid "js.WorkflowEditor.wfmodule.wfModuleContextMenu.delete"
 msgstr "Delete"
 
-#: assets/js/WorkflowEditor/wfmodule/WfModuleContextMenu.js:21
+#: assets/js/WorkflowEditor/wfmodule/StepContextMenu.js:21
 msgid "js.WorkflowEditor.wfmodule.wfModuleContextMenu.exportData"
 msgstr "Export data"
 
@@ -2008,22 +2008,22 @@ msgstr ""
 "timestamp {Timestamps} other {}} to {best_wanted_type, select, text "
 "{Text} number {Numbers} timestamp {Timestamps} other{}}.}}"
 
-#: renderer/execute/wf_module.py:141
-msgid "py.renderer.execute.wf_module.user_visible_bug_during_render"
+#: renderer/execute/step.py:141
+msgid "py.renderer.execute.step.user_visible_bug_during_render"
 msgstr ""
 "Something unexpected happened. We have been notified and are working to "
 "fix it. If this persists, contact us. Error code: {message}"
 
-#: renderer/execute/wf_module.py:372
-msgid "py.renderer.execute.wf_module.noModule"
+#: renderer/execute/step.py:372
+msgid "py.renderer.execute.step.noModule"
 msgstr "Please delete this step: an administrator uninstalled its code."
 
-#: renderer/execute/wf_module.py:399
-msgid "py.renderer.execute.wf_module.TabCycleError"
+#: renderer/execute/step.py:399
+msgid "py.renderer.execute.step.TabCycleError"
 msgstr "The chosen tab depends on this one. Please choose another tab."
 
-#: renderer/execute/wf_module.py:410
-msgid "py.renderer.execute.wf_module.TabOutputUnreachableError"
+#: renderer/execute/step.py:410
+msgid "py.renderer.execute.step.TabOutputUnreachableError"
 msgstr "The chosen tab has no output. Please select another one."
 
 #: templates/403.html:6

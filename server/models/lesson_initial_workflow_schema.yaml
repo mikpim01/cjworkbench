@@ -18,7 +18,7 @@ properties:
           description: Modules applied in this tab
           items:
             type: object
-            description: A single WfModule
+            description: A single Step
             required: [module, params]
             properties:
               module:

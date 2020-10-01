@@ -5,7 +5,7 @@ import { matchLessonHighlight } from '../util/LessonHighlight'
 
 function isStepDone (sectionTitle, stepIndex, stateWithHelpers, step) {
   // Canonical example testJs:
-  // `return workflow.selectedWfModule.moduleSlug === 'loadurl'`
+  // `return workflow.selectedStep.moduleSlug === 'loadurl'`
   const fn = new Function('state', 'workflow', '"use strict"; ' + step.testJs)
   // Give our function a name: makes it easy to debug crashes
   Object.defineProperty(fn, 'name', {
@@ -55,9 +55,9 @@ function testLessonHighlightButThereIsNoLesson (test) { return false }
 
 const getWorkflow = ({ workflow }) => workflow
 const getTabs = ({ tabs }) => tabs
-const getWfModules = ({ wfModules }) => wfModules
+const getSteps = ({ wfModules }) => wfModules
 const getModules = ({ modules }) => modules
-const getSelectedWfModule = (state) => state.selected_wf_module
+const getSelectedStep = (state) => state.selected_step
 const getLessonData = ({ lessonData }) => lessonData || null
 
 /**
@@ -70,7 +70,7 @@ const getLessonData = ({ lessonData }) => lessonData || null
  * function mapStateToProps(state, ownProps) {
  *   const { testHighlight } = lessonSelector(state)
  *   return {
- *     isLessonHighlight: testHighlight({ type: 'WfModule', moduleName: ownProps.moduleName })
+ *     isLessonHighlight: testHighlight({ type: 'Step', moduleName: ownProps.moduleName })
  *   }
  * }
  * ```
@@ -91,8 +91,8 @@ const getLessonData = ({ lessonData }) => lessonData || null
  * suggested.
  */
 const getLesson = createSelector(
-  [getWorkflow, getTabs, getWfModules, getModules, getSelectedWfModule, getLessonData],
-  (workflow, tabs, wfModules, modules, selectedWfModule, lessonData) => {
+  [getWorkflow, getTabs, getSteps, getModules, getSelectedStep, getLessonData],
+  (workflow, tabs, wfModules, modules, selectedStep, lessonData) => {
     if (lessonData === null) {
       return {
         activeSectionIndex: null,
@@ -106,7 +106,7 @@ const getLesson = createSelector(
       tabs,
       wfModules,
       modules,
-      selected_wf_module: selectedWfModule
+      selected_step: selectedStep
     })
     const { activeSectionIndex, activeStepIndex, activeStep } = calculateActiveStep(stateWithHelpers, lessonData.sections)
     const lessonHighlight = activeStep ? activeStep.highlight : []

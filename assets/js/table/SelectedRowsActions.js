@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import { UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem } from '../components/Dropdown'
 import { connect } from 'react-redux'
 import { createSelector } from 'reselect'
-import { addModuleAction, setWfModuleParamsAction, setSelectedWfModuleAction } from '../workflow-reducer'
+import { addModuleAction, setStepParamsAction, setSelectedStepAction } from '../workflow-reducer'
 import { Plural, t } from '@lingui/macro'
 import { withI18n } from '@lingui/react'
 
@@ -194,7 +194,7 @@ function maybeAddSelectedRowsToParams (module, wfModule, rowsString, fromInput) 
   }
 }
 
-function ensureWfModuleForRowsAction (currentWfModuleId, moduleIdName, rowsString) {
+function ensureStepForRowsAction (currentStepId, moduleIdName, rowsString) {
   return (dispatch, getState) => {
     const { wfModules, tabs, modules } = getState()
 
@@ -202,45 +202,45 @@ function ensureWfModuleForRowsAction (currentWfModuleId, moduleIdName, rowsStrin
     function simplyAdd () {
       return dispatch(addModuleAction(
         moduleIdName,
-        { afterWfModuleId: currentWfModuleId },
+        { afterStepId: currentStepId },
         { rows: rowsString }
       ))
     }
 
-    // Does currentWfModuleId point to the very module we're asking to add?
+    // Does currentStepId point to the very module we're asking to add?
     // e.g., are we clicking "Delete rows" from the "Delete rows" output?
     //
     // If so -- and if the module has support.js defining addSelectedRows() --
-    // modify the current WfModule.
-    const currentWfModule = wfModules[String(currentWfModuleId)]
-    if (currentWfModule.module === moduleIdName) {
-      const currentModule = modules[currentWfModule.module]
-      const newParams = maybeAddSelectedRowsToParams(currentModule, currentWfModule, rowsString, false)
+    // modify the current Step.
+    const currentStep = wfModules[String(currentStepId)]
+    if (currentStep.module === moduleIdName) {
+      const currentModule = modules[currentStep.module]
+      const newParams = maybeAddSelectedRowsToParams(currentModule, currentStep, rowsString, false)
       if (newParams !== null) {
-        return dispatch(setWfModuleParamsAction(currentWfModuleId, newParams))
+        return dispatch(setStepParamsAction(currentStepId, newParams))
       }
     }
 
-    const tab = tabs[currentWfModule.tab_slug]
+    const tab = tabs[currentStep.tab_slug]
 
-    // Does nextWfModuleId point to the very module we're asking to add?
+    // Does nextStepId point to the very module we're asking to add?
     // e.g., did we delete rows, select the input, and delete more rows?
     //
     // If so -- and if the module has support.js defining addSelectedRows() --
     // modify the current module.
-    const index = tab.wf_module_ids.indexOf(currentWfModuleId)
+    const index = tab.step_ids.indexOf(currentStepId)
     if (index === -1) return simplyAdd()
-    const nextWfModuleId = tab.wf_module_ids[index + 1]
-    if (!nextWfModuleId) return simplyAdd()
-    const nextWfModule = wfModules[String(nextWfModuleId)]
-    if (!nextWfModule) return simplyAdd()
+    const nextStepId = tab.step_ids[index + 1]
+    if (!nextStepId) return simplyAdd()
+    const nextStep = wfModules[String(nextStepId)]
+    if (!nextStep) return simplyAdd()
 
-    if (nextWfModule.module === moduleIdName) {
-      const nextModule = modules[nextWfModule.module]
-      const newParams = maybeAddSelectedRowsToParams(nextModule, nextWfModule, rowsString, true)
+    if (nextStep.module === moduleIdName) {
+      const nextModule = modules[nextStep.module]
+      const newParams = maybeAddSelectedRowsToParams(nextModule, nextStep, rowsString, true)
       if (newParams !== null) {
-        dispatch(setSelectedWfModuleAction(nextWfModuleId))
-        return dispatch(setWfModuleParamsAction(nextWfModuleId, newParams))
+        dispatch(setSelectedStepAction(nextStepId))
+        return dispatch(setStepParamsAction(nextStepId, newParams))
       }
     }
 
@@ -250,7 +250,7 @@ function ensureWfModuleForRowsAction (currentWfModuleId, moduleIdName, rowsStrin
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    onClickRowsAction: (...args) => dispatch(ensureWfModuleForRowsAction(...args))
+    onClickRowsAction: (...args) => dispatch(ensureStepForRowsAction(...args))
   }
 }
 

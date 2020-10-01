@@ -1,9 +1,9 @@
 /* globals afterEach, beforeEach, describe, expect, it, jest */
 import React from 'react'
-import WfModuleContextMenu from './WfModuleContextMenu'
+import StepContextMenu from './StepContextMenu'
 import { mountWithI18n } from '../../i18n/test-utils'
 
-describe('WfModuleContextMenu', () => {
+describe('StepContextMenu', () => {
   let wrapper
   let removeModule
 
@@ -11,7 +11,7 @@ describe('WfModuleContextMenu', () => {
     removeModule = jest.fn()
 
     wrapper = mountWithI18n(
-      <WfModuleContextMenu
+      <StepContextMenu
         removeModule={removeModule}
         id={415}
         className='menu-test-class'

@@ -9,8 +9,8 @@ describe('DoneHelpers', () => {
         selected_tab_position: 0
       }, {
         tabs: {
-          'tab-21': { wf_module_ids: [1, 2] },
-          'tab-22': { wf_module_ids: [] }
+          'tab-21': { step_ids: [1, 2] },
+          'tab-22': { step_ids: [] }
         },
         wfModules: {
           1: { module: 'foo' },
@@ -32,8 +32,8 @@ describe('DoneHelpers', () => {
         selected_tab_position: 0
       }, {
         tabs: {
-          'tab-21': { wf_module_ids: [1, 2] },
-          'tab-22': { wf_module_ids: [] }
+          'tab-21': { step_ids: [1, 2] },
+          'tab-22': { step_ids: [] }
         },
         wfModules: {
           1: { module: 'foo' },
@@ -54,8 +54,8 @@ describe('DoneHelpers', () => {
         selected_tab_position: 0
       }, {
         tabs: {
-          'tab-21': { wf_module_ids: [1, 2] },
-          'tab-22': { wf_module_ids: [] }
+          'tab-21': { step_ids: [1, 2] },
+          'tab-22': { step_ids: [] }
         },
         wfModules: {
           1: { module: 'foo' },
@@ -76,8 +76,8 @@ describe('DoneHelpers', () => {
         selected_tab_position: 0
       }, {
         tabs: {
-          'tab-21': { wf_module_ids: [1, 2, '3_nonce'] },
-          'tab-22': { wf_module_ids: [] }
+          'tab-21': { step_ids: [1, 2, '3_nonce'] },
+          'tab-22': { step_ids: [] }
         },
         wfModules: {
           1: { module: 'blah' }, // not a real module
@@ -211,8 +211,8 @@ describe('DoneHelpers', () => {
           selected_tab_position: 1
         },
         tabs: {
-          'tab-21': { wf_module_ids: [] },
-          'tab-22': { wf_module_ids: [1, 2] }
+          'tab-21': { step_ids: [] },
+          'tab-22': { step_ids: [1, 2] }
         },
         wfModules: {
           1: { module: 'foo' },
@@ -228,15 +228,15 @@ describe('DoneHelpers', () => {
       expect(state.selectedTab.wfModuleSlugs).toEqual(['foo', 'bar'])
     })
 
-    it('should have a .selectedWfModule', () => {
+    it('should have a .selectedStep', () => {
       const state = new StateWithHelpers({
         workflow: {
           tab_slugs: ['tab-11', 'tab-12'],
           selected_tab_position: 1
         },
         tabs: {
-          'tab-11': { wf_module_ids: [] },
-          'tab-12': { wf_module_ids: [2, 3], selected_wf_module_position: 1 }
+          'tab-11': { step_ids: [] },
+          'tab-12': { step_ids: [2, 3], selected_step_position: 1 }
         },
         wfModules: {
           2: { module: 'foo' },
@@ -248,8 +248,8 @@ describe('DoneHelpers', () => {
         }
       })
 
-      expect(state.selectedWfModule.moduleName).toEqual('Bar')
-      expect(state.selectedWfModule.moduleSlug).toEqual('bar')
+      expect(state.selectedStep.moduleName).toEqual('Bar')
+      expect(state.selectedStep.moduleSlug).toEqual('bar')
     })
   })
 })

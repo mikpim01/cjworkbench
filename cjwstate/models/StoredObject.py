@@ -6,7 +6,7 @@ from cjwstate import minio
 
 
 # StoredObject is our persistence layer.
-# Allows WfModules to store keyed, versioned binary objects
+# Allows Steps to store keyed, versioned binary objects
 class StoredObject(models.Model):
     """
     EVIL way of storing fetch results.
@@ -15,16 +15,16 @@ class StoredObject(models.Model):
     only allow storing data frames.
 
     StoredObject links to an S3 key in minio.StoredObjectsBucket. The key must
-    adhere to the format: "{workflow_id}/{wf_module_id}/{uuidv1()}"
+    adhere to the format: "{workflow_id}/{step_id}/{uuidv1()}"
     """
 
     class Meta:
         app_label = "server"
         db_table = "server_storedobject"
 
-    # delete stored data if WfModule deleted
-    wf_module = models.ForeignKey(
-        "WfModule", related_name="stored_objects", on_delete=models.CASCADE
+    # delete stored data if Step deleted
+    step = models.ForeignKey(
+        "Step", related_name="stored_objects", on_delete=models.CASCADE
     )
 
     # identification for file backing store
@@ -39,15 +39,15 @@ class StoredObject(models.Model):
     # and delivered to the frontend
     read = models.BooleanField(default=False)
 
-    # make a deep copy for another WfModule
-    def duplicate(self, to_wf_module):
+    # make a deep copy for another Step
+    def duplicate(self, to_step):
         basename = self.key.split("/")[-1]
-        key = f"{to_wf_module.workflow_id}/{to_wf_module.id}/{basename}"
+        key = f"{to_step.workflow_id}/{to_step.id}/{basename}"
         minio.copy(
             minio.StoredObjectsBucket, key, f"{minio.StoredObjectsBucket}/{self.key}"
         )
 
-        return to_wf_module.stored_objects.create(
+        return to_step.stored_objects.create(
             stored_at=self.stored_at, hash=self.hash, key=key, size=self.size
         )
 
