@@ -9,7 +9,6 @@ import { reducerFunctions as FileReducerFunctions } from './params/File/actions'
 // Workflow
 const SET_WORKFLOW_NAME = 'SET_WORKFLOW_NAME'
 const SET_SELECTED_MODULE = 'SET_SELECTED_MODULE'
-const MOVE_MODULE = 'MOVE_MODULE'
 
 // Delta: workflow+step changes
 const APPLY_DELTA = 'APPLY_DELTA'
@@ -20,6 +19,7 @@ const UPDATE_MODULE = 'UPDATE_MODULE'
 // Step
 const ADD_STEP = 'ADD_STEP'
 const DELETE_STEP = 'DELETE_STEP'
+const MOVE_STEP = 'MOVE_STEP'
 const SET_STEP_NOTES = 'SET_STEP_NOTES'
 const SET_STEP_COLLAPSED = 'SET_STEP_COLLAPSED'
 const REQUEST_STEP_FETCH = 'REQUEST_STEP_FETCH'
@@ -198,9 +198,9 @@ registerReducerFunc(UPDATE_MODULE, (state, action) => {
   return { ...state, modules }
 })
 
-// MOVE_MODULE
+// MOVE_STEP
 // Re-order the modules in the module stack
-export function moveModuleAction (tabSlug, oldIndex, newIndex) {
+export function moveStepAction (tabSlug, oldIndex, newIndex) {
   return (dispatch, getState, api) => {
     if (oldIndex < newIndex) {
       newIndex -= 1
@@ -213,7 +213,7 @@ export function moveModuleAction (tabSlug, oldIndex, newIndex) {
     newIds.splice(newIndex, 0, ...newIds.splice(oldIndex, 1))
 
     return dispatch({
-      type: MOVE_MODULE,
+      type: MOVE_STEP,
       payload: {
         promise: api.reorderSteps(tabSlug, newIds),
         data: {
@@ -224,7 +224,7 @@ export function moveModuleAction (tabSlug, oldIndex, newIndex) {
     })
   }
 }
-registerReducerFunc(MOVE_MODULE + '_PENDING', (state, action) => {
+registerReducerFunc(MOVE_STEP + '_PENDING', (state, action) => {
   const { tabSlug, stepIds } = action.payload
   const tab = state.tabs[tabSlug]
 

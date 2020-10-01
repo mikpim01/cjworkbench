@@ -5,7 +5,7 @@ import AddData from './AddData'
 import ModuleSearch from './ModuleSearch'
 import Step from './step/Step'
 import StepHeader from './step/StepHeader'
-import { deleteStepAction, moveModuleAction } from '../workflow-reducer'
+import { deleteStepAction, moveStepAction } from '../workflow-reducer'
 import { scrollTo } from '../utils'
 import { connect } from 'react-redux'
 import lessonSelector from '../lessons/lessonSelector'
@@ -15,7 +15,7 @@ class ModuleDropSpot extends React.PureComponent {
   static propTypes = {
     index: PropTypes.number.isRequired,
     isDraggingModuleAtIndex: PropTypes.number,
-    moveModuleByIndex: PropTypes.func.isRequired // func(oldIndex, newIndex) => undefined
+    moveStepByIndex: PropTypes.func.isRequired // func(oldIndex, newIndex) => undefined
   }
 
   state = {
@@ -57,7 +57,7 @@ class ModuleDropSpot extends React.PureComponent {
 
     ev.preventDefault() // we want no browser defaults
 
-    this.props.moveModuleByIndex(this.props.isDraggingModuleAtIndex, this.props.index)
+    this.props.moveStepByIndex(this.props.isDraggingModuleAtIndex, this.props.index)
 
     this.setState({
       isDragHovering: false // otherwise, will stay hovering next drag
@@ -96,7 +96,7 @@ class ModuleStackInsertSpot extends React.PureComponent {
     isReadOnly: PropTypes.bool.isRequired,
     isLessonHighlight: PropTypes.bool.isRequired,
     isDraggingModuleAtIndex: PropTypes.number, // or null if not dragging
-    moveModuleByIndex: PropTypes.func.isRequired // func(oldIndex, newIndex) => undefined
+    moveStepByIndex: PropTypes.func.isRequired // func(oldIndex, newIndex) => undefined
   }
 
   renderReadOnly () {
@@ -108,7 +108,7 @@ class ModuleStackInsertSpot extends React.PureComponent {
   render () {
     const {
       index, tabSlug, isReadOnly, isLessonHighlight, isLast,
-      isDraggingModuleAtIndex, moveModuleByIndex
+      isDraggingModuleAtIndex, moveStepByIndex
     } = this.props
 
     if (isReadOnly) return this.renderReadOnly()
@@ -125,7 +125,7 @@ class ModuleStackInsertSpot extends React.PureComponent {
         <ModuleDropSpot
           index={index}
           isDraggingModuleAtIndex={isDraggingModuleAtIndex}
-          moveModuleByIndex={moveModuleByIndex}
+          moveStepByIndex={moveStepByIndex}
         />
       </div>
     )
@@ -165,7 +165,7 @@ export class ModuleStack extends React.Component {
     selected_step_position: PropTypes.number,
     steps: PropTypes.arrayOf(PropTypes.object).isRequired,
     modules: PropTypes.objectOf(PropTypes.shape({ loads_data: PropTypes.bool.isRequired })).isRequired,
-    moveModuleByIndex: PropTypes.func.isRequired, // func(tabSlug, oldIndex, newIndex) => undefined
+    moveStepByIndex: PropTypes.func.isRequired, // func(tabSlug, oldIndex, newIndex) => undefined
     deleteStep: PropTypes.func.isRequired,
     testLessonHighlightIndex: PropTypes.func.isRequired, // func(int) => boolean
     isReadOnly: PropTypes.bool.isRequired,
@@ -244,8 +244,8 @@ export class ModuleStack extends React.Component {
     })
   }
 
-  moveModuleByIndex = (oldIndex, newIndex) => {
-    this.props.moveModuleByIndex(this.props.tabSlug, oldIndex, newIndex)
+  moveStepByIndex = (oldIndex, newIndex) => {
+    this.props.moveStepByIndex(this.props.tabSlug, oldIndex, newIndex)
   }
 
   render () {
@@ -270,7 +270,7 @@ export class ModuleStack extends React.Component {
               isLast={false}
               isReadOnly={this.props.isReadOnly}
               isDraggingModuleAtIndex={this.state.isDraggingModuleAtIndex}
-              moveModuleByIndex={this.moveModuleByIndex}
+              moveStepByIndex={this.moveStepByIndex}
               isLessonHighlight={this.props.testLessonHighlightIndex(i)}
             />
             <StepHeader
@@ -290,7 +290,7 @@ export class ModuleStack extends React.Component {
               isLast={false}
               isReadOnly={this.props.isReadOnly}
               isDraggingModuleAtIndex={this.state.isDraggingModuleAtIndex}
-              moveModuleByIndex={this.moveModuleByIndex}
+              moveStepByIndex={this.moveStepByIndex}
               isLessonHighlight={this.props.testLessonHighlightIndex(i)}
             />
             <Step
@@ -342,7 +342,7 @@ export class ModuleStack extends React.Component {
                 tabSlug={tabSlug}
                 isLast
                 isDraggingModuleAtIndex={this.state.isDraggingModuleAtIndex}
-                moveModuleByIndex={this.moveModuleByIndex}
+                moveStepByIndex={this.moveStepByIndex}
                 isLessonHighlight={this.props.testLessonHighlightIndex(steps.length)}
                 isReadOnly={this.props.isReadOnly}
               />
@@ -374,8 +374,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    moveModuleByIndex (tabSlug, oldIndex, newIndex) {
-      const action = moveModuleAction(tabSlug, oldIndex, newIndex)
+    moveStepByIndex (tabSlug, oldIndex, newIndex) {
+      const action = moveStepAction(tabSlug, oldIndex, newIndex)
       dispatch(action)
     },
 

@@ -12,7 +12,7 @@ describe('ModuleStack', () => {
       selected_step_position={null}
       steps={[]}
       modules={{}}
-      moveModuleByIndex={jest.fn()}
+      moveStepByIndex={jest.fn()}
       deleteStep={jest.fn()}
       testLessonHighlightIndex={jest.fn((i) => false)}
       paneRef={{ current: null }}

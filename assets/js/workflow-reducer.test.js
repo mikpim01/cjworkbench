@@ -283,7 +283,7 @@ describe('Reducer actions', () => {
         }
       }
     }, api)
-    await store.dispatch(wfr.moveModuleAction('tab-1', 2, 0))
+    await store.dispatch(wfr.moveStepAction('tab-1', 2, 0))
 
     // Change happens synchronously. No need to even await the promise :)
     expect(api.reorderSteps).toHaveBeenCalledWith('tab-1', [6, 2, 4])
