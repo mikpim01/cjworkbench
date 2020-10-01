@@ -51,8 +51,8 @@ export default class Param extends React.PureComponent {
     visibleIf: PropTypes.object, // JSON spec or null
     upstreamValue: PropTypes.any, // `null` if server hasn't been contacted or if actual value is `null`
     value: PropTypes.any, // local value: `null` if server hasn't been contacted or if actual value is `null`
-    wfModuleId: PropTypes.number, // `null` if the server hasn't been contacted; otherwise, ID
-    wfModuleOutputErrors: PropTypes.arrayOf(PropTypes.shape({ message: PropTypes.string.isRequired, quickFixes: PropTypes.arrayOf(PropTypes.shape(QuickFixPropTypes)).isRequired }).isRequired).isRequired, // may be empty
+    stepId: PropTypes.number, // `null` if the server hasn't been contacted; otherwise, ID
+    stepOutputErrors: PropTypes.arrayOf(PropTypes.shape({ message: PropTypes.string.isRequired, quickFixes: PropTypes.arrayOf(PropTypes.shape(QuickFixPropTypes)).isRequired }).isRequired).isRequired, // may be empty
     isStepBusy: PropTypes.bool.isRequired,
     inputStepId: PropTypes.number, // or `null`
     inputDeltaId: PropTypes.number, // or `null` ... TODO nix by making 0 fields depend on it
@@ -106,15 +106,15 @@ export default class Param extends React.PureComponent {
   }
 
   createOauthAccessToken = () => {
-    const { secretParameter, wfModuleId, api } = this.props
-    return api.createOauthAccessToken(wfModuleId, secretParameter)
+    const { secretParameter, stepId, api } = this.props
+    return api.createOauthAccessToken(stepId, secretParameter)
   }
 
   render () {
-    const { wfModuleId, name, type, fieldId, value, upstreamValue } = this.props
+    const { stepId, name, type, fieldId, value, upstreamValue } = this.props
 
     // If we aren't a list-item param, we don't have a fieldId. Generate one.
-    const safeFieldId = fieldId || generateFieldId(wfModuleId, name)
+    const safeFieldId = fieldId || generateFieldId(stepId, name)
 
     let className = `param param-${type}`
     // "custom" is a type that we should probably nix. Basically,

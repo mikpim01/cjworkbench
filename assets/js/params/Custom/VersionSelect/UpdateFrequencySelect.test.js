@@ -9,7 +9,7 @@ describe('UpdateFrequencySelect', () => {
   describe('shallow', () => {
     const defaultProps = {
       workflowId: 123,
-      wfModuleId: 212,
+      stepId: 212,
       isReadOnly: false,
       isAnonymous: false,
       lastCheckDate: new Date(Date.parse('2018-05-28T19:00:54.154Z')),
@@ -75,7 +75,7 @@ describe('UpdateFrequencySelect', () => {
       tabs: {
         'tab-11': { steps: [1, 212] }
       },
-      wfModules: {
+      steps: {
         1: { id: 1, tab_slug: 'tab-11', name: 'Ignore this one' },
         212: { id: 212, tab_slug: 'tab-11', auto_update_data: true, update_interval: 3600, update_units: 'days', notifications: false, last_update_check: '2018-05-28T19:00:54.154141Z' }
       }
@@ -90,7 +90,7 @@ describe('UpdateFrequencySelect', () => {
       wrapper = mountWithI18n(
         <Provider store={store}>
           <ConnectedUpdateFrequencySelect
-            wfModuleId={212}
+            stepId={212}
             lastCheckDate={null}
           />
         </Provider>
@@ -108,7 +108,7 @@ describe('UpdateFrequencySelect', () => {
       const store = {
         getState: () => ({
           workflow: { id: 123, read_only: false, is_anonymous: false, steps: ['nonce_212'] },
-          wfModules: {}
+          steps: {}
         }),
         dispatch: jest.fn(),
         subscribe: jest.fn()
@@ -116,7 +116,7 @@ describe('UpdateFrequencySelect', () => {
       wrapper = mountWithI18n(
         <Provider store={store}>
           <ConnectedUpdateFrequencySelect
-            wfModuleId={212}
+            stepId={212}
           />
         </Provider>
       )
@@ -132,7 +132,7 @@ describe('UpdateFrequencySelect', () => {
       wrapper = mountWithI18n(
         <Provider store={store}>
           <ConnectedUpdateFrequencySelect
-            wfModuleId={212}
+            stepId={212}
             lastCheckDate={null}
           />
         </Provider>
@@ -151,7 +151,7 @@ describe('UpdateFrequencySelect', () => {
       wrapper = mountWithI18n(
         <Provider store={store}>
           <ConnectedUpdateFrequencySelect
-            wfModuleId={212}
+            stepId={212}
             lastCheckDate={null}
           />
         </Provider>

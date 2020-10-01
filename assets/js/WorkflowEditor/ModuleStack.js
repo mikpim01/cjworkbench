@@ -150,11 +150,11 @@ function EmptyReadOnlyModuleStack () {
  * differentiate: the user may end up with a Tab that has many `usesDataStep`s
  * and no `addDataStep`, and the server will actually try and render that.
  */
-function partitionSteps (wfModules, modules) {
-  if (wfModules[0] && modules[wfModules[0].module] && modules[wfModules[0].module].loads_data) {
-    return [wfModules[0], wfModules.slice(1)]
+function partitionSteps (steps, modules) {
+  if (steps[0] && modules[steps[0].module] && modules[steps[0].module].loads_data) {
+    return [steps[0], steps.slice(1)]
   } else {
-    return [null, wfModules]
+    return [null, steps]
   }
 }
 
@@ -163,7 +163,7 @@ export class ModuleStack extends React.Component {
     api: PropTypes.object.isRequired,
     tabSlug: PropTypes.string,
     selected_step_position: PropTypes.number,
-    wfModules: PropTypes.arrayOf(PropTypes.object).isRequired,
+    steps: PropTypes.arrayOf(PropTypes.object).isRequired,
     modules: PropTypes.objectOf(PropTypes.shape({ loads_data: PropTypes.bool.isRequired })).isRequired,
     moveModuleByIndex: PropTypes.func.isRequired, // func(tabSlug, oldIndex, newIndex) => undefined
     removeModule: PropTypes.func.isRequired,
@@ -213,19 +213,19 @@ export class ModuleStack extends React.Component {
    * mode is "locked" to module 2: no other modules can set it until module
    * 2 exits Zen mode.
    */
-  setZenMode = (wfModuleId, isZenMode) => {
+  setZenMode = (stepId, isZenMode) => {
     const oldId = this.state.zenModeStepId
-    if (!isZenMode && wfModuleId === oldId) {
+    if (!isZenMode && stepId === oldId) {
       this.setState({ zenModeStepId: null })
     } else if (isZenMode && oldId === null) {
-      this.setState({ zenModeStepId: wfModuleId })
+      this.setState({ zenModeStepId: stepId })
     }
   }
 
   static getDerivedStateFromProps (props, state) {
     // If we delete a zen-mode while in zen mode, exit zen mode
     const zenId = state.zenModeStepId
-    if (zenId && !props.wfModules.find(step => step.id === zenId)) {
+    if (zenId && !props.steps.find(step => step.id === zenId)) {
       return { zenModeStepId: null }
     } else {
       return null
@@ -249,14 +249,14 @@ export class ModuleStack extends React.Component {
   }
 
   render () {
-    const { isReadOnly, tabSlug, paneRef, wfModules, modules } = this.props
-    const [addDataStep, useDataSteps] = partitionSteps(wfModules, modules)
+    const { isReadOnly, tabSlug, paneRef, steps, modules } = this.props
+    const [addDataStep, useDataSteps] = partitionSteps(steps, modules)
 
     const spotsAndItems = useDataSteps.map((item, i) => {
       if (addDataStep) {
-        // We partitioned away wfModules[0] because it'll be an <AddData>
+        // We partitioned away steps[0] because it'll be an <AddData>
         // component. So increment `i`, setting up the index correctly for
-        // each _non-first_ wfModule.
+        // each _non-first_ step.
         i += 1
       }
 
@@ -296,9 +296,9 @@ export class ModuleStack extends React.Component {
             <Step
               isReadOnly={isReadOnly}
               isZenMode={this.state.zenModeStepId === item.id}
-              wfModule={item}
+              step={item}
               removeModule={this.props.removeModule}
-              inputStep={i === 0 ? null : wfModules[i - 1]}
+              inputStep={i === 0 ? null : steps[i - 1]}
               isSelected={i === this.props.selected_step_position}
               isAfterSelected={i > this.props.selected_step_position}
               api={this.props.api}
@@ -317,7 +317,7 @@ export class ModuleStack extends React.Component {
 
     return (
       <div className={className} ref={this.scrollRef}>
-        {isReadOnly && wfModules.length === 0 ? (
+        {isReadOnly && steps.length === 0 ? (
           <EmptyReadOnlyModuleStack />
         ) : (
           <>
@@ -326,7 +326,7 @@ export class ModuleStack extends React.Component {
               tabSlug={tabSlug}
               isLessonHighlight={this.props.testLessonHighlightIndex(0)}
               isReadOnly={this.props.isReadOnly}
-              wfModule={addDataStep}
+              step={addDataStep}
               isSelected={!!addDataStep && this.props.selected_step_position === 0}
               isZenMode={addDataStep && this.state.zenModeStepId === addDataStep.id}
               api={this.props.api}
@@ -335,15 +335,15 @@ export class ModuleStack extends React.Component {
               paneRef={paneRef}
             />
             {spotsAndItems}
-            {wfModules.length > 0 ? (
+            {steps.length > 0 ? (
               <ModuleStackInsertSpot
                 key='last'
-                index={wfModules.length}
+                index={steps.length}
                 tabSlug={tabSlug}
                 isLast
                 isDraggingModuleAtIndex={this.state.isDraggingModuleAtIndex}
                 moveModuleByIndex={this.moveModuleByIndex}
-                isLessonHighlight={this.props.testLessonHighlightIndex(wfModules.length)}
+                isLessonHighlight={this.props.testLessonHighlightIndex(steps.length)}
                 isReadOnly={this.props.isReadOnly}
               />
             ) : null}
@@ -360,12 +360,12 @@ const mapStateToProps = (state) => {
   const tabPosition = state.workflow.selected_tab_position
   const tabSlug = state.workflow.tab_slugs[tabPosition]
   const tab = state.tabs[tabSlug]
-  const wfModules = tab.step_ids.map(id => state.wfModules[String(id)])
+  const steps = tab.step_ids.map(id => state.steps[String(id)])
   return {
     workflow: state.workflow,
     selected_step_position: tab.selected_step_position,
     tabSlug,
-    wfModules,
+    steps,
     modules,
     isReadOnly: state.workflow.read_only,
     testLessonHighlightIndex: (index) => testHighlight({ type: 'Module', id_name: null, index: index })
@@ -379,8 +379,8 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(action)
     },
 
-    removeModule (wfModuleId) {
-      const action = deleteModuleAction(wfModuleId)
+    removeModule (stepId) {
+      const action = deleteModuleAction(stepId)
       dispatch(action)
     }
   }

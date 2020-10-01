@@ -10,7 +10,7 @@ describe('DataVersionSelect', () => {
   const wrapper = (extraProps = {}) => {
     return mountWithI18n(
       <DataVersionSelect
-        wfModuleId={123}
+        stepId={123}
         currentVersionIndex={0}
         nVersions={7}
         isReadOnly={false}
@@ -22,7 +22,7 @@ describe('DataVersionSelect', () => {
   const shallowWrapper = (extraProps = {}) => {
     return shallowWithI18n(
       <DataVersionSelect
-        wfModuleId={123}
+        stepId={123}
         currentVersionIndex={0}
         nVersions={7}
         isReadOnly={false}
@@ -66,7 +66,7 @@ describe('DataVersionSelect', () => {
         read_only: false,
         steps: [123, 124]
       },
-      wfModules: {
+      steps: {
         123: {
           id: 123,
           versions: {
@@ -95,7 +95,7 @@ describe('DataVersionSelect', () => {
       const store = configureMockStore([])(state)
       _wrapper = mountWithI18n(
         <Provider store={store}>
-          <ConnectedDataVersionSelect wfModuleId={123} />
+          <ConnectedDataVersionSelect stepId={123} />
         </Provider>
       )
       return _wrapper
@@ -120,10 +120,10 @@ describe('DataVersionSelect', () => {
     it('handles empty version list', () => {
       const w = connectedWrapper({
         ...IdealState,
-        wfModules: {
-          ...IdealState.wfModules,
+        steps: {
+          ...IdealState.steps,
           123: {
-            ...IdealState.wfModules['123'],
+            ...IdealState.steps['123'],
             versions: { versions: [], selected: null }
           }
         }

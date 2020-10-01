@@ -86,8 +86,8 @@ def _load_step(workflow: Workflow, step_id: int) -> Step:
 
 def _loading_step(func):
     @functools.wraps(func)
-    async def inner(workflow: Workflow, wfModuleId: int, **kwargs):
-        step = await _load_step(workflow, wfModuleId)
+    async def inner(workflow: Workflow, stepId: int, **kwargs):
+        step = await _load_step(workflow, stepId)
         return await func(workflow=workflow, step=step, **kwargs)
 
     return inner
@@ -207,7 +207,7 @@ def _do_set_notifications(scope, step: Step, notifications: bool):
     step.save(update_fields=["notifications"])
     if notifications:
         server.utils.log_user_event_from_scope(
-            scope, "Enabled email notifications", {"wfModuleId": step.id}
+            scope, "Enabled email notifications", {"stepId": step.id}
         )
 
 

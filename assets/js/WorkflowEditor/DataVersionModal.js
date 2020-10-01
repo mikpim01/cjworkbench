@@ -122,12 +122,12 @@ export class DataVersionModal extends React.PureComponent {
       isSeen: PropTypes.bool.isRequired
     })).isRequired,
     selectedFetchVersionId: PropTypes.string, // null for no selection
-    wfModuleId: PropTypes.number.isRequired,
+    stepId: PropTypes.number.isRequired,
     isAnonymous: PropTypes.bool.isRequired,
     notificationsEnabled: PropTypes.bool.isRequired, // whether enabled on selectedStep
     onClose: PropTypes.func.isRequired, // func() => undefined
-    onChangeFetchVersionId: PropTypes.func.isRequired, // func(wfModuleId, versionId) => undefined
-    onChangeNotificationsEnabled: PropTypes.func.isRequired // func(wfModuleId, isEnabled) => undefined
+    onChangeFetchVersionId: PropTypes.func.isRequired, // func(stepId, versionId) => undefined
+    onChangeNotificationsEnabled: PropTypes.func.isRequired // func(stepId, isEnabled) => undefined
   }
 
   state = {
@@ -135,8 +135,8 @@ export class DataVersionModal extends React.PureComponent {
   }
 
   handleChangeNotificationsEnabled = (isEnabled) => {
-    const { onChangeNotificationsEnabled, wfModuleId } = this.props
-    onChangeNotificationsEnabled(wfModuleId, isEnabled)
+    const { onChangeNotificationsEnabled, stepId } = this.props
+    onChangeNotificationsEnabled(stepId, isEnabled)
   }
 
   handleSelectSelectedFetchVersionId = (selectedFetchVersionId) => {
@@ -207,19 +207,19 @@ const getTabs = ({ tabs }) => tabs
 const getSelectedTab = createSelector([getWorkflow, getTabs], (workflow, tabs) => {
   return tabs[workflow.tab_slugs[workflow.selected_tab_position]]
 })
-const getSteps = ({ wfModules }) => wfModules
-const getSelectedTabSteps = createSelector([getSelectedTab, getSteps], (tab, wfModules) => {
-  return tab.step_ids.map(id => wfModules[String(id)] || null)
+const getSteps = ({ steps }) => steps
+const getSelectedTabSteps = createSelector([getSelectedTab, getSteps], (tab, steps) => {
+  return tab.step_ids.map(id => steps[String(id)] || null)
 })
 const getModules = ({ modules }) => modules
 /**
  * Find first (Step, Module) that has a `.loads_data` ModuleVersion.
  */
-const getFetchStep = createSelector([getSelectedTabSteps, getModules], (wfModules, modules) => {
-  for (const wfModule of wfModules) {
-    const module = modules[wfModule.module] || {}
+const getFetchStep = createSelector([getSelectedTabSteps, getModules], (steps, modules) => {
+  for (const step of steps) {
+    const module = modules[step.module] || {}
     if (module.loads_data) {
-      return wfModule
+      return step
     }
   }
 
@@ -227,9 +227,9 @@ const getFetchStep = createSelector([getSelectedTabSteps, getModules], (wfModule
 })
 
 /**
- * Parse `wfModule.versions.versions` Array of { id, date, isSeen }.
+ * Parse `step.versions.versions` Array of { id, date, isSeen }.
  *
- * wfModule.versions.versions is an Array of [ dateString, isSeen ]
+ * step.versions.versions is an Array of [ dateString, isSeen ]
  * pairs.
  */
 const getFetchVersions = memoize(versions => {
@@ -243,10 +243,10 @@ const getFetchVersions = memoize(versions => {
   })
 })
 
-function mapStateToProps (state, { wfModuleId }) {
+function mapStateToProps (state, { stepId }) {
   const fetchStep = getFetchStep(state)
-  const wfModule = state.wfModules[String(wfModuleId)]
-  const notificationsEnabled = wfModule ? wfModule.notifications : false
+  const step = state.steps[String(stepId)]
+  const notificationsEnabled = step ? step.notifications : false
 
   return {
     fetchStepId: fetchStep ? fetchStep.id : null,

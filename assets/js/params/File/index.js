@@ -4,10 +4,10 @@ import { setStepParamsAction } from '../../workflow-reducer'
 import { upload, cancel } from './actions'
 
 const mapStateToProps = (state, ownProps) => {
-  const { wfModules } = state
-  const wfModule = wfModules[String(ownProps.wfModuleId)]
+  const { steps } = state
+  const step = steps[String(ownProps.stepId)]
   return {
-    inProgressUpload: wfModule.inProgressUpload || null
+    inProgressUpload: step.inProgressUpload || null
   }
 }
 

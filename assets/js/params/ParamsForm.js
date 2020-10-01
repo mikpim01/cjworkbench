@@ -48,9 +48,9 @@ export default class ParamsForm extends React.PureComponent {
     secrets: PropTypes.object, // upstream secrets. `null` if the server hasn't been contacted; otherwise, keys set only when params are filled in
     edits: PropTypes.object.isRequired, // local edits, same keys as `value`
     workflowId: PropTypes.number.isRequired,
-    wfModuleId: PropTypes.number, // `null` if the server hasn't been contacted; otherwise, ID
-    wfModuleSlug: PropTypes.string, // should be .isRequired but Step.js does not handle placeholders yet
-    wfModuleOutputErrors: PropTypes.arrayOf(PropTypes.shape({ message: PropTypes.string.isRequired, quickFixes: PropTypes.arrayOf(PropTypes.shape(QuickFixPropTypes)).isRequired }).isRequired).isRequired, // may be empty
+    stepId: PropTypes.number, // `null` if the server hasn't been contacted; otherwise, ID
+    stepSlug: PropTypes.string, // should be .isRequired but Step.js does not handle placeholders yet
+    stepOutputErrors: PropTypes.arrayOf(PropTypes.shape({ message: PropTypes.string.isRequired, quickFixes: PropTypes.arrayOf(PropTypes.shape(QuickFixPropTypes)).isRequired }).isRequired).isRequired, // may be empty
     isStepBusy: PropTypes.bool.isRequired,
     inputStepId: PropTypes.number, // or `null`
     inputDeltaId: PropTypes.number, // or `null` ... TODO nix by making 0 fields depend on it
@@ -198,7 +198,7 @@ export default class ParamsForm extends React.PureComponent {
 
   render () {
     const {
-      api, isOwner, isReadOnly, isZenMode, workflowId, wfModuleId, wfModuleSlug, wfModuleOutputErrors,
+      api, isOwner, isReadOnly, isZenMode, workflowId, stepId, stepSlug, stepOutputErrors,
       isStepBusy, inputStepId, inputDeltaId, inputColumns, tabs, currentTab, applyQuickFix,
       startCreateSecret, deleteSecret, submitSecret, fields, files, secrets
     } = this.props
@@ -252,9 +252,9 @@ export default class ParamsForm extends React.PureComponent {
                 value={value ? value[field.idName] : null}
                 files={files}
                 workflowId={workflowId}
-                wfModuleId={wfModuleId}
-                wfModuleSlug={wfModuleSlug}
-                wfModuleOutputErrors={wfModuleOutputErrors}
+                stepId={stepId}
+                stepSlug={stepSlug}
+                stepOutputErrors={stepOutputErrors}
                 isStepBusy={isStepBusy}
                 inputStepId={inputStepId}
                 inputDeltaId={inputDeltaId}
@@ -274,7 +274,7 @@ export default class ParamsForm extends React.PureComponent {
           })}
         </div>
         <ParamsFormFooter
-          wfModuleId={wfModuleId}
+          stepId={stepId}
           isStepBusy={isStepBusy}
           isEditing={isEditing}
           isReadOnly={isReadOnly}

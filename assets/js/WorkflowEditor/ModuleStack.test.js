@@ -10,7 +10,7 @@ describe('ModuleStack', () => {
       isReadOnly={false}
       tabSlug='tab-1'
       selected_step_position={null}
-      wfModules={[]}
+      steps={[]}
       modules={{}}
       moveModuleByIndex={jest.fn()}
       removeModule={jest.fn()}
@@ -21,7 +21,7 @@ describe('ModuleStack', () => {
   )
 
   it('should render a placeholder when empty and read-only', () => {
-    const w = wrapper({ wfModules: [], isReadOnly: true })
+    const w = wrapper({ steps: [], isReadOnly: true })
     expect(w.find('Trans[id="js.WorkflowEditor.ModuleStack.EmptyReadOnlyModuleStack"]')).toHaveLength(1)
   })
 })

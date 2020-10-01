@@ -116,15 +116,13 @@ def _parse_slug(slug: str):
 @register_websockets_handler
 @websockets_handler("write")
 @_loading_tab
-async def reorder_modules(
-    workflow: Workflow, tab: Tab, wfModuleIds: List[int], **kwargs
-):
+async def reorder_modules(workflow: Workflow, tab: Tab, stepIds: List[int], **kwargs):
     try:
         await commands.do(
             ReorderModulesCommand,
             workflow_id=workflow.id,
             tab=tab,
-            new_order=wfModuleIds,
+            new_order=stepIds,
         )
     except ValueError as err:
         raise HandlerError(str(err))

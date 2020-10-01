@@ -46,12 +46,12 @@ def _write_step_position(workflow: Workflow, step_id: int) -> None:
 
 @register_websockets_handler
 @websockets_handler("write")
-async def set_position(workflow: Workflow, wfModuleId: int, **kwargs):
-    if not isinstance(wfModuleId, int):
-        raise HandlerError("wfModuleId must be a Number")
+async def set_position(workflow: Workflow, stepId: int, **kwargs):
+    if not isinstance(stepId, int):
+        raise HandlerError("stepId must be a Number")
 
     try:
-        await _write_step_position(workflow, wfModuleId)
+        await _write_step_position(workflow, stepId)
     except Step.DoesNotExist:
         # users are racing, or the request is otherwise invalid.
         # The information the user sent is hardly important. Ignore it,

@@ -215,7 +215,7 @@ describe('ModuleSearch Popup', () => {
             step_ids: [1, 2]
           }
         },
-        wfModules: {
+        steps: {
           1: {},
           2: {}
         },

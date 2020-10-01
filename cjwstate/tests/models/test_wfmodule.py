@@ -13,7 +13,8 @@ class StepTests(DbTestCase):
     def test_list_data_versions(self):
         workflow = Workflow.create_and_init()
         step = workflow.tabs.first().steps.create(order=0, slug="step-1")
-        so1 = step.stored_objects.create(read=False) so2 = step.stored_objects.create(read=True)
+        so1 = step.stored_objects.create(read=False)
+        so2 = step.stored_objects.create(read=True)
 
         result = step.list_fetched_data_versions()
         self.assertEqual(result, [(so2.stored_at, True), (so1.stored_at, False)])
@@ -61,9 +62,7 @@ class StepTests(DbTestCase):
         )
 
     def test_step_duplicate_disable_auto_update(self):
-        """
-        Duplicates should be lightweight by default: no auto-updating.
-        """
+        # Duplicates should be lightweight by default: no auto-updating.
         workflow = Workflow.create_and_init()
         tab = workflow.tabs.first()
         step = tab.steps.create(
@@ -84,9 +83,7 @@ class StepTests(DbTestCase):
         self.assertEqual(step2.update_interval, 600)
 
     def test_step_duplicate_clear_secrets(self):
-        """
-        Duplicates get new owners, so they should not copy secrets.
-        """
+        # Duplicates get new owners, so they should not copy secrets.
         workflow = Workflow.create_and_init()
         tab = workflow.tabs.first()
         step = tab.steps.create(
@@ -102,9 +99,7 @@ class StepTests(DbTestCase):
     def test_step_duplicate_copy_uploaded_file(self):
         workflow = Workflow.create_and_init()
         tab = workflow.tabs.first()
-        step = tab.steps.create(
-            order=0, slug="step-1", module_id_name="upload"
-        )
+        step = tab.steps.create(order=0, slug="step-1", module_id_name="upload")
         uuid = str(uuidgen.uuid4())
         key = f"{step.uploaded_file_prefix}{uuid}.csv"
         minio.put_bytes(minio.UserFilesBucket, key, b"1234567")
@@ -143,9 +138,7 @@ class StepTests(DbTestCase):
     def test_step_duplicate_copy_only_selected_uploaded_file(self):
         workflow = Workflow.create_and_init()
         tab = workflow.tabs.first()
-        step = tab.steps.create(
-            order=0, slug="step-1", module_id_name="upload"
-        )
+        step = tab.steps.create(order=0, slug="step-1", module_id_name="upload")
         uuid1 = str(uuidgen.uuid4())
         key1 = f"{step.uploaded_file_prefix}{uuid1}.csv"
         minio.put_bytes(minio.UserFilesBucket, key1, b"1234567")

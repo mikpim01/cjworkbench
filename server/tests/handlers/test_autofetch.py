@@ -83,7 +83,7 @@ class AutoupdateTest(DbTestCase):
                             "lastViewedAt": IsoDate1,
                         },
                         "tab": {"slug": "tab-1", "name": "Tab 1"},
-                        "wfModule": {"id": step1.id, "fetchInterval": 600, "order": 0},
+                        "step": {"id": step1.id, "fetchInterval": 600, "order": 0},
                     },
                     {
                         "workflow": {
@@ -93,7 +93,7 @@ class AutoupdateTest(DbTestCase):
                             "lastViewedAt": IsoDate2,
                         },
                         "tab": {"slug": "tab-1", "name": "Tab 1"},
-                        "wfModule": {"id": step2.id, "fetchInterval": 1200, "order": 0},
+                        "step": {"id": step2.id, "fetchInterval": 1200, "order": 0},
                     },
                 ],
             },

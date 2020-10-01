@@ -58,7 +58,7 @@ export class Step extends React.PureComponent {
     }), // or null for no module
     index: PropTypes.number.isRequired,
     workflowId: PropTypes.number.isRequired,
-    wfModule: PropTypes.shape({
+    step: PropTypes.shape({
       id: PropTypes.number.isRequired,
       params: PropTypes.object.isRequired,
       secrets: PropTypes.object.isRequired
@@ -74,8 +74,8 @@ export class Step extends React.PureComponent {
     }), // or null
     isSelected: PropTypes.bool.isRequired,
     isAfterSelected: PropTypes.bool.isRequired,
-    setStepParams: PropTypes.func, // func(wfModuleId, { paramidname: newVal }) => undefined
-    setStepSecret: PropTypes.func, // func(wfModuleId, param, secret) => undefined
+    setStepParams: PropTypes.func, // func(stepId, { paramidname: newVal }) => undefined
+    setStepSecret: PropTypes.func, // func(stepId, param, secret) => undefined
     removeModule: PropTypes.func,
     api: PropTypes.object.isRequired,
     onDragStart: PropTypes.func, // func({ type:'Step',id,index }) => undefined; null if not draggable
@@ -85,12 +85,12 @@ export class Step extends React.PureComponent {
     isLessonHighlightCollapse: PropTypes.bool.isRequired,
     fetchModuleExists: PropTypes.bool.isRequired, // there is a fetch module anywhere in the workflow
     clearNotifications: PropTypes.func.isRequired, // func() => undefined
-    maybeRequestFetch: PropTypes.func.isRequired, // func(wfModuleId) => undefined
-    setSelectedStep: PropTypes.func.isRequired, // func(wfModuleId) => undefined
-    setStepCollapsed: PropTypes.func.isRequired, // func(wfModuleId, isCollapsed, isReadOnly) => undefined
-    setZenMode: PropTypes.func.isRequired, // func(wfModuleId, bool) => undefined
-    applyQuickFix: PropTypes.func.isRequired, // func(wfModuleId, action) => undefined
-    setStepNotes: PropTypes.func.isRequired, // func(wfModuleId, notes) => undefined
+    maybeRequestFetch: PropTypes.func.isRequired, // func(stepId) => undefined
+    setSelectedStep: PropTypes.func.isRequired, // func(stepId) => undefined
+    setStepCollapsed: PropTypes.func.isRequired, // func(stepId, isCollapsed, isReadOnly) => undefined
+    setZenMode: PropTypes.func.isRequired, // func(stepId, bool) => undefined
+    applyQuickFix: PropTypes.func.isRequired, // func(stepId, action) => undefined
+    setStepNotes: PropTypes.func.isRequired, // func(stepId, notes) => undefined
     i18n: PropTypes.shape({
       // i18n object injected by LinguiJS withI18n()
       _: PropTypes.func.isRequired
@@ -115,7 +115,7 @@ export class Step extends React.PureComponent {
   }
 
   handleClickNotification = () => {
-    this.props.clearNotifications(this.props.wfModule.id)
+    this.props.clearNotifications(this.props.step.id)
 
     this.setState({
       isDataVersionModalOpen: true
@@ -125,25 +125,25 @@ export class Step extends React.PureComponent {
   // We become the selected module on any click
   handleMouseDown = () => {
     if (!this.props.isSelected) {
-      this.props.setSelectedStep(this.props.wfModule.id)
+      this.props.setSelectedStep(this.props.step.id)
     }
   }
 
   startCreateSecret = (paramIdName) => {
-    const { startCreateSecret, wfModule } = this.props
-    return startCreateSecret(wfModule.id, paramIdName)
+    const { startCreateSecret, step } = this.props
+    return startCreateSecret(step.id, paramIdName)
   }
 
   deleteSecret = (paramIdName) => {
-    const { deleteSecret, wfModule } = this.props
-    return deleteSecret(wfModule.id, paramIdName)
+    const { deleteSecret, step } = this.props
+    return deleteSecret(step.id, paramIdName)
   }
 
   handleDragStart = (ev) => {
     const dragObject = {
       type: 'Step',
       index: this.props.index,
-      id: this.props.wfModule.id
+      id: this.props.step.id
     }
     ev.dataTransfer.setData('application/json', JSON.stringify(dragObject))
     ev.dataTransfer.effectAllowed = 'move'
@@ -164,13 +164,13 @@ export class Step extends React.PureComponent {
   }
 
   removeModule = () => {
-    this.props.removeModule(this.props.wfModule.id)
+    this.props.removeModule(this.props.step.id)
   }
 
   // Optimistically updates the state, and then sends the new state to the server,
   // where it's persisted across sessions and through time.
   setCollapsed (isCollapsed) {
-    this.props.setStepCollapsed(this.props.wfModule.id, isCollapsed, this.props.isReadOnly)
+    this.props.setStepCollapsed(this.props.step.id, isCollapsed, this.props.isReadOnly)
   }
 
   handleClickCollapse = () => {
@@ -195,7 +195,7 @@ export class Step extends React.PureComponent {
 
   handleFocusNote = () => {
     if (this.state.editedNotes === null) {
-      this.setState({ editedNotes: this.props.wfModule.notes || '' })
+      this.setState({ editedNotes: this.props.step.notes || '' })
     }
   }
 
@@ -207,7 +207,7 @@ export class Step extends React.PureComponent {
       if (state.editedNotes === null) {
         // we canceled
       } else {
-        props.setStepNotes(props.wfModule.id, state.editedNotes)
+        props.setStepNotes(props.step.id, state.editedNotes)
       }
       return { editedNotes: null }
     })
@@ -224,11 +224,11 @@ export class Step extends React.PureComponent {
   }
 
   applyQuickFix = (action) => {
-    this.props.applyQuickFix(this.props.wfModule.id, action)
+    this.props.applyQuickFix(this.props.step.id, action)
   }
 
   handleChangeIsZenMode = (ev) => {
-    this.props.setZenMode(this.props.wfModule.id, ev.target.checked)
+    this.props.setZenMode(this.props.step.id, ev.target.checked)
   }
 
   renderZenModeButton () {
@@ -252,13 +252,13 @@ export class Step extends React.PureComponent {
   }
 
   submitSecret = (param, secret) => {
-    const { setStepSecret, wfModule } = this.props
-    if (!wfModule) return
-    setStepSecret(wfModule.id, param, secret)
+    const { setStepSecret, step } = this.props
+    if (!step) return
+    setStepSecret(step.id, param, secret)
   }
 
   handleSubmitParams = () => {
-    const { wfModule, setStepParams, maybeRequestFetch } = this.props
+    const { step, setStepParams, maybeRequestFetch } = this.props
 
     // We sometimes call onSubmit() _immediately_ after onChange(). onChange()
     // sets this.state.edits, and then onSubmit() should submit them. To make
@@ -266,10 +266,10 @@ export class Step extends React.PureComponent {
     // (this.state.edits is the pre-onChange() data.)
     this.setState(({ edits }) => {
       if (Object.keys(edits).length > 0) {
-        setStepParams(wfModule.id, edits).then(() => this.clearUpToDateEdits())
+        setStepParams(step.id, edits).then(() => this.clearUpToDateEdits())
       }
 
-      maybeRequestFetch(wfModule.id)
+      maybeRequestFetch(step.id)
 
       // Do not clear "edits" here: at this point, setStepParams() has
       // not updated the Redux state yet, so the edits will flicker away
@@ -299,7 +299,7 @@ export class Step extends React.PureComponent {
    */
   clearUpToDateEdits () {
     this.setState(({ edits }) => {
-      const upstream = this.props.wfModule ? this.props.wfModule.params : {}
+      const upstream = this.props.step ? this.props.step.params : {}
       const newEdits = {}
       for (const key in edits) {
         const upstreamValue = upstream[key]
@@ -312,40 +312,40 @@ export class Step extends React.PureComponent {
     })
   }
 
-  get wfModuleStatus () {
+  get stepStatus () {
     // TODO don't copy/paste from OutputPane.js
-    const { wfModule } = this.props
-    if (!wfModule) {
+    const { step } = this.props
+    if (!step) {
       return null
-    } else if (wfModule.nClientRequests > 0) {
+    } else if (step.nClientRequests > 0) {
       // When we've just sent an HTTP request and not received a response,
       // mark ourselves "busy". This is great for when the user clicks "fetch"
       // and then is waiting for the server to set the status.
       //
       // The state stores server data separately than client data, so there's
       // no race when setting status and so if the "fetch" does nothing and the
-      // server doesn't change wfModule.status, the client still resets its
+      // server doesn't change step.status, the client still resets its
       // perceived status.
       return 'busy'
-    } else if (wfModule.is_busy) {
+    } else if (step.is_busy) {
       return 'busy'
-    } else if (!wfModule.output_status) {
+    } else if (!step.output_status) {
       // placeholder? TODO verify this can actually happen
       return 'busy'
     } else {
-      return wfModule.output_status
+      return step.output_status
     }
   }
 
   render () {
-    const { isReadOnly, index, wfModule, module, inputStep, tabs, currentTab, i18n } = this.props
+    const { isReadOnly, index, step, module, inputStep, tabs, currentTab, i18n } = this.props
 
     const moduleSlug = module ? module.id_name : '_undefined'
     const moduleName = module ? module.name : '_undefined'
     const moduleIcon = module ? module.icon : '_undefined'
     const moduleHelpUrl = module ? module.help_url : ''
 
-    const isNoteVisible = this.state.editedNotes !== null || !!this.props.wfModule.notes
+    const isNoteVisible = this.state.editedNotes !== null || !!this.props.step.notes
 
     const notes = (
       <div className={`module-notes${isNoteVisible ? ' visible' : ''}`}>
@@ -353,7 +353,7 @@ export class Step extends React.PureComponent {
           isReadOnly={isReadOnly}
           inputRef={this.notesInputRef}
           placeholder={i18n._(t('js.WorkflowEditor.wfmodule.EditableNotes.placeholder')`Type a note...`)}
-          value={this.state.editedNotes === null ? (this.props.wfModule.notes || '') : this.state.editedNotes}
+          value={this.state.editedNotes === null ? (this.props.step.notes || '') : this.state.editedNotes}
           onChange={this.handleChangeNote}
           onFocus={this.handleFocusNote}
           onBlur={this.handleBlurNote}
@@ -364,8 +364,8 @@ export class Step extends React.PureComponent {
 
     let alertButton = null
     if (this.props.fetchModuleExists && !isReadOnly && !this.props.isAnonymous) {
-      const notifications = wfModule.notifications
-      const hasUnseen = wfModule.has_unseen_notification
+      const notifications = step.notifications
+      const hasUnseen = step.has_unseen_notification
       let className = 'notifications'
       if (notifications) className += ' enabled'
       if (hasUnseen) className += ' has-unseen'
@@ -405,7 +405,7 @@ export class Step extends React.PureComponent {
       contextMenu = (
         <StepContextMenu
           removeModule={this.removeModule}
-          id={wfModule.id}
+          id={step.id}
         />
       )
     }
@@ -429,13 +429,13 @@ export class Step extends React.PureComponent {
     if (this.state.isDataVersionModalOpen) {
       maybeDataVersionModal = (
         <DataVersionModal
-          wfModuleId={wfModule.id}
+          stepId={step.id}
           onClose={this.handleCloseDataVersionModal}
         />
       )
     }
 
-    let className = 'wf-module status-' + this.wfModuleStatus
+    let className = 'wf-module status-' + this.stepStatus
     className += this.state.isDragging ? ' dragging' : ''
     className += this.props.isSelected ? ' selected' : ''
     className += this.props.isAfterSelected ? ' after-selected' : ''
@@ -458,7 +458,7 @@ export class Step extends React.PureComponent {
             <div className='module-card-header'>
               <div className='controls'>
                 <StepCollapseButton
-                  isCollapsed={wfModule.is_collapsed}
+                  isCollapsed={step.is_collapsed}
                   isLessonHighlight={this.props.isLessonHighlightCollapse}
                   onCollapse={this.handleClickCollapse}
                   onExpand={this.handleClickExpand}
@@ -474,16 +474,16 @@ export class Step extends React.PureComponent {
                 />
               ) : null}
             </div>
-            <div className={`module-card-details ${wfModule.is_collapsed ? 'collapsed' : 'expanded'}`}>
+            <div className={`module-card-details ${step.is_collapsed ? 'collapsed' : 'expanded'}`}>
               {/* --- Error message --- */}
               <StatusLine
                 module={module}
                 isReadOnly={isReadOnly}
-                status={this.wfModuleStatus}
-                errors={wfModule.output_errors || []}
+                status={this.stepStatus}
+                errors={step.output_errors || []}
                 applyQuickFix={this.applyQuickFix}
               />
-              {this.props.module && !wfModule.is_collapsed ? (
+              {this.props.module && !step.is_collapsed ? (
                 /*
                  * We only render <ParamsForm> when not collapsed. That's so
                  * that params are visible when mounted -- so they can
@@ -500,15 +500,15 @@ export class Step extends React.PureComponent {
                     isZenMode={this.props.isZenMode}
                     api={this.props.api}
                     fields={this.props.module.param_fields}
-                    value={this.props.wfModule ? this.props.wfModule.params : null}
-                    secrets={this.props.wfModule ? this.props.wfModule.secrets : null}
-                    files={this.props.wfModule ? this.props.wfModule.files : []}
+                    value={this.props.step ? this.props.step.params : null}
+                    secrets={this.props.step ? this.props.step.secrets : null}
+                    files={this.props.step ? this.props.step.files : []}
                     edits={this.state.edits}
                     workflowId={this.props.workflowId}
-                    wfModuleId={this.props.wfModule ? this.props.wfModule.id : null}
-                    wfModuleSlug={this.props.wfModule ? this.props.wfModule.slug : null}
-                    wfModuleOutputErrors={this.props.wfModule ? this.props.wfModule.output_errors : []}
-                    isStepBusy={this.wfModuleStatus === 'busy'}
+                    stepId={this.props.step ? this.props.step.id : null}
+                    stepSlug={this.props.step ? this.props.step.slug : null}
+                    stepOutputErrors={this.props.step ? this.props.step.output_errors : []}
+                    isStepBusy={this.stepStatus === 'busy'}
                     inputStepId={inputStep ? inputStep.id : null}
                     inputDeltaId={inputStep ? (inputStep.cached_render_result_delta_id || null) : null}
                     inputColumns={inputStep ? inputStep.output_columns : null}
@@ -564,8 +564,8 @@ const getReadyAndPendingTabs = createSelector([getReadyTabs, getPendingTabs], (r
     ...readyTabs
   }
 })
-const getSteps = ({ wfModules }) => wfModules
-const getTabs = createSelector([getWorkflow, getReadyAndPendingTabs, getSteps], (workflow, tabs, wfModules) => {
+const getSteps = ({ steps }) => steps
+const getTabs = createSelector([getWorkflow, getReadyAndPendingTabs, getSteps], (workflow, tabs, steps) => {
   return workflow.tab_slugs.map(slug => {
     const tab = tabs[slug]
     let outputColumns = null
@@ -573,7 +573,7 @@ const getTabs = createSelector([getWorkflow, getReadyAndPendingTabs, getSteps], 
       const lastIndex = tab.step_ids.length - 1
       if (lastIndex >= 0) {
         const lastStepId = tab.step_ids[lastIndex]
-        const lastStep = wfModules[lastStepId] // null if placeholder
+        const lastStep = steps[lastStepId] // null if placeholder
         if (lastStep && lastStep.last_relevant_delta_id === lastStep.cached_render_result_delta_id) {
           outputColumns = lastStep.output_columns
         }
@@ -595,11 +595,11 @@ const getModules = ({ modules }) => modules
 /**
  * Find first Step index that has a `.loads_data` ModuleVersion, or `null`
  */
-const firstFetchIndex = createSelector([getCurrentTab, getSteps, getModules], (tab, wfModules, modules) => {
+const firstFetchIndex = createSelector([getCurrentTab, getSteps, getModules], (tab, steps, modules) => {
   const index = tab.step_ids.findIndex(id => {
-    const wfModule = wfModules[String(id)]
-    if (!wfModule) return false // add-module not yet loaded
-    const module = modules[wfModule.module]
+    const step = steps[String(id)]
+    if (!step) return false // add-module not yet loaded
+    const module = modules[step.module]
     return module ? module.loads_data : false
   })
   return index === -1 ? null : index
@@ -608,7 +608,7 @@ const firstFetchIndex = createSelector([getCurrentTab, getSteps, getModules], (t
 function mapStateToProps (state, ownProps) {
   const { testHighlight } = lessonSelector(state)
   const { index } = ownProps
-  const moduleIdName = ownProps.wfModule.module || null
+  const moduleIdName = ownProps.step.module || null
   const module = moduleIdName ? state.modules[moduleIdName] : null
   const fetchIndex = firstFetchIndex(state)
 

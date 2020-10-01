@@ -11,7 +11,7 @@ import UpdateFrequencySelect from './UpdateFrequencySelect'
  */
 export default class VersionSelect extends React.PureComponent {
   static propTypes = {
-    wfModuleId: PropTypes.number.isRequired,
+    stepId: PropTypes.number.isRequired,
     isStepBusy: PropTypes.bool.isRequired,
     isReadOnly: PropTypes.bool.isRequired,
     name: PropTypes.string.isRequired, // e.g., "version_select"
@@ -36,16 +36,16 @@ export default class VersionSelect extends React.PureComponent {
   }
 
   render () {
-    const { wfModuleId, isReadOnly } = this.props
+    const { stepId, isReadOnly } = this.props
 
     return (
       <div className='version-select'>
         <UpdateFrequencySelect
-          wfModuleId={wfModuleId}
+          stepId={stepId}
           isReadOnly={isReadOnly}
         />
         <div className='version-row'>
-          <DataVersionSelect wfModuleId={wfModuleId} />
+          <DataVersionSelect stepId={stepId} />
           {this.renderMaybeButton()}
         </div>
       </div>
@@ -53,10 +53,10 @@ export default class VersionSelect extends React.PureComponent {
   }
 }
 
-export function VersionSelectSimpler ({ wfModuleId }) {
+export function VersionSelectSimpler ({ stepId }) {
   return (
     <div className='version-select-simpler'>
-      <DataVersionSelect wfModuleId={wfModuleId} />
+      <DataVersionSelect stepId={stepId} />
     </div>
   )
 }

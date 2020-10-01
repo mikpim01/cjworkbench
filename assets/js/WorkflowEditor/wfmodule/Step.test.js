@@ -27,7 +27,7 @@ describe('Step, not read-only mode', () => {
   })
 
   // A mock module that looks like LoadURL
-  const wfModule = {
+  const step = {
     id: 999,
     slug: 'step-1',
     notes: '',
@@ -76,7 +76,7 @@ describe('Step, not read-only mode', () => {
         isZenModeAllowed={false}
         module={module}
         workflowId={99}
-        wfModule={wfModule}
+        step={step}
         removeModule={jest.fn()}
         inputStep={{ id: 123, last_relevant_delta_id: 707 }}
         isSelected
@@ -109,12 +109,12 @@ describe('Step, not read-only mode', () => {
   })
 
   it('is has .status-busy', () => {
-    const w = wrapper({ wfModule: { ...wfModule, output_status: 'busy' } })
+    const w = wrapper({ step: { ...step, output_status: 'busy' } })
     expect(w.hasClass('status-busy')).toBe(true)
     expect(w.find('ParamsForm').prop('isStepBusy')).toBe(true)
     expect(w.find(StatusLine).prop('status')).toEqual('busy')
 
-    w.setProps({ wfModule: { ...wfModule, output_status: 'ok' } })
+    w.setProps({ step: { ...step, output_status: 'ok' } })
     w.update()
     expect(w.hasClass('status-busy')).toBe(false)
     expect(w.hasClass('status-ok')).toBe(true)
@@ -129,17 +129,17 @@ describe('Step, not read-only mode', () => {
     // https://www.pivotaltracker.com/story/show/165539156
     // If we were to render a <ParamsForm> while display:none was set, the
     // params wouldn't be able to auto-size themselves.
-    const w = wrapper({ wfModule: { ...wfModule, is_collapsed: true } })
+    const w = wrapper({ step: { ...step, is_collapsed: true } })
     expect(w.find('ParamsForm').length).toEqual(0)
   })
 
-  it('has .status-busy overridden when wfModule.is_busy', () => {
-    const w = wrapper({ wfModule: { ...wfModule, output_status: 'ok', is_busy: true } })
+  it('has .status-busy overridden when step.is_busy', () => {
+    const w = wrapper({ step: { ...step, output_status: 'ok', is_busy: true } })
     expect(w.hasClass('status-busy')).toBe(true)
   })
 
   it('renders a note', () => {
-    const w = wrapper({ wfModule: { ...wfModule, notes: 'some notes' } })
+    const w = wrapper({ step: { ...step, notes: 'some notes' } })
     expect(w.find('EditableNotes').prop('value')).toEqual('some notes')
   })
 
@@ -154,13 +154,13 @@ describe('Step, not read-only mode', () => {
     let checkbox = w.find('input[type="checkbox"][name="zen-mode"]')
     expect(checkbox.prop('checked')).toBe(false)
     checkbox.simulate('change', { target: { checked: true } })
-    expect(w.instance().props.setZenMode).toHaveBeenCalledWith(wfModule.id, true)
+    expect(w.instance().props.setZenMode).toHaveBeenCalledWith(step.id, true)
     w.setProps({ isZenMode: true })
 
     checkbox = w.find('input[type="checkbox"][name="zen-mode"]')
     expect(checkbox.prop('checked')).toBe(true)
     checkbox.simulate('change', { target: { checked: false } })
-    expect(w.instance().props.setZenMode).toHaveBeenCalledWith(wfModule.id, false)
+    expect(w.instance().props.setZenMode).toHaveBeenCalledWith(step.id, false)
   })
 
   it('renders notifications, opening and closing a modal', () => {
@@ -191,7 +191,7 @@ describe('Step, not read-only mode', () => {
   })
 
   it('adds a note', () => {
-    const w = wrapper({ wfModule: { ...wfModule, notes: '' } })
+    const w = wrapper({ step: { ...step, notes: '' } })
 
     expect(w.find('.module-notes.visible')).toHaveLength(0)
 
@@ -199,30 +199,30 @@ describe('Step, not read-only mode', () => {
     w.find('EditableNotes').simulate('change', { target: { value: 'new note' } })
     w.find('EditableNotes').simulate('blur')
 
-    expect(w.instance().props.setStepNotes).toHaveBeenCalledWith(wfModule.id, 'new note')
+    expect(w.instance().props.setStepNotes).toHaveBeenCalledWith(step.id, 'new note')
   })
 
   it('deletes a note', () => {
-    const w = wrapper({ wfModule: { ...wfModule, notes: 'some notes' } })
+    const w = wrapper({ step: { ...step, notes: 'some notes' } })
 
     expect(w.find('.module-notes.visible')).toHaveLength(1)
 
     w.find('EditableNotes').simulate('change', { target: { value: '' } })
     w.find('EditableNotes').simulate('blur')
 
-    expect(w.instance().props.setStepNotes).toHaveBeenCalledWith(wfModule.id, '')
+    expect(w.instance().props.setStepNotes).toHaveBeenCalledWith(step.id, '')
   })
 
   it('does not show old value during edit when editing ""', () => {
     // https://www.pivotaltracker.com/story/show/163005781
-    const w = wrapper({ wfModule: { ...wfModule, notes: 'some notes' } })
+    const w = wrapper({ step: { ...step, notes: 'some notes' } })
 
     w.find('EditableNotes').simulate('change', { target: { value: '' } })
     expect(w.find('EditableNotes').prop('value')).toEqual('')
   })
 
   it('queues changes from onChange and then submits them in onSubmit', () => {
-    const wfModule = {
+    const step = {
       id: 999,
       notes: '',
       is_collapsed: false,
@@ -245,7 +245,7 @@ describe('Step, not read-only mode', () => {
     let onSetStepParamsDone = null
     const setStepParams = jest.fn(() => ({ then: (fn) => { onSetStepParamsDone = fn } }))
     const w = wrapper({
-      wfModule,
+      step,
       module: aModule,
       setStepParams
     })
@@ -265,7 +265,7 @@ describe('Step, not read-only mode', () => {
     // after a tick, so Redux can do its magic in setStepParams
     expect(w.prop('className')).toMatch(/\bediting\b/)
     expect(w.state('edits')).toEqual({ a: 'C' })
-    w.setProps({ wfModule: { ...wfModule, params: { a: 'C' } } })
+    w.setProps({ step: { ...step, params: { a: 'C' } } })
     act(onSetStepParamsDone)
     expect(w.state('edits')).toEqual({})
     expect(w.prop('className')).not.toMatch(/\bediting\b/)
@@ -275,7 +275,7 @@ describe('Step, not read-only mode', () => {
     // Use case:
     // 1. User edits url field
     // 2. User clicks "submit" button
-    const wfModule = {
+    const step = {
       id: 999,
       notes: '',
       is_collapsed: false,
@@ -292,7 +292,7 @@ describe('Step, not read-only mode', () => {
       ...module,
       param_fields: [pspec('url', 'string'), pspec('version_select', 'custom')]
     }
-    const w = wrapper({ wfModule, module: aModule, setStepParams })
+    const w = wrapper({ step, module: aModule, setStepParams })
 
     w.find('ParamsForm').prop('onChange')({ url: 'http://example.org' })
     w.find('ParamsForm').prop('onSubmit')()
@@ -302,7 +302,7 @@ describe('Step, not read-only mode', () => {
   })
 
   it('overrides status to busy when a fetch is pending', () => {
-    const w = wrapper({ wfModule: { ...wfModule, nClientRequests: 1 } })
+    const w = wrapper({ step: { ...step, nClientRequests: 1 } })
     expect(w.find('ParamsForm').prop('isStepBusy')).toBe(true)
     expect(w.find(StatusLine).prop('status')).toEqual('busy')
     expect(w.prop('className')).toMatch(/\bstatus-busy\b/)
@@ -330,7 +330,7 @@ describe('Step, not read-only mode', () => {
         'tab-11': { slug: 'tab-11', name: 'Tab 1', step_ids: [10, 20] },
         'tab-12': { slug: 'tab-12', name: 'Tab 2', step_ids: [] }
       },
-      wfModules: {
+      steps: {
         10: { id: 10, slug: 'step-10', tab_slug: 'tab-11' },
         20: { id: 20, slug: 'step-20', tab_slug: 'tab-11' }
       },
@@ -356,7 +356,7 @@ describe('Step, not read-only mode', () => {
           isZenMode={false}
           isZenModeAllowed={false}
           index={1}
-          wfModule={{ id: 20, module: 'loadurl', is_collapsed: false, output_status: 'error', params: {}, secrets: {}, output_errors: [{ message: 'foo', quickFixes: [quickFix] }], files: [] }}
+          step={{ id: 20, module: 'loadurl', is_collapsed: false, output_status: 'error', params: {}, secrets: {}, output_errors: [{ message: 'foo', quickFixes: [quickFix] }], files: [] }}
           isSelected
           isAfterSelected={false}
           onDragStart={jest.fn()}
@@ -403,7 +403,7 @@ describe('Step, not read-only mode', () => {
         tabs: {
           'tab-11': { slug: 'tab-11', name: 'Tab 1', step_ids: [1, 2, 999] }
         },
-        wfModules: {
+        steps: {
           999: { slug: 'step-99', module: 'loadurl', params: {}, secrets: {} }
         },
         modules: {
@@ -426,7 +426,7 @@ describe('Step, not read-only mode', () => {
             isZenMode={false}
             isZenModeAllowed={false}
             index={1}
-            wfModule={{ id: 20, module: 'loadurl', is_collapsed: false, output_status: 'error', params: {}, secrets: {}, output_errors: [{ message: 'foo', quickFixes: [] }], files: [] }}
+            step={{ id: 20, module: 'loadurl', is_collapsed: false, output_status: 'error', params: {}, secrets: {}, output_errors: [{ message: 'foo', quickFixes: [] }], files: [] }}
             isSelected
             isAfterSelected={false}
             onDragStart={jest.fn()}

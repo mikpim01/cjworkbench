@@ -82,7 +82,7 @@ class StepTest(HandlerTestCase, DbTestCaseWithModuleRegistryAndMockKernel):
                 set_params,
                 user=user,
                 workflow=workflow,
-                wfModuleId=step.id,
+                stepId=step.id,
                 values={"foo": "bar"},
             )
         self.assertResponse(response, data=None)
@@ -112,7 +112,7 @@ class StepTest(HandlerTestCase, DbTestCaseWithModuleRegistryAndMockKernel):
                 set_params,
                 user=user,
                 workflow=workflow,
-                wfModuleId=step.id,
+                stepId=step.id,
                 values={"foo1": "bar"},
             )
         self.assertResponse(
@@ -141,7 +141,7 @@ class StepTest(HandlerTestCase, DbTestCaseWithModuleRegistryAndMockKernel):
                 set_params,
                 user=user,
                 workflow=workflow,
-                wfModuleId=step.id,
+                stepId=step.id,
                 values={"foo": "b\x00\x00r"},
             )
         self.assertResponse(response, data=None)
@@ -161,7 +161,7 @@ class StepTest(HandlerTestCase, DbTestCaseWithModuleRegistryAndMockKernel):
             set_params,
             user=user,
             workflow=workflow,
-            wfModuleId=step.id,
+            stepId=step.id,
             values={"foo": "bar"},
         )
         self.assertResponse(response, error="ValueError: Module x does not exist")
@@ -173,7 +173,7 @@ class StepTest(HandlerTestCase, DbTestCaseWithModuleRegistryAndMockKernel):
         response = self.run_handler(
             set_params,
             workflow=workflow,
-            wfModuleId=step.id,
+            stepId=step.id,
             values={"foo": "bar"},
         )
         self.assertResponse(response, error="AuthError: no write access to workflow")
@@ -187,7 +187,7 @@ class StepTest(HandlerTestCase, DbTestCaseWithModuleRegistryAndMockKernel):
             set_params,
             user=user,
             workflow=workflow,
-            wfModuleId=step.id,
+            stepId=step.id,
             values="foobar",
         )  # String is not Dict
         self.assertResponse(response, error="BadRequest: values must be an Object")
@@ -202,7 +202,7 @@ class StepTest(HandlerTestCase, DbTestCaseWithModuleRegistryAndMockKernel):
             set_params,
             user=user,
             workflow=workflow,
-            wfModuleId=step.id,
+            stepId=step.id,
             values={"foo": "bar"},
         )
         self.assertResponse(response, error="DoesNotExist: Step not found")
@@ -215,7 +215,7 @@ class StepTest(HandlerTestCase, DbTestCaseWithModuleRegistryAndMockKernel):
         step = workflow.tabs.first().steps.create(order=0, slug="step-1")
 
         response = self.run_handler(
-            delete, user=user, workflow=workflow, wfModuleId=step.id
+            delete, user=user, workflow=workflow, stepId=step.id
         )
         self.assertResponse(response, data=None)
 
@@ -228,7 +228,7 @@ class StepTest(HandlerTestCase, DbTestCaseWithModuleRegistryAndMockKernel):
         workflow = Workflow.create_and_init(public=True)
         step = workflow.tabs.first().steps.create(order=0, slug="step-1")
 
-        response = self.run_handler(delete, workflow=workflow, wfModuleId=step.id)
+        response = self.run_handler(delete, workflow=workflow, stepId=step.id)
         self.assertResponse(response, error="AuthError: no write access to workflow")
 
     def test_delete_invalid_step(self):
@@ -238,7 +238,7 @@ class StepTest(HandlerTestCase, DbTestCaseWithModuleRegistryAndMockKernel):
         step = other_workflow.tabs.first().steps.create(order=0, slug="step-1")
 
         response = self.run_handler(
-            delete, user=user, workflow=workflow, wfModuleId=step.id
+            delete, user=user, workflow=workflow, stepId=step.id
         )
         self.assertResponse(response, error="DoesNotExist: Step not found")
 
@@ -255,7 +255,7 @@ class StepTest(HandlerTestCase, DbTestCaseWithModuleRegistryAndMockKernel):
             set_stored_data_version,
             user=user,
             workflow=workflow,
-            wfModuleId=step.id,
+            stepId=step.id,
             version=version,
         )
         self.assertResponse(response, data=None)
@@ -275,7 +275,7 @@ class StepTest(HandlerTestCase, DbTestCaseWithModuleRegistryAndMockKernel):
             set_stored_data_version,
             user=user,
             workflow=workflow,
-            wfModuleId=step.id,
+            stepId=step.id,
             version=version,
         )
         self.assertResponse(response, data=None)
@@ -298,7 +298,7 @@ class StepTest(HandlerTestCase, DbTestCaseWithModuleRegistryAndMockKernel):
             set_stored_data_version,
             user=user,
             workflow=workflow,
-            wfModuleId=step.id,
+            stepId=step.id,
             version=version_js,
         )
         self.assertResponse(response, data=None)
@@ -314,7 +314,7 @@ class StepTest(HandlerTestCase, DbTestCaseWithModuleRegistryAndMockKernel):
             set_stored_data_version,
             user=user,
             workflow=workflow,
-            wfModuleId=step.id,
+            stepId=step.id,
             version=["not a date"],
         )
         self.assertResponse(
@@ -330,7 +330,7 @@ class StepTest(HandlerTestCase, DbTestCaseWithModuleRegistryAndMockKernel):
         response = self.run_handler(
             set_stored_data_version,
             workflow=workflow,
-            wfModuleId=step.id,
+            stepId=step.id,
             version=version,
         )
         self.assertResponse(response, error="AuthError: no write access to workflow")
@@ -343,7 +343,7 @@ class StepTest(HandlerTestCase, DbTestCaseWithModuleRegistryAndMockKernel):
         step = workflow.tabs.first().steps.create(order=0, slug="step-1", notes="A")
 
         response = self.run_handler(
-            set_notes, user=user, workflow=workflow, wfModuleId=step.id, notes="B"
+            set_notes, user=user, workflow=workflow, stepId=step.id, notes="B"
         )
         self.assertResponse(response, data=None)
 
@@ -361,7 +361,7 @@ class StepTest(HandlerTestCase, DbTestCaseWithModuleRegistryAndMockKernel):
         step = workflow.tabs.first().steps.create(order=0, slug="step-1", notes="A")
 
         response = self.run_handler(
-            set_notes, workflow=workflow, wfModuleId=step.id, notes="B"
+            set_notes, workflow=workflow, stepId=step.id, notes="B"
         )
         self.assertResponse(response, error="AuthError: no write access to workflow")
 
@@ -376,7 +376,7 @@ class StepTest(HandlerTestCase, DbTestCaseWithModuleRegistryAndMockKernel):
             set_notes,
             user=user,
             workflow=workflow,
-            wfModuleId=step.id,
+            stepId=step.id,
             notes=["a", "b"],
         )
         self.assertResponse(response, data=None)
@@ -395,7 +395,7 @@ class StepTest(HandlerTestCase, DbTestCaseWithModuleRegistryAndMockKernel):
             set_collapsed,
             user=user,
             workflow=workflow,
-            wfModuleId=step.id,
+            stepId=step.id,
             isCollapsed=True,
         )
         self.assertResponse(response, data=None)
@@ -410,7 +410,7 @@ class StepTest(HandlerTestCase, DbTestCaseWithModuleRegistryAndMockKernel):
         )
 
         response = self.run_handler(
-            set_collapsed, workflow=workflow, wfModuleId=step.id, isCollapsed=True
+            set_collapsed, workflow=workflow, stepId=step.id, isCollapsed=True
         )
         self.assertResponse(response, error="AuthError: no write access to workflow")
 
@@ -426,7 +426,7 @@ class StepTest(HandlerTestCase, DbTestCaseWithModuleRegistryAndMockKernel):
             set_collapsed,
             user=user,
             workflow=workflow,
-            wfModuleId=step.id,
+            stepId=step.id,
             isCollapsed="False",
         )
         self.assertResponse(response, data=None)
@@ -446,7 +446,7 @@ class StepTest(HandlerTestCase, DbTestCaseWithModuleRegistryAndMockKernel):
             set_notifications,
             user=user,
             workflow=workflow,
-            wfModuleId=step.id,
+            stepId=step.id,
             notifications=False,
         )
         self.assertResponse(response, data=None)
@@ -467,7 +467,7 @@ class StepTest(HandlerTestCase, DbTestCaseWithModuleRegistryAndMockKernel):
             set_notifications,
             user=user,
             workflow=workflow,
-            wfModuleId=step.id,
+            stepId=step.id,
             notifications=True,
         )
         self.assertResponse(response, data=None)
@@ -485,7 +485,7 @@ class StepTest(HandlerTestCase, DbTestCaseWithModuleRegistryAndMockKernel):
             try_set_autofetch,
             user=user,
             workflow=workflow,
-            wfModuleId=step.id,
+            stepId=step.id,
             isAutofetch=True,
             fetchInterval=1200,
         )
@@ -515,7 +515,7 @@ class StepTest(HandlerTestCase, DbTestCaseWithModuleRegistryAndMockKernel):
             try_set_autofetch,
             user=user,
             workflow=workflow,
-            wfModuleId=step.id,
+            stepId=step.id,
             isAutofetch=False,
             fetchInterval=300,
         )
@@ -534,7 +534,7 @@ class StepTest(HandlerTestCase, DbTestCaseWithModuleRegistryAndMockKernel):
             try_set_autofetch,
             user=user,
             workflow=workflow,
-            wfModuleId=step.id,
+            stepId=step.id,
             isAutofetch=True,
             fetchInterval=300,
         )
@@ -563,7 +563,7 @@ class StepTest(HandlerTestCase, DbTestCaseWithModuleRegistryAndMockKernel):
             try_set_autofetch,
             user=user,
             workflow=workflow,
-            wfModuleId=step.id,
+            stepId=step.id,
             isAutofetch=True,
             fetchInterval=600,
         )
@@ -584,9 +584,7 @@ class StepTest(HandlerTestCase, DbTestCaseWithModuleRegistryAndMockKernel):
         workflow = Workflow.create_and_init(owner=user)
         step = workflow.tabs.first().steps.create(order=0, slug="step-1")
 
-        response = self.run_handler(
-            fetch, user=user, workflow=workflow, wfModuleId=step.id
-        )
+        response = self.run_handler(fetch, user=user, workflow=workflow, stepId=step.id)
         self.assertResponse(response, data=None)
 
         step.refresh_from_db()
@@ -601,7 +599,7 @@ class StepTest(HandlerTestCase, DbTestCaseWithModuleRegistryAndMockKernel):
         workflow = Workflow.create_and_init(public=True)
         step = workflow.tabs.first().steps.create(order=0, slug="step-1")
 
-        response = self.run_handler(fetch, workflow=workflow, wfModuleId=step.id)
+        response = self.run_handler(fetch, workflow=workflow, stepId=step.id)
         self.assertResponse(response, error="AuthError: no write access to workflow")
 
     def test_generate_secret_access_token_writer_access_denied(self):
@@ -619,7 +617,7 @@ class StepTest(HandlerTestCase, DbTestCaseWithModuleRegistryAndMockKernel):
             generate_secret_access_token,
             user=user,
             workflow=workflow,
-            wfModuleId=step.id,
+            stepId=step.id,
             param="google_credentials",
         )
         self.assertResponse(response, error="AuthError: no owner access to workflow")
@@ -641,7 +639,7 @@ class StepTest(HandlerTestCase, DbTestCaseWithModuleRegistryAndMockKernel):
             generate_secret_access_token,
             user=user,
             workflow=workflow,
-            wfModuleId=step.id,
+            stepId=step.id,
             param="google_credentials",
         )
         self.assertResponse(response, data={"token": None})
@@ -663,7 +661,7 @@ class StepTest(HandlerTestCase, DbTestCaseWithModuleRegistryAndMockKernel):
             generate_secret_access_token,
             user=user,
             workflow=workflow,
-            wfModuleId=step.id,
+            stepId=step.id,
             param="a",
         )
         self.assertResponse(response, data={"token": None})
@@ -685,7 +683,7 @@ class StepTest(HandlerTestCase, DbTestCaseWithModuleRegistryAndMockKernel):
             generate_secret_access_token,
             user=user,
             workflow=workflow,
-            wfModuleId=step.id,
+            stepId=step.id,
             param="twitter_credentials",
         )
         self.assertResponse(response, data={"token": None})
@@ -709,7 +707,7 @@ class StepTest(HandlerTestCase, DbTestCaseWithModuleRegistryAndMockKernel):
             generate_secret_access_token,
             user=user,
             workflow=workflow,
-            wfModuleId=step.id,
+            stepId=step.id,
             param="google_credentials",
         )
         self.assertResponse(response, error=("AuthError: we only support twitter"))
@@ -736,7 +734,7 @@ class StepTest(HandlerTestCase, DbTestCaseWithModuleRegistryAndMockKernel):
             generate_secret_access_token,
             user=user,
             workflow=workflow,
-            wfModuleId=step.id,
+            stepId=step.id,
             param="google_credentials",
         )
         self.assertResponse(response, error="AuthError: an error")
@@ -766,7 +764,7 @@ class StepTest(HandlerTestCase, DbTestCaseWithModuleRegistryAndMockKernel):
             generate_secret_access_token,
             user=user,
             workflow=workflow,
-            wfModuleId=step.id,
+            stepId=step.id,
             param="google_credentials",
         )
         self.assertResponse(response, data={"token": "a-token"})
@@ -789,7 +787,7 @@ class StepTest(HandlerTestCase, DbTestCaseWithModuleRegistryAndMockKernel):
             delete_secret,
             user=user,
             workflow=workflow,
-            wfModuleId=step.id,
+            stepId=step.id,
             param="google_credentials",
         )
         self.assertResponse(response, error="AuthError: no owner access to workflow")
@@ -812,7 +810,7 @@ class StepTest(HandlerTestCase, DbTestCaseWithModuleRegistryAndMockKernel):
             delete_secret,
             user=user,
             workflow=workflow,
-            wfModuleId=step.id,
+            stepId=step.id,
             param="foo",
         )
         self.assertResponse(response, data=None)
@@ -842,7 +840,7 @@ class StepTest(HandlerTestCase, DbTestCaseWithModuleRegistryAndMockKernel):
             delete_secret,
             user=user,
             workflow=workflow,
-            wfModuleId=step.id,
+            stepId=step.id,
             param="google_credentials",
         )
         self.assertResponse(response, data=None)
@@ -865,7 +863,7 @@ class StepTest(HandlerTestCase, DbTestCaseWithModuleRegistryAndMockKernel):
             set_secret,
             user=user,
             workflow=workflow,
-            wfModuleId=step.id,
+            stepId=step.id,
             param="string_secret",
             secret="foo",
         )
@@ -892,7 +890,7 @@ class StepTest(HandlerTestCase, DbTestCaseWithModuleRegistryAndMockKernel):
             set_secret,
             user=user,
             workflow=workflow,
-            wfModuleId=step.id,
+            stepId=step.id,
             param="string_secret",
             secret="foo",
         )
@@ -918,7 +916,7 @@ class StepTest(HandlerTestCase, DbTestCaseWithModuleRegistryAndMockKernel):
             set_secret,
             user=user,
             workflow=workflow,
-            wfModuleId=step.id,
+            stepId=step.id,
             param="string_secret",
             secret="foo",
         )
@@ -946,7 +944,7 @@ class StepTest(HandlerTestCase, DbTestCaseWithModuleRegistryAndMockKernel):
             get_file_upload_api_token,
             user=user,
             workflow=workflow,
-            wfModuleId=step.id,
+            stepId=step.id,
         )
         self.assertResponse(response, data={"apiToken": "abcd1234"})
 
@@ -960,7 +958,7 @@ class StepTest(HandlerTestCase, DbTestCaseWithModuleRegistryAndMockKernel):
             get_file_upload_api_token,
             user=user,
             workflow=workflow,
-            wfModuleId=step.id,
+            stepId=step.id,
         )
         self.assertResponse(response, data={"apiToken": None})
 
@@ -976,7 +974,7 @@ class StepTest(HandlerTestCase, DbTestCaseWithModuleRegistryAndMockKernel):
             reset_file_upload_api_token,
             user=user,
             workflow=workflow,
-            wfModuleId=step.id,
+            stepId=step.id,
         )
         step.refresh_from_db()
         self.assertEqual(
@@ -996,7 +994,7 @@ class StepTest(HandlerTestCase, DbTestCaseWithModuleRegistryAndMockKernel):
             clear_file_upload_api_token,
             user=user,
             workflow=workflow,
-            wfModuleId=step.id,
+            stepId=step.id,
         )
         step.refresh_from_db()
         self.assertResponse(response, data=None)

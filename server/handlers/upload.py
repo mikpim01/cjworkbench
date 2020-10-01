@@ -20,8 +20,8 @@ def _load_step(workflow: Workflow, step_id: int) -> Step:
 
 def _loading_step(func):
     @functools.wraps(func)
-    async def inner(workflow: Workflow, wfModuleId: int, **kwargs):
-        step = await _load_step(workflow, wfModuleId)
+    async def inner(workflow: Workflow, stepId: int, **kwargs):
+        step = await _load_step(workflow, stepId)
         return await func(workflow=workflow, step=step, **kwargs)
 
     return inner

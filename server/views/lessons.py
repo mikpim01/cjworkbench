@@ -115,7 +115,7 @@ def _ensure_workflow(request, lesson: Lesson):
 def _init_workflow_for_lesson(workflow, lesson):
     InitWorkflowCommand.create(workflow)
 
-    # Create each wfModule of each tab
+    # Create each step of each tab
     tab_dicts = lesson.initial_workflow.tabs
     for position, tab_dict in enumerate(tab_dicts):
         # Set selected module to last wfmodule in stack
@@ -123,10 +123,10 @@ def _init_workflow_for_lesson(workflow, lesson):
             position=position,
             slug=f"tab-{position + 1}",
             name=tab_dict["name"],
-            selected_step_position=len(tab_dict["wfModules"]) - 1,
+            selected_step_position=len(tab_dict["steps"]) - 1,
         )
 
-        for order, step in enumerate(tab_dict["wfModules"]):
+        for order, step in enumerate(tab_dict["steps"]):
             _add_step_to_tab(step, order, tab, workflow.last_delta_id, lesson)
 
 

@@ -94,8 +94,8 @@ exports[`StepContextMenu should match snapshot 1`] = `
             <DropdownMenu />
             <ExportModal
               open={false}
+              stepId={415}
               toggle={[Function]}
-              wfModuleId={415}
             >
               <Modal
                 isOpen={false}

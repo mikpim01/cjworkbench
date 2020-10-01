@@ -137,7 +137,7 @@ class AccountAdmin:
             "server_storedobject",
             "server_uploadedfile",
             "server_inprogressupload",
-            "server_wfmodule",
+            "step",
             "server_tab",
             "server_workflow",
             "django_session",

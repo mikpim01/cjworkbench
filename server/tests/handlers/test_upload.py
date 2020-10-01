@@ -28,7 +28,7 @@ class UploadTest(HandlerTestCase):
             order=0, slug="step-1", module_id_name="x"
         )
         response = self.run_handler(
-            create_upload, user=user, workflow=workflow, wfModuleId=step.id
+            create_upload, user=user, workflow=workflow, stepId=step.id
         )
         self.assertEqual(response.error, "")
         # Test that step is aware of the upload
@@ -61,7 +61,7 @@ class UploadTest(HandlerTestCase):
             finish_upload,
             user=user,
             workflow=workflow,
-            wfModuleId=step.id,
+            stepId=step.id,
             key=key,
             filename="test sheet.csv",
         )
@@ -107,7 +107,7 @@ class UploadTest(HandlerTestCase):
             finish_upload,
             user=user,
             workflow=workflow,
-            wfModuleId=step.id,
+            stepId=step.id,
             key=key,
             filename="test.csv",
         )
@@ -132,7 +132,7 @@ class UploadTest(HandlerTestCase):
             finish_upload,
             user=user,
             workflow=workflow,
-            wfModuleId=step.id,
+            stepId=step.id,
             key=key,
             filename="test.csv",
         )
@@ -159,7 +159,7 @@ class UploadTest(HandlerTestCase):
             finish_upload,
             user=user,
             workflow=workflow,
-            wfModuleId=step.id,
+            stepId=step.id,
             key=key,
             filename="test.csv",
         )
@@ -192,7 +192,7 @@ class UploadTest(HandlerTestCase):
         self.assertIn("Uploads", response)
 
         response = self.run_handler(
-            abort_upload, user=user, workflow=workflow, wfModuleId=step.id, key=key
+            abort_upload, user=user, workflow=workflow, stepId=step.id, key=key
         )
         self.assertResponse(response, data=None)
         response = minio.client.list_multipart_uploads(
@@ -215,7 +215,7 @@ class UploadTest(HandlerTestCase):
         key = in_progress_upload.get_upload_key()
         minio.put_bytes(in_progress_upload.Bucket, key, b"1234567")
         response = self.run_handler(
-            abort_upload, user=user, workflow=workflow, wfModuleId=step.id, key=key
+            abort_upload, user=user, workflow=workflow, stepId=step.id, key=key
         )
         self.assertResponse(response, data=None)
         step.refresh_from_db()

@@ -18,10 +18,10 @@ const StepContextMenu = React.memo(function StepContextMenu ({ i18n, removeModul
         <i className='icon-more' />
       </DropdownToggle>
       <DropdownMenu>
-        <DropdownItem onClick={handleClickOpenExportModal} className='test-export-button' icon='icon-download'><Trans id='js.WorkflowEditor.wfmodule.wfModuleContextMenu.exportData'>Export data</Trans></DropdownItem>
-        <DropdownItem onClick={handleClickDelete} className='test-delete-button' icon='icon-bin'><Trans id='js.WorkflowEditor.wfmodule.wfModuleContextMenu.delete'>Delete</Trans></DropdownItem>
+        <DropdownItem onClick={handleClickOpenExportModal} className='test-export-button' icon='icon-download'><Trans id='js.WorkflowEditor.wfmodule.stepContextMenu.exportData'>Export data</Trans></DropdownItem>
+        <DropdownItem onClick={handleClickDelete} className='test-delete-button' icon='icon-bin'><Trans id='js.WorkflowEditor.wfmodule.stepContextMenu.delete'>Delete</Trans></DropdownItem>
       </DropdownMenu>
-      <ExportModal open={isExportModalOpen} wfModuleId={id} toggle={handleCloseExportModal} />
+      <ExportModal open={isExportModalOpen} stepId={id} toggle={handleCloseExportModal} />
     </UncontrolledDropdown>
   )
 })

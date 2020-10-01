@@ -203,7 +203,7 @@ def render_workflow(request: HttpRequest, workflow: Workflow):
 
         if any(
             step["last_relevant_delta_id"] != step["cached_render_result_delta_id"]
-            for step in init_state["wfModules"].values()
+            for step in init_state["steps"].values()
         ):
             # We're returning a Workflow that may have stale Steps. That's
             # fine, but are we _sure_ the renderer is about to render them?

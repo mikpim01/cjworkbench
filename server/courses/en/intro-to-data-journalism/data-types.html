@@ -22,7 +22,7 @@
 <script id="initialWorkflow">
 tabs:
 - name: Lesson
-  wfModules:
+  steps:
   - module: loadurl
     slug: step-loadurl
     params:
@@ -30,7 +30,7 @@ tabs:
     collapsed: true
     note: "Source: City of New York."
 - name: Data dictionary
-  wfModules:
+  steps:
   - module: loadurl
     slug: step-loaddictionary
     params:
@@ -67,13 +67,13 @@ tabs:
   <ol class="steps">
     <li
       data-test="
-        return workflow.tabs[0].wfModuleSlugs[1] === 'selectcolumns' &&
-               workflow.tabs[0].wfModules[1].params.colnames.sort().join('|') === 'boro_nm|cmplnt_fr_dt'"
+        return workflow.tabs[0].stepModuleIds[1] === 'selectcolumns' &&
+               workflow.tabs[0].steps[1].params.colnames.sort().join('|') === 'boro_nm|cmplnt_fr_dt'"
     >Add <kbd>Select columns</kbd>, and keep only <kbd>boro_nm</kbd> and <kbd>cmplnt_fr_dt</kbd>
     </li>
     <li
       data-test="
-        const wfm = workflow.tabs[0].wfModules[2]
+        const wfm = workflow.tabs[0].steps[2]
         return wfm && wfm.moduleSlug === 'renamecolumns' &&
                !wfm.params.custom_list &&
                wfm.params.renames.boro_nm.toLowerCase() === 'borough' &&
@@ -125,7 +125,7 @@ tabs:
   <ol class="steps">
     <li
       data-test="
-        const wfm = workflow.tabs[0].wfModules[3]
+        const wfm = workflow.tabs[0].steps[3]
         return wfm && wfm.moduleSlug === 'convert-date' &&
                wfm.params.colnames.join('|').toLowerCase() === 'complaint date'
                && wfm.params.input_format === 'auto'"

@@ -192,7 +192,7 @@ class TabTest(HandlerTestCase, DbTestCaseWithModuleRegistryAndMockKernel):
             user=user,
             workflow=workflow,
             tabSlug="tab-1",
-            wfModuleIds=[step2.id, step1.id],
+            stepIds=[step2.id, step1.id],
         )
         self.assertResponse(response, data=None)
 
@@ -210,7 +210,7 @@ class TabTest(HandlerTestCase, DbTestCaseWithModuleRegistryAndMockKernel):
             reorder_modules,
             workflow=workflow,
             tabSlug="tab-1",
-            wfModuleIds=[step2.id, step1.id],
+            stepIds=[step2.id, step1.id],
         )
         self.assertResponse(response, error="AuthError: no write access to workflow")
 
@@ -226,7 +226,7 @@ class TabTest(HandlerTestCase, DbTestCaseWithModuleRegistryAndMockKernel):
             user=user,
             workflow=workflow,
             tabSlug="tab-1",
-            wfModuleIds=[step2.id, step1.id, 2],
+            stepIds=[step2.id, step1.id, 2],
         )
         self.assertResponse(
             response, error="new_order does not have the expected elements"

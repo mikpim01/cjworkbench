@@ -59,7 +59,7 @@ def list_autofetches_json(scope):
                     "lastViewedAt": (isoformat(row["tab__workflow__last_viewed_at"])),
                 },
                 "tab": {"slug": row["tab__slug"], "name": row["tab__name"]},
-                "wfModule": {
+                "step": {
                     "id": row["id"],
                     "order": row["order"],
                     "fetchInterval": row["update_interval"],

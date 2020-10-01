@@ -55,7 +55,7 @@ describe('lessonSelector', () => {
       tabs: {
         'tab-1': { steps: [] }
       },
-      wfModules: {}
+      steps: {}
     }
     const { activeSectionIndex, activeStepIndex } = lessonSelector(state)
     expect(activeSectionIndex).toBe(0)
@@ -168,8 +168,8 @@ describe('lessonSelector', () => {
         sections: [
           {
             steps: [
-              { testJs: 'return workflow.selectedTab.wfModuleSlugs[0] === "foo"' },
-              { testJs: 'return workflow.selectedTab.wfModuleSlugs[1] === "foo"' }
+              { testJs: 'return workflow.selectedTab.stepModuleIds[0] === "foo"' },
+              { testJs: 'return workflow.selectedTab.stepModuleIds[1] === "foo"' }
             ]
           },
           ...lessonFixture.sections.slice(1)
@@ -183,7 +183,7 @@ describe('lessonSelector', () => {
         'tab-1': { step_ids: [3, 4] },
         'tab-2': { step_ids: [] }
       },
-      wfModules: {
+      steps: {
         3: { module: 'foo' },
         4: { module: 'bar' }
       },
@@ -202,8 +202,8 @@ describe('lessonSelector', () => {
         sections: [
           {
             steps: [
-              { testJs: 'return state.selectedTab.wfModuleSlugs[0] === "foo"' },
-              { testJs: 'return state.selectedTab.wfModuleSlugs[1] === "foo"' }
+              { testJs: 'return state.selectedTab.stepModuleIds[0] === "foo"' },
+              { testJs: 'return state.selectedTab.stepModuleIds[1] === "foo"' }
             ]
           },
           ...lessonFixture.sections.slice(1)
@@ -217,7 +217,7 @@ describe('lessonSelector', () => {
         'tab-1': { step_ids: [3, 4], selected_step_position: 1 },
         'tab-2': { step_ids: [] }
       },
-      wfModules: {
+      steps: {
         3: { module: 'foo' },
         4: { module: 'bar' }
       },

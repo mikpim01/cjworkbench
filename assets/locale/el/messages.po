@@ -528,11 +528,11 @@ msgid "js.WorkflowEditor.wfmodule.notes.edit.hoverText"
 msgstr "Επεξεργασία σημείωσης"
 
 #: assets/js/WorkflowEditor/wfmodule/StepContextMenu.js:22
-msgid "js.WorkflowEditor.wfmodule.wfModuleContextMenu.delete"
+msgid "js.WorkflowEditor.wfmodule.stepContextMenu.delete"
 msgstr "Διαγραφή"
 
 #: assets/js/WorkflowEditor/wfmodule/StepContextMenu.js:21
-msgid "js.WorkflowEditor.wfmodule.wfModuleContextMenu.exportData"
+msgid "js.WorkflowEditor.wfmodule.stepContextMenu.exportData"
 msgstr "Εξαγωγή δεδομένων"
 
 #: assets/js/WorkflowNavBar.js:22

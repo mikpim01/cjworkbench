@@ -55,7 +55,7 @@ function testLessonHighlightButThereIsNoLesson (test) { return false }
 
 const getWorkflow = ({ workflow }) => workflow
 const getTabs = ({ tabs }) => tabs
-const getSteps = ({ wfModules }) => wfModules
+const getSteps = ({ steps }) => steps
 const getModules = ({ modules }) => modules
 const getSelectedStep = (state) => state.selected_step
 const getLessonData = ({ lessonData }) => lessonData || null
@@ -92,7 +92,7 @@ const getLessonData = ({ lessonData }) => lessonData || null
  */
 const getLesson = createSelector(
   [getWorkflow, getTabs, getSteps, getModules, getSelectedStep, getLessonData],
-  (workflow, tabs, wfModules, modules, selectedStep, lessonData) => {
+  (workflow, tabs, steps, modules, selectedStep, lessonData) => {
     if (lessonData === null) {
       return {
         activeSectionIndex: null,
@@ -104,7 +104,7 @@ const getLesson = createSelector(
     const stateWithHelpers = new StateWithHelpers({
       workflow,
       tabs,
-      wfModules,
+      steps,
       modules,
       selected_step: selectedStep
     })

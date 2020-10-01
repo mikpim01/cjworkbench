@@ -23,7 +23,7 @@ describe('UpdateTableAction actions', () => {
   it('should alert user if module is not imported', async () => {
     const dispatch = jest.fn()
     const getState = () => ({
-      wfModules: {
+      steps: {
         17: { module: 'loadurl' }
       },
       modules: {
@@ -42,7 +42,7 @@ describe('UpdateTableAction actions', () => {
       tabs: {
         'tab-2': { step_ids: [10, 11], selected_step_position: 0 }
       },
-      wfModules: {
+      steps: {
         10: { tab_slug: 'tab-2' },
         11: { tab_slug: 'tab-2', module: 'duplicatecolumns', params: { colnames: ['A'] } }
       },
@@ -62,7 +62,7 @@ describe('UpdateTableAction actions', () => {
       tabs: {
         'tab-2': { step_ids: [10, 11, 12, 13] }
       },
-      wfModules: {
+      steps: {
         10: { module: 'clean-text' },
         11: { tab_slug: 'tab-2', module: 'sort' },
         12: { module: 'sort' },
@@ -84,7 +84,7 @@ describe('UpdateTableAction actions', () => {
       tabs: {
         'tab-2': { step_ids: [10, 11], selected_step_position: 1 }
       },
-      wfModules: {
+      steps: {
         10: {},
         11: { tab_slug: 'tab-2', module: 'duplicatecolumns', params: { colnames: ['A'] } }
       },
@@ -104,7 +104,7 @@ describe('UpdateTableAction actions', () => {
       tabs: {
         'tab-2': { step_ids: [10, 11] }
       },
-      wfModules: {
+      steps: {
         10: { tab_slug: 'tab-2', module: 'filter' },
         11: { module: 'filter' }
       },
@@ -140,7 +140,7 @@ describe('UpdateTableAction actions', () => {
       tabs: {
         'tab-2': { step_ids: [10, 11] }
       },
-      wfModules: {
+      steps: {
         10: { module: 'fetch' },
         11: { tab_slug: 'tab-2', module: 'sort' }
       },

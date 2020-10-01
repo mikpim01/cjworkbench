@@ -39,21 +39,21 @@ export const moduleParamsBuilders = {
  * Return `null` if this or the next Step does not match moduleIdName.
  */
 function findStepWithIds (state, focusStepId, moduleIdName) {
-  const { tabs, wfModules, modules } = state
+  const { tabs, steps, modules } = state
 
   if (!(moduleIdName in modules)) {
     throw new Error(`Cannot find module '${moduleIdName}'`)
   }
 
-  const wfModule = wfModules[String(focusStepId)]
-  const tabSlug = wfModule.tab_slug
+  const step = steps[String(focusStepId)]
+  const tabSlug = step.tab_slug
   const tab = tabs[tabSlug]
 
   // validIdsOrNulls: [ 2, null, null, 65 ] means indices 0 and 3 are for
-  // desired module (and have wfModuleIds 2 and 64), 1 and 2 aren't for
+  // desired module (and have stepIds 2 and 64), 1 and 2 aren't for
   // desired module
   const validIdsOrNulls = tab.step_ids
-    .map(id => wfModules[String(id)].module === moduleIdName ? id : null)
+    .map(id => steps[String(id)].module === moduleIdName ? id : null)
 
   const focusIndex = tab.step_ids.indexOf(focusStepId)
   if (focusIndex === -1) return null
@@ -61,22 +61,22 @@ function findStepWithIds (state, focusStepId, moduleIdName) {
   // Are we already focused on a valid Step?
   const atFocusIndex = validIdsOrNulls[focusIndex]
   if (atFocusIndex !== null) {
-    const wfModule = wfModules[String(atFocusIndex)]
+    const step = steps[String(atFocusIndex)]
     return {
       id: atFocusIndex,
-      params: wfModule.params,
+      params: step.params,
       isNext: false
     }
   }
 
-  // Is the _next_ wfModule valid? If so, return that
+  // Is the _next_ step valid? If so, return that
   const nextIndex = focusIndex + 1
   const atNextIndex = nextIndex >= validIdsOrNulls.length ? null : validIdsOrNulls[nextIndex]
   if (atNextIndex !== null) {
-    const wfModule = wfModules[String(atNextIndex)]
+    const step = steps[String(atNextIndex)]
     return {
       id: atNextIndex,
-      params: wfModule.params,
+      params: step.params,
       isNext: true
     }
   }
@@ -86,11 +86,11 @@ function findStepWithIds (state, focusStepId, moduleIdName) {
 }
 
 /**
- * Adds or edits a module, given `wfModuleId` as the selected table.
+ * Adds or edits a module, given `stepId` as the selected table.
  *
  * This is a reducer action that delegates to `addModuleAction`, `setSelectedStepAction` and `
  */
-export function updateTableAction (wfModuleId, idName, forceNewModule, params) {
+export function updateTableAction (stepId, idName, forceNewModule, params) {
   return (dispatch, getState) => {
     const state = getState()
 
@@ -99,7 +99,7 @@ export function updateTableAction (wfModuleId, idName, forceNewModule, params) {
       return
     }
 
-    const existingStep = forceNewModule ? null : findStepWithIds(state, wfModuleId, idName)
+    const existingStep = forceNewModule ? null : findStepWithIds(state, stepId, idName)
     const newParams = moduleParamsBuilders[idName](
       existingStep ? existingStep.params : null,
       params,
@@ -107,14 +107,14 @@ export function updateTableAction (wfModuleId, idName, forceNewModule, params) {
     )
 
     if (existingStep && !forceNewModule) {
-      if (existingStep.id !== wfModuleId) {
+      if (existingStep.id !== stepId) {
         dispatch(setSelectedStepAction(existingStep.id))
       }
       if (newParams) {
         dispatch(setStepParamsAction(existingStep.id, newParams))
       }
     } else {
-      dispatch(addModuleAction(idName, { afterStepId: wfModuleId }, newParams))
+      dispatch(addModuleAction(idName, { afterStepId: stepId }, newParams))
     }
   }
 }

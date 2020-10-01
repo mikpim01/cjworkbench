@@ -30,7 +30,7 @@ describe('DataVersionModal', () => {
         fetchStepName='fetch'
         fetchVersions={Versions}
         selectedFetchVersionId='1000'
-        wfModuleId={124}
+        stepId={124}
         isAnonymous={false}
         notificationsEnabled={false}
         onClose={jest.fn()}
@@ -109,7 +109,7 @@ describe('DataVersionModal', () => {
         fetch: { name: 'Fetch Stuff', loads_data: true },
         filter: { name: 'Filter Stuff', loads_data: false }
       },
-      wfModules: {
+      steps: {
         123: {
           id: 123,
           notifications: true,
@@ -136,7 +136,7 @@ describe('DataVersionModal', () => {
       _wrapper = mountWithI18n(
         <Provider store={store}>
           <ConnectedDataVersionModal
-            wfModuleId={124}
+            stepId={124}
             onClose={jest.fn()}
           />
         </Provider>

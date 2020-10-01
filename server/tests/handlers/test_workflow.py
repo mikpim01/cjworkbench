@@ -60,7 +60,7 @@ class WorkflowTest(HandlerTestCase):
         step = tab2.steps.create(order=2, slug="step-3")
 
         response = self.run_handler(
-            set_position, user=user, workflow=workflow, wfModuleId=step.id
+            set_position, user=user, workflow=workflow, stepId=step.id
         )
         self.assertResponse(response, data=None)
 
@@ -73,7 +73,7 @@ class WorkflowTest(HandlerTestCase):
         workflow = Workflow.create_and_init(public=True)
         step = workflow.tabs.first().steps.create(order=0, slug="step-1")
 
-        response = self.run_handler(set_position, workflow=workflow, wfModuleId=step.id)
+        response = self.run_handler(set_position, workflow=workflow, stepId=step.id)
         self.assertResponse(response, error="AuthError: no write access to workflow")
 
     def test_set_position_ignore_other_workflow(self):
@@ -89,7 +89,7 @@ class WorkflowTest(HandlerTestCase):
         tab2.save(update_fields=["selected_step_position"])
 
         response = self.run_handler(
-            set_position, user=user, workflow=workflow, wfModuleId=step.id
+            set_position, user=user, workflow=workflow, stepId=step.id
         )
         self.assertResponse(response, data=None)  # we ignore missing steps
         # Nothing should be written to workflow2. Also, there's nothing to

@@ -596,12 +596,12 @@ msgstr ""
 
 #. default-message: Delete
 #: assets/js/WorkflowEditor/wfmodule/StepContextMenu.js:22
-msgid "js.WorkflowEditor.wfmodule.wfModuleContextMenu.delete"
+msgid "js.WorkflowEditor.wfmodule.stepContextMenu.delete"
 msgstr ""
 
 #. default-message: Export data
 #: assets/js/WorkflowEditor/wfmodule/StepContextMenu.js:21
-msgid "js.WorkflowEditor.wfmodule.wfModuleContextMenu.exportData"
+msgid "js.WorkflowEditor.wfmodule.stepContextMenu.exportData"
 msgstr ""
 
 #. default-message: Training

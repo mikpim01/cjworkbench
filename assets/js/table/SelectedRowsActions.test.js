@@ -15,7 +15,7 @@ describe('SelectedRowsActions', () => {
       return mountWithI18n(
         <SelectedRowsActions
           selectedRowIndexes={[3, 1, 4]}
-          wfModuleId={99}
+          stepId={99}
           rowActionModules={[
             { idName: 'dofoo', title: 'Foo these rows' },
             { idName: 'dobar', title: 'Bar these rows' }
@@ -57,7 +57,7 @@ describe('SelectedRowsActions', () => {
         <Provider store={store}>
           <ConnectedSelectedRowsActions
             selectedRowIndexes={[3, 1, 4]}
-            wfModuleId={2}
+            stepId={2}
             onClickRowsAction={jest.fn()}
             {...extraProps}
           />
@@ -96,7 +96,7 @@ describe('SelectedRowsActions', () => {
 
       const w = wrapper({
         tabs: { 'tab-1': { step_ids: [2] } },
-        wfModules: {
+        steps: {
           2: { module: 'dofoo', tab_slug: 'tab-1' }
         },
         modules: {
@@ -104,7 +104,7 @@ describe('SelectedRowsActions', () => {
             row_action_menu_entry_title: 'Bar these rows'
           }
         }
-      }, { wfModuleId: 2 })
+      }, { stepId: 2 })
       w.find('button.table-action').simulate('click') // open the menu
       await act(async () => await null) // Popper update() - https://github.com/popperjs/react-popper/issues/350
       expect(w.find('.dropdown-menu').text()).toMatch(/Bar these rows/)
@@ -122,7 +122,7 @@ describe('SelectedRowsActions', () => {
       const w = wrapper({
         workflow: { tab_slugs: ['tab-1'] },
         tabs: { 'tab-1': { step_ids: [2, 3] } },
-        wfModules: {
+        steps: {
           2: { module: 'dofoo', tab_slug: 'tab-1' },
           3: { module: 'dobaz', tab_slug: 'tab-1', params: { foo20: 'bar20' } }
         },
@@ -132,7 +132,7 @@ describe('SelectedRowsActions', () => {
             js_module: 'module.exports = { addSelectedRows: (oldParams, rows, fromInput) => ({ oldParams, rows, fromInput }) }'
           }
         }
-      }, { wfModuleId: 2 }) // selected module is the input
+      }, { stepId: 2 }) // selected module is the input
       w.find('button.table-action').simulate('click') // open the menu
       await act(async () => await null) // Popper update() - https://github.com/popperjs/react-popper/issues/350
       expect(w.find('.dropdown-menu').text()).toMatch(/Baz these rows/)
@@ -154,7 +154,7 @@ describe('SelectedRowsActions', () => {
       const w = wrapper({
         workflow: { tab_slugs: ['tab-1'] },
         tabs: { 'tab-1': { step_ids: [2, 3] } },
-        wfModules: {
+        steps: {
           2: { module: 'dobaz', tab_slug: 'tab-1', params: { foo10: 'bar10' } },
           3: { module: 'dofoo', tab_slug: 'tab-1' }
         },
@@ -164,7 +164,7 @@ describe('SelectedRowsActions', () => {
             js_module: 'module.exports = { addSelectedRows: (oldParams, rows, fromInput) => ({ oldParams, rows, fromInput }) }'
           }
         }
-      }, { wfModuleId: 2 }) // selected module is what's we're editing
+      }, { stepId: 2 }) // selected module is what's we're editing
       w.find('button.table-action').simulate('click') // open the menu
       await act(async () => await null) // Popper update() - https://github.com/popperjs/react-popper/issues/350
       expect(w.find('.dropdown-menu').text()).toMatch(/Baz these rows/)

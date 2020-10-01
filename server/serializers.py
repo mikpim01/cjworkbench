@@ -749,7 +749,7 @@ def jsonize_clientside_init(
             k: jsonize_clientside_module(v, ctx) for k, v in state.modules.items()
         },
         "tabs": {k: jsonize_clientside_tab(v) for k, v in state.tabs.items()},
-        "wfModules": {
+        "steps": {
             str(k): jsonize_clientside_step(v, ctx) for k, v in state.steps.items()
         },
         "workflowId": state.workflow.id,
