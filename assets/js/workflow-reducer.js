@@ -18,13 +18,13 @@ const MOVE_MODULE = 'MOVE_MODULE'
 const APPLY_DELTA = 'APPLY_DELTA'
 
 // Step
-const SET_WF_MODULE_NOTES = 'SET_WF_MODULE_NOTES'
-const SET_WF_MODULE_COLLAPSED = 'SET_WF_MODULE_COLLAPSED'
-const REQUEST_WF_MODULE_FETCH = 'REQUEST_WF_MODULE_FETCH'
-const SET_WF_MODULE_PARAMS = 'SET_WF_MODULE_PARAMS'
-const TRY_SET_WF_MODULE_AUTOFETCH = 'TRY_SET_WF_MODULE_AUTOFETCH'
-const SET_WF_MODULE_NOTIFICATIONS = 'SET_WF_MODULE_NOTIFICATIONS'
-const SET_WF_MODULE_SECRET = 'SET_WF_MODULE_SECRET'
+const SET_STEP_NOTES = 'SET_STEP_NOTES'
+const SET_STEP_COLLAPSED = 'SET_STEP_COLLAPSED'
+const REQUEST_STEP_FETCH = 'REQUEST_STEP_FETCH'
+const SET_STEP_PARAMS = 'SET_STEP_PARAMS'
+const TRY_SET_STEP_AUTOFETCH = 'TRY_SET_STEP_AUTOFETCH'
+const SET_STEP_NOTIFICATIONS = 'SET_STEP_NOTIFICATIONS'
+const SET_STEP_SECRET = 'SET_STEP_SECRET'
 
 // Data versions/notifications
 const SET_DATA_VERSION = 'SET_DATA_VERSION'
@@ -474,7 +474,7 @@ export function maybeRequestStepFetchAction (stepId) {
     if (!hasVersionSelect) return
 
     return dispatch({
-      type: REQUEST_WF_MODULE_FETCH,
+      type: REQUEST_STEP_FETCH,
       payload: {
         promise: api.requestFetch(stepId)
           .then(() => ({ stepId }), (err) => { console.warn(err); return { stepId } }),
@@ -484,7 +484,7 @@ export function maybeRequestStepFetchAction (stepId) {
   }
 }
 
-registerReducerFunc(REQUEST_WF_MODULE_FETCH + '_PENDING', (state, action) => {
+registerReducerFunc(REQUEST_STEP_FETCH + '_PENDING', (state, action) => {
   const { stepId } = action.payload
   const step = state.steps[String(stepId)]
 
@@ -503,7 +503,7 @@ registerReducerFunc(REQUEST_WF_MODULE_FETCH + '_PENDING', (state, action) => {
   }
 })
 
-registerReducerFunc(REQUEST_WF_MODULE_FETCH + '_FULFILLED', (state, action) => {
+registerReducerFunc(REQUEST_STEP_FETCH + '_FULFILLED', (state, action) => {
   const { stepId } = action.payload
   const step = state.steps[String(stepId)]
 
@@ -536,7 +536,7 @@ export function setStepNotificationsAction (stepId, isNotifications) {
     if (!steps[String(stepId)]) return Promise.resolve(null)
 
     return dispatch({
-      type: SET_WF_MODULE_NOTIFICATIONS,
+      type: SET_STEP_NOTIFICATIONS,
       payload: {
         promise: api.setStepNotifications(stepId, isNotifications),
         data: {
@@ -547,7 +547,7 @@ export function setStepNotificationsAction (stepId, isNotifications) {
     })
   }
 }
-registerReducerFunc(SET_WF_MODULE_NOTIFICATIONS + '_PENDING', (state, action) => {
+registerReducerFunc(SET_STEP_NOTIFICATIONS + '_PENDING', (state, action) => {
   const { stepId, isNotifications } = action.payload
   const step = state.steps[String(stepId)]
   return {
@@ -576,7 +576,7 @@ registerReducerFunc(SET_WF_MODULE_NOTIFICATIONS + '_PENDING', (state, action) =>
 export function trySetStepAutofetchAction (stepId, isAutofetch, fetchInterval) {
   return (dispatch, _, api) => {
     return dispatch({
-      type: TRY_SET_WF_MODULE_AUTOFETCH,
+      type: TRY_SET_STEP_AUTOFETCH,
       payload: {
         promise: (
           api.trySetStepAutofetch(stepId, isAutofetch, fetchInterval)
@@ -586,7 +586,7 @@ export function trySetStepAutofetchAction (stepId, isAutofetch, fetchInterval) {
     })
   }
 }
-registerReducerFunc(TRY_SET_WF_MODULE_AUTOFETCH + '_FULFILLED', (state, action) => {
+registerReducerFunc(TRY_SET_STEP_AUTOFETCH + '_FULFILLED', (state, action) => {
   const { stepId, isAutofetch, fetchInterval } = action.payload
   const step = state.steps[String(stepId)]
   return {
@@ -605,7 +605,7 @@ registerReducerFunc(TRY_SET_WF_MODULE_AUTOFETCH + '_FULFILLED', (state, action) 
 export function setStepNotesAction (stepId, notes) {
   return (dispatch, getState, api) => {
     return dispatch({
-      type: SET_WF_MODULE_NOTES,
+      type: SET_STEP_NOTES,
       payload: {
         promise: api.setStepNotes(stepId, notes),
         data: { stepId, notes }
@@ -613,7 +613,7 @@ export function setStepNotesAction (stepId, notes) {
     })
   }
 }
-registerReducerFunc(SET_WF_MODULE_NOTES + '_PENDING', (state, action) => {
+registerReducerFunc(SET_STEP_NOTES + '_PENDING', (state, action) => {
   const { stepId, notes } = action.payload
   const step = state.steps[String(stepId)]
   if (step) {
@@ -642,7 +642,7 @@ export function setStepCollapsedAction (stepId, isCollapsed, isReadOnly) {
     }
 
     return dispatch({
-      type: SET_WF_MODULE_COLLAPSED,
+      type: SET_STEP_COLLAPSED,
       payload: {
         promise,
         data: {
@@ -653,7 +653,7 @@ export function setStepCollapsedAction (stepId, isCollapsed, isReadOnly) {
     })
   }
 }
-registerReducerFunc(SET_WF_MODULE_COLLAPSED + '_PENDING', (state, action) => {
+registerReducerFunc(SET_STEP_COLLAPSED + '_PENDING', (state, action) => {
   const { stepId, isCollapsed } = action.payload
   const step = state.steps[stepId]
   if (!step) return state
@@ -673,7 +673,7 @@ registerReducerFunc(SET_WF_MODULE_COLLAPSED + '_PENDING', (state, action) => {
 export function setStepParamsAction (stepId, params) {
   return (dispatch, getState, api) => {
     return dispatch({
-      type: SET_WF_MODULE_PARAMS,
+      type: SET_STEP_PARAMS,
       payload: {
         promise: api.setStepParams(stepId, params),
         data: {
@@ -685,7 +685,7 @@ export function setStepParamsAction (stepId, params) {
   }
 }
 
-registerReducerFunc(SET_WF_MODULE_PARAMS + '_PENDING', (state, action) => {
+registerReducerFunc(SET_STEP_PARAMS + '_PENDING', (state, action) => {
   const { stepId, params } = action.payload
   const step = state.steps[String(stepId)]
 
@@ -707,7 +707,7 @@ registerReducerFunc(SET_WF_MODULE_PARAMS + '_PENDING', (state, action) => {
 export function setStepSecretAction (stepId, param, secret) {
   return (dispatch, getState, api) => {
     return dispatch({
-      type: SET_WF_MODULE_SECRET,
+      type: SET_STEP_SECRET,
       payload: {
         promise: api.setSecret(stepId, param, secret),
         data: {

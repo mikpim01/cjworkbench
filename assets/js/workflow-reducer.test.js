@@ -368,7 +368,7 @@ describe('Reducer actions', () => {
 
   it('sets the module collapse state', () => {
     const state = wfr.workflowReducer(testState, {
-      type: 'SET_WF_MODULE_COLLAPSED_PENDING',
+      type: 'SET_STEP_COLLAPSED_PENDING',
       payload: {
         stepId: 20,
         isCollapsed: true

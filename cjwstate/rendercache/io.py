@@ -12,7 +12,7 @@ from cjwstate.models import Step, Workflow, CachedRenderResult
 BUCKET = minio.CachedRenderResultsBucket
 
 
-WF_MODULE_FIELDS = [
+STEP_FIELDS = [
     "cached_render_result_delta_id",
     "cached_render_result_errors",
     "cached_render_result_json",
@@ -81,7 +81,7 @@ def cache_render_result(
     # Now we get to the part where things can end up inconsistent. Try to
     # err on the side of not-caching when that happens.
     delete_parquet_files_for_step(workflow.id, step.id)  # makes old cache inconsistent
-    step.save(update_fields=WF_MODULE_FIELDS)  # makes new cache inconsistent
+    step.save(update_fields=STEP_FIELDS)  # makes new cache inconsistent
     if result.table.metadata.columns:  # only write non-zero-column tables
         with tempfile_context() as parquet_path:
             cjwparquet.write(parquet_path, result.table.table)
@@ -257,4 +257,4 @@ def clear_cached_render_result_for_step(step: Step) -> None:
     step.cached_render_result_columns = None
     step.cached_render_result_nrows = None
 
-    step.save(update_fields=WF_MODULE_FIELDS)
+    step.save(update_fields=STEP_FIELDS)

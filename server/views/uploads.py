@@ -33,7 +33,7 @@ def loads_step_for_api_upload(f):
 
     The HTTP Authorization header must look like:
 
-        Authorization: Bearer <WF_MODULE_FILE_UPLOAD_API_TOKEN>
+        Authorization: Bearer <STEP_FILE_UPLOAD_API_TOKEN>
 
     The inner function is wrapped in `workflow.cooperative_lock()`.
 
