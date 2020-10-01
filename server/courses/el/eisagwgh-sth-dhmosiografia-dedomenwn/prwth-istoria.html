@@ -42,10 +42,10 @@ tabs:
     <li
       data-highlight='[]'
       data-test="
-        const wfm = workflow.tabs[0].steps[1];
-        if (!wfm || wfm.moduleSlug !== 'editcells')
+        const step = workflow.tabs[0].steps[1];
+        if (!step || step.moduleSlug !== 'editcells')
           return false;
-        const edits = wfm.params.celledits;
+        const edits = step.params.celledits;
         return edits.find((e) => e.row === 3 && e.col === 'Continent' && e.value === 'AS')"
       >Στον πίνακα κάντε διπλό κλικ στο κενό κελί δίπλα στην <kbd>India</kbd> και πληκτρολογήστε τον κωδικό για την Ασία, που είναι <kbd>AS</kbd> σε αυτό το σύνολο δεδομένων.<p class="instruction-detail">Σημειώστε ότι το νέο βήμα προστέθηκε στη ροή εργασίας σας στη θέση 2, με καταγραφή των τροποποιήσεων που κάνατε.</p>
     <p class="instruction-detail">Το Workbench καταγράφει κάθε τροποποίηση που γίνεται για να μπορείτε να επαναφέρετε μια προηγούμενη έκδοση. Για να δείτε τα δεδομένα πριν από την πρόσφατη τροποποίηση, κάντε κλικ στο βήμα 1.</p>

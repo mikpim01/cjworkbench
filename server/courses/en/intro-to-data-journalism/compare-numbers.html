@@ -59,7 +59,7 @@ tabs:
       >Add <kbd>Formula</kbd>
     </li>
     <li
-      data-test="const wfm = workflow.tabs[0].steps[1]; if (!wfm || wfm.moduleSlug !== 'formula' || wfm.params.syntax !== 'excel' || !wfm.params.all_rows) return false; const f = wfm.params.formula_excel.replace(/ /g, ''); return f === '=D1-C1' || f === '=(D1-C1)'"
+      data-test="const step = workflow.tabs[0].steps[1]; if (!step || step.moduleSlug !== 'formula' || step.params.syntax !== 'excel' || !step.params.all_rows) return false; const f = step.params.formula_excel.replace(/ /g, ''); return f === '=D1-C1' || f === '=(D1-C1)'"
       >Type in the following formula:
       <div class="copy-txt">=D1-C1</div>
     </li>
@@ -71,7 +71,7 @@ tabs:
       </p>
     </li>
     <li
-      data-test="const wfm = workflow.tabs[0].steps[2]; if (!wfm || wfm.moduleSlug !== 'sort') return false; const p = wfm.params; return p.keep_top === '' && p.sort_columns[0] && p.sort_columns[0].colname === 'Difference' && p.sort_columns[0].is_ascending"
+      data-test="const step = workflow.tabs[0].steps[2]; if (!step || step.moduleSlug !== 'sort') return false; const p = step.params; return p.keep_top === '' && p.sort_columns[0] && p.sort_columns[0].colname === 'Difference' && p.sort_columns[0].is_ascending"
       >Sort <kbd>Difference</kbd> in ascending order.
       <p class="instruction-detail">
         The first row displays the largest negative number, meaning the county with the greatest population loss.
@@ -95,7 +95,7 @@ tabs:
   <h3 class="instructions">Instructions</h3>
   <ol class="steps">
     <li
-      data-test="const wfm = workflow.tabs[0].steps[3]; if (!wfm || wfm.moduleSlug !== 'formula' || wfm.params.syntax !== 'excel' || !wfm.params.all_rows) return false; const f = wfm.params.formula_excel.replace(/ /g, ''); return f === '=D1/C1' || f === '=(D1/C1)'"
+      data-test="const step = workflow.tabs[0].steps[3]; if (!step || step.moduleSlug !== 'formula' || step.params.syntax !== 'excel' || !step.params.all_rows) return false; const f = step.params.formula_excel.replace(/ /g, ''); return f === '=D1/C1' || f === '=(D1/C1)'"
       >Add a new Formula as step 4 (keep the previous one) and type in:
       <div class="copy-txt">=D1/C1</div>
     </li>
@@ -104,7 +104,7 @@ tabs:
       >Name the new column <kbd>Ratio</kbd>
     </li>
     <li
-      data-test="const wfm = workflow.tabs[0].steps[4]; if (!wfm || wfm.moduleSlug !== 'sort') return false; const p = wfm.params; return p.keep_top === '' && p.sort_columns[0] && p.sort_columns[0].colname === 'Ratio' && p.sort_columns[0].is_ascending"
+      data-test="const step = workflow.tabs[0].steps[4]; if (!step || step.moduleSlug !== 'sort') return false; const p = step.params; return p.keep_top === '' && p.sort_columns[0] && p.sort_columns[0].colname === 'Ratio' && p.sort_columns[0].is_ascending"
       >Sort <kbd>Ratio</kbd> in ascending order.
       <p class=instruction-detail>
         A ratio of 1 means that for every person in 2010, there is exactly 1 person in 2017.
@@ -126,7 +126,7 @@ tabs:
   <h3 class="instructions">Instructions</h3>
   <ol class="steps">
     <li
-      data-test="const wfm = workflow.tabs[0].steps[5]; if (!wfm || wfm.moduleSlug !== 'formula' || wfm.params.syntax !== 'excel' || !wfm.params.all_rows) return false; const f = wfm.params.formula_excel.replace(/ /g, ''); return f === '=D1/C1*100' || f === '=(D1/C1)*100' || f === '=F1*100'"
+      data-test="const step = workflow.tabs[0].steps[5]; if (!step || step.moduleSlug !== 'formula' || step.params.syntax !== 'excel' || !step.params.all_rows) return false; const f = step.params.formula_excel.replace(/ /g, ''); return f === '=D1/C1*100' || f === '=(D1/C1)*100' || f === '=F1*100'"
       >Add another Formula and type in:
       <div class="copy-txt">=(D1/C1)*100</div>
     </li>
@@ -154,7 +154,7 @@ tabs:
   <h3 class="instructions">Instructions</h3>
   <ol class="steps">
     <li
-      data-test="const wfm = workflow.tabs[0].steps[6]; if (!wfm || wfm.moduleSlug !== 'formula' || wfm.params.syntax !== 'excel' || !wfm.params.all_rows) return false; const f = wfm.params.formula_excel.replace(/ /g, ''); return f === '=((D1-C1)/C1)*100' || f === '=(D1-C1)/C1*100' || f === '=(E1-C1)*100' || f === '=((D1/C1)-1)*100' || f === '=(D1/C1*100)-100' || f === '=D1/C1*100-100' || f === '=(F1-1)*100' || f === '=G1-100' || f === '(G1-100)'"
+      data-test="const step = workflow.tabs[0].steps[6]; if (!step || step.moduleSlug !== 'formula' || step.params.syntax !== 'excel' || !step.params.all_rows) return false; const f = step.params.formula_excel.replace(/ /g, ''); return f === '=((D1-C1)/C1)*100' || f === '=(D1-C1)/C1*100' || f === '=(E1-C1)*100' || f === '=((D1/C1)-1)*100' || f === '=(D1/C1*100)-100' || f === '=D1/C1*100-100' || f === '=(F1-1)*100' || f === '=G1-100' || f === '(G1-100)'"
       >Add another Formula step and this time apply the percentage formula:
       <div class="copy-txt">=((D1 - C1) / C1) * 100</div>
     </li>

@@ -120,10 +120,10 @@ tabs:
     </li>
     <li
       data-test="
-        const wfm = workflow.tabs[0].steps[4]
-        if (!wfm || wfm.moduleSlug !== 'columnchart')
+        const step = workflow.tabs[0].steps[4]
+        if (!step || step.moduleSlug !== 'columnchart')
           return false
-        const p = wfm.params
+        const p = step.params
         return p.x_column === 'Planning Neighborhood' &&
                p.y_columns[0] &&
                p.y_columns[0].column.toLowerCase() === 'number of affordable units'"

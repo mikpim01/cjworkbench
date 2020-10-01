@@ -42,7 +42,7 @@ tabs:
   <h3 class="instructions">Οδηγίες</h3>
   <ol class="steps">
     <li
-      data-test="const wfm = workflow.tabs[0].steps[1]; return wfm && wfm.moduleSlug === 'sort' && wfm.params.keep_top === '' && wfm.params.sort_columns[0] && wfm.params.sort_columns[0].colname === 'Violent crime' && !wfm.params.sort_columns[0].is_ascending"
+      data-test="const step = workflow.tabs[0].steps[1]; return step && step.moduleSlug === 'sort' && step.params.keep_top === '' && step.params.sort_columns[0] && step.params.sort_columns[0].colname === 'Violent crime' && !step.params.sort_columns[0].is_ascending"
       >Ταξινομήστε τη στήλη <kbd>Violent crime (Βίαιο έγκλημα)</kbd> σε φθίνουσα σειρά.<p class="instruction-detail">Η Καλιφόρνια είναι στην κορυφή με 177.627 βίαια εγκλήματα. Αλλά η Καλιφόρνια είναι επίσης η πολιτεία με τον μεγαλύτερο πληθυσμό, άρα αυτό το αποτέλεσμα δεν μας λέει κάτι περισσότερο.<br></p>
       <p class="instruction-detail">Αντ&apos; αυτού, ας συγκρίνουμε τις πολιτείες χρησιμοποιώντας αριθμούς κατά κεφαλή.</p>
     </li>
@@ -73,12 +73,12 @@ tabs:
       >Ονομάστε την έξοδο του τύπου <kbd>Violent crime rate</kbd> (Ποσοστό βίαιων εγκλημάτων)</li>
     <li
       data-test="
-        const wfm = workflow.tabs[0].steps[3]
-        return wfm && wfm.moduleSlug === 'sort' &&
-               wfm.params.keep_top === '' &&
-               wfm.params.sort_columns[0] &&
-               wfm.params.sort_columns[0].colname.toLowerCase() === 'violent crime rate' &&
-               !wfm.params.sort_columns[0].is_ascending"
+        const step = workflow.tabs[0].steps[3]
+        return step && step.moduleSlug === 'sort' &&
+               step.params.keep_top === '' &&
+               step.params.sort_columns[0] &&
+               step.params.sort_columns[0].colname.toLowerCase() === 'violent crime rate' &&
+               !step.params.sort_columns[0].is_ascending"
       >Ταξινομήστε αυτή τη νέα στήλη με φθίνουσα σειρά<p class="instruction-detail">Στην κορυφή βρίσκεται τώρα η Αλάσκα, με 6.133 βίαια εγκλήματα σε συνολικό πληθυσμό 739.795 &mdash; ή 0,008 βίαια εγκλήματα ανά κάτοικο. Αυτό το ποσοστό είναι διπλάσιο από της Καλιφόρνιας, η οποία βρίσκεται τώρα στη θέση #15.</p>
     </li>
   </ol>

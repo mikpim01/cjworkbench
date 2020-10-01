@@ -73,11 +73,11 @@ tabs:
     </li>
     <li
       data-test="
-        const wfm = workflow.tabs[0].steps[2]
-        return wfm && wfm.moduleSlug === 'renamecolumns' &&
-               !wfm.params.custom_list &&
-               wfm.params.renames.boro_nm.toLowerCase() === 'borough' &&
-               wfm.params.renames.cmplnt_fr_dt.toLowerCase() === 'complaint date'"
+        const step = workflow.tabs[0].steps[2]
+        return step && step.moduleSlug === 'renamecolumns' &&
+               !step.params.custom_list &&
+               step.params.renames.boro_nm.toLowerCase() === 'borough' &&
+               step.params.renames.cmplnt_fr_dt.toLowerCase() === 'complaint date'"
       >Rename these two columns respectively to <kbd>Borough</kbd> and <kbd>Complaint date</kbd>
       <p class="instruction-detail">Before going further, let's learn a little more about data types.</p>
     </li>
@@ -125,10 +125,10 @@ tabs:
   <ol class="steps">
     <li
       data-test="
-        const wfm = workflow.tabs[0].steps[3]
-        return wfm && wfm.moduleSlug === 'convert-date' &&
-               wfm.params.colnames.join('|').toLowerCase() === 'complaint date'
-               && wfm.params.input_format === 'auto'"
+        const step = workflow.tabs[0].steps[3]
+        return step && step.moduleSlug === 'convert-date' &&
+               step.params.colnames.join('|').toLowerCase() === 'complaint date'
+               && step.params.input_format === 'auto'"
       >In the column menu<span>
         <img class="icon-insert" src="images/lesson-icons/menu.svg">
       </span> for the <kbd>Complaint date</kbd> column, select <kbd>Convert to timestamp</kbd>.

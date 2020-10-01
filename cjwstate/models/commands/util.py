@@ -126,10 +126,10 @@ class ChangesStepOutputs:
         """Write new last_relevant_delta_id to `step` and its dependents."""
         prev_ids = self.step_delta_ids
 
-        for wfm_id, delta_id in prev_ids:
-            Step.objects.filter(id=wfm_id).update(last_relevant_delta_id=delta_id)
+        for step_id, delta_id in prev_ids:
+            Step.objects.filter(id=step_id).update(last_relevant_delta_id=delta_id)
 
-            if hasattr(self, "step_id") and wfm_id == self.step_id:
+            if hasattr(self, "step_id") and step_id == self.step_id:
                 # If we have a step in memory, update it
                 self.step.last_relevant_delta_id = delta_id
 

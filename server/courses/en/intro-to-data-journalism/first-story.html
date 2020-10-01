@@ -51,10 +51,10 @@ tabs:
     <li
       data-highlight='[]'
       data-test="
-        const wfm = workflow.tabs[0].steps[1];
-        if (!wfm || wfm.moduleSlug !== 'editcells')
+        const step = workflow.tabs[0].steps[1];
+        if (!step || step.moduleSlug !== 'editcells')
           return false;
-        const edits = wfm.params.celledits;
+        const edits = step.params.celledits;
         return edits.find((e) => e.row === 3 && e.col === 'Continent' && e.value === 'AS')"
       >In the table, double click on the empty cell next to <kbd>India</kbd> enter the code for "Asia", which is
       <kbd>AS</kbd> in this data set

@@ -56,7 +56,7 @@ tabs:
   <h3 class="instructions">Instructions</h3>
   <ol class="steps">
     <li
-      data-test="const wfm = workflow.tabs[0].steps[1]; return wfm && wfm.moduleSlug === 'sort' && wfm.params.keep_top === '' && wfm.params.sort_columns[0] && wfm.params.sort_columns[0].colname === 'Violent crime' && !wfm.params.sort_columns[0].is_ascending"
+      data-test="const step = workflow.tabs[0].steps[1]; return step && step.moduleSlug === 'sort' && step.params.keep_top === '' && step.params.sort_columns[0] && step.params.sort_columns[0].colname === 'Violent crime' && !step.params.sort_columns[0].is_ascending"
       >Sort the <kbd>Violent crime</kbd> column, in descending order
       <p class="instruction-detail">
         California is on top, with 177,627 violent crimes in 2017.
@@ -101,12 +101,12 @@ tabs:
     </li>
     <li
       data-test="
-        const wfm = workflow.tabs[0].steps[3]
-        return wfm && wfm.moduleSlug === 'sort' &&
-               wfm.params.keep_top === '' &&
-               wfm.params.sort_columns[0] &&
-               wfm.params.sort_columns[0].colname.toLowerCase() === 'violent crime rate' &&
-               !wfm.params.sort_columns[0].is_ascending"
+        const step = workflow.tabs[0].steps[3]
+        return step && step.moduleSlug === 'sort' &&
+               step.params.keep_top === '' &&
+               step.params.sort_columns[0] &&
+               step.params.sort_columns[0].colname.toLowerCase() === 'violent crime rate' &&
+               !step.params.sort_columns[0].is_ascending"
       >Sort this new column in descending order
       <p class="instruction-detail">
         Alaska is now on top, with 6,133 violent crimes within a total population of 739,795 — or 0.008 violent
