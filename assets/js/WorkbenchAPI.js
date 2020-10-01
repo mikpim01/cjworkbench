@@ -143,16 +143,12 @@ export default class WorkbenchAPI {
     return this._callExpectingNull('tab.duplicate', { tabSlug, slug, name })
   }
 
-  deleteModule (stepId) {
-    return this._callExpectingNull('step.delete', {
-      stepId
-    })
+  deleteStep (stepId) {
+    return this._callExpectingNull('step.delete', { stepId })
   }
 
   deleteTab (tabSlug) {
-    return this._callExpectingNull('tab.delete', {
-      tabSlug
-    })
+    return this._callExpectingNull('tab.delete', { tabSlug })
   }
 
   setWorkflowPublic (workflowId, isPublic) {

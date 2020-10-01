@@ -350,7 +350,7 @@ export function deleteStepAction (stepId) {
     return dispatch({
       type: DELETE_STEP,
       payload: {
-        promise: api.deleteModule(stepId),
+        promise: api.deleteStep(stepId),
         data: { stepId }
       }
     })
