@@ -8,7 +8,7 @@ class ChangeStepNotesCommand(Delta):
         app_label = "server"
         db_table = "server_changewfmodulenotescommand"
 
-    wf_module = models.ForeignKey(Step, on_delete=models.PROTECT)
+    step = models.ForeignKey(Step, on_delete=models.PROTECT)
     new_value = models.TextField("new_value")
     old_value = models.TextField("old_value")
 

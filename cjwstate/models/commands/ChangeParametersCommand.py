@@ -16,7 +16,7 @@ class ChangeParametersCommand(ChangesStepOutputs, Delta):
         app_label = "server"
         db_table = "server_changeparameterscommand"
 
-    wf_module = models.ForeignKey(Step, on_delete=models.PROTECT)
+    step = models.ForeignKey(Step, on_delete=models.PROTECT)
     old_values = JSONField("old_values")  # _all_ params
     new_values = JSONField("new_values")  # only _changed_ params
     step_delta_ids = ChangesStepOutputs.step_delta_ids

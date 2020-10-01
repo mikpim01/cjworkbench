@@ -17,7 +17,7 @@ class DeleteModuleCommand(ChangesStepOutputs, Delta):
         app_label = "server"
         db_table = "server_deletemodulecommand"
 
-    wf_module = models.ForeignKey(Step, on_delete=models.PROTECT)
+    step = models.ForeignKey(Step, on_delete=models.PROTECT)
     step_delta_ids = ChangesStepOutputs.step_delta_ids
 
     # override
