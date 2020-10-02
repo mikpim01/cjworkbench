@@ -423,7 +423,7 @@ export class Step extends React.PureComponent {
       </div>
     )
 
-    const moduleIconClassName = 'icon-' + moduleIcon + ' WFmodule-icon'
+    const moduleIconClassName = 'icon-' + moduleIcon + ' module-icon'
 
     let maybeDataVersionModal = null
     if (this.state.isDataVersionModalOpen) {

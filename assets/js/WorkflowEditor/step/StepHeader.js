@@ -24,8 +24,8 @@ export default class StepHeader extends React.Component {
         <div className='module-content'>
           <div className='module-card-header'>
             <div className='d-flex justify-content-start align-items-center'>
-              <div className={'icon-' + this.props.moduleIcon + ' WFmodule-icon t-vl-gray mr-2'} />
-              <div className='t-vl-gray WFmodule-name'>{this.props.moduleName}</div>
+              <div className={'icon-' + this.props.moduleIcon + ' module-icon t-vl-gray mr-2'} />
+              <div className='t-vl-gray module-name'>{this.props.moduleName}</div>
             </div>
           </div>
         </div>

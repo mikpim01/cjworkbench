@@ -14,8 +14,8 @@ describe('StepHeader', () => {
       />
     )
     expect(wrapper).toMatchSnapshot()
-    expect(wrapper.find('.WFmodule-name').text()).toEqual('Some module name')
-    expect(wrapper.find('.WFmodule-icon').props().className).toEqual('icon-some-icon WFmodule-icon t-vl-gray mr-2')
+    expect(wrapper.find('.module-name').text()).toEqual('Some module name')
+    expect(wrapper.find('.module-icon').props().className).toEqual('icon-some-icon module-icon t-vl-gray mr-2')
   })
 
   it('Mounts unselected', () => {
@@ -28,7 +28,7 @@ describe('StepHeader', () => {
       />
     )
     expect(wrapper).toMatchSnapshot()
-    expect(wrapper.find('.WFmodule-name').text()).toEqual('Some module name')
-    expect(wrapper.find('.WFmodule-icon').props().className).toEqual('icon-some-icon WFmodule-icon t-vl-gray mr-2')
+    expect(wrapper.find('.module-name').text()).toEqual('Some module name')
+    expect(wrapper.find('.module-icon').props().className).toEqual('icon-some-icon module-icon t-vl-gray mr-2')
   })
 })

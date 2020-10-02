@@ -50,7 +50,7 @@ exports[`Step, not read-only mode matches snapshot 1`] = `
             onExpand={[Function]}
           />
           <i
-            className="icon-icon WFmodule-icon"
+            className="icon-icon module-icon"
           />
           <div
             className="module-name"

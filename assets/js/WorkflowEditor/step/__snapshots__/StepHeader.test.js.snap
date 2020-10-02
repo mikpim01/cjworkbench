@@ -20,10 +20,10 @@ exports[`StepHeader Mounts selected 1`] = `
           className="d-flex justify-content-start align-items-center"
         >
           <div
-            className="icon-some-icon WFmodule-icon t-vl-gray mr-2"
+            className="icon-some-icon module-icon t-vl-gray mr-2"
           />
           <div
-            className="t-vl-gray WFmodule-name"
+            className="t-vl-gray module-name"
           >
             Some module name
           </div>
@@ -54,10 +54,10 @@ exports[`StepHeader Mounts unselected 1`] = `
           className="d-flex justify-content-start align-items-center"
         >
           <div
-            className="icon-some-icon WFmodule-icon t-vl-gray mr-2"
+            className="icon-some-icon module-icon t-vl-gray mr-2"
           />
           <div
-            className="t-vl-gray WFmodule-name"
+            className="t-vl-gray module-name"
           >
             Some module name
           </div>
