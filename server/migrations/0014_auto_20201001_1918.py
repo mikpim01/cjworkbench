@@ -6,40 +6,40 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('server', '0013_auto_20201001_1833'),
+        ("server", "0013_auto_20201001_1833"),
     ]
 
     operations = [
         migrations.AlterModelTable(
-            name='aclentry',
-            table='acl_entry',
+            name="aclentry",
+            table="acl_entry",
         ),
         migrations.AlterModelTable(
-            name='delta',
-            table='delta',
+            name="delta",
+            table="delta",
         ),
         migrations.AlterModelTable(
-            name='inprogressupload',
-            table='in_progress_upload',
+            name="inprogressupload",
+            table="in_progress_upload",
         ),
         migrations.AlterModelTable(
-            name='moduleversion',
-            table='module_version',
+            name="moduleversion",
+            table="module_version",
         ),
         migrations.AlterModelTable(
-            name='storedobject',
-            table='stored_object',
+            name="storedobject",
+            table="stored_object",
         ),
         migrations.AlterModelTable(
-            name='tab',
-            table='tab',
+            name="tab",
+            table="tab",
         ),
         migrations.AlterModelTable(
-            name='uploadedfile',
-            table='uploaded_file',
+            name="uploadedfile",
+            table="uploaded_file",
         ),
         migrations.AlterModelTable(
-            name='workflow',
-            table='workflow',
+            name="workflow",
+            table="workflow",
         ),
     ]
