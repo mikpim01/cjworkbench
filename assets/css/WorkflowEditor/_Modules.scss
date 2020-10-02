@@ -20,7 +20,7 @@
   &.status-ok:not(.after-selected) {
     &:not(.selected) .module-card-and-link::before,
     &:not(.selected) + .in-between-steps::before,
-    &:not(:first-child) .module-notes::before {
+    &:not(:first-child) .step-notes::before {
       content: '';
       display: block;
       width: 2px;
@@ -39,7 +39,7 @@
 
   // ... but don't show the vertical line to the left of the first note,
   // which is above the number 1
-  &:nth-child(1) .module-notes::before {
+  &:nth-child(1) .step-notes::before {
     content: '';
     display: block;
     width: 3rem;
@@ -453,8 +453,7 @@
 
 // margin top to compensate for the absence of in-between module button
 .workflow-root.read-only {
-
-  .module-notes {
+  .step-notes {
       margin-top: 1.5rem;
   }
 }

@@ -348,7 +348,7 @@ export class Step extends React.PureComponent {
     const isNoteVisible = this.state.editedNotes !== null || !!this.props.step.notes
 
     const notes = (
-      <div className={`module-notes${isNoteVisible ? ' visible' : ''}`}>
+      <div className={`step-notes${isNoteVisible ? ' visible' : ''}`}>
         <EditableNotes
           isReadOnly={isReadOnly}
           inputRef={this.notesInputRef}

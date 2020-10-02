@@ -193,7 +193,7 @@ describe('Step, not read-only mode', () => {
   it('adds a note', () => {
     const w = wrapper({ step: { ...step, notes: '' } })
 
-    expect(w.find('.module-notes.visible')).toHaveLength(0)
+    expect(w.find('.step-notes.visible')).toHaveLength(0)
 
     w.find('button.edit-note').simulate('click')
     w.find('EditableNotes').simulate('change', { target: { value: 'new note' } })
@@ -205,7 +205,7 @@ describe('Step, not read-only mode', () => {
   it('deletes a note', () => {
     const w = wrapper({ step: { ...step, notes: 'some notes' } })
 
-    expect(w.find('.module-notes.visible')).toHaveLength(1)
+    expect(w.find('.step-notes.visible')).toHaveLength(1)
 
     w.find('EditableNotes').simulate('change', { target: { value: '' } })
     w.find('EditableNotes').simulate('blur')

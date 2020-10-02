@@ -8,7 +8,7 @@ exports[`Step, not read-only mode matches snapshot 1`] = `
   onMouseDown={[Function]}
 >
   <div
-    className="module-notes"
+    className="step-notes"
   >
     <EditableNotes
       inputRef={
