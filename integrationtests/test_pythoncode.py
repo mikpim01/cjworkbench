@@ -49,7 +49,7 @@ def process(table):
 
         b = self.browser
         b.assert_element(
-            ".wf-module-error-msg",
+            ".step-error-msg",
             text="Line 3: NameError: name 'p' is not defined",
             wait=True,  # wait for error to arrive from server
         )

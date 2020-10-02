@@ -20,7 +20,7 @@ export default class StepHeader extends React.Component {
 
   render () {
     return (
-      <div className='wf-module--placeholder mx-auto' ref={this.setModuleRef}>
+      <div className='step--placeholder mx-auto' ref={this.setModuleRef}>
         <div className='module-content'>
           <div className='module-card-header'>
             <div className='d-flex justify-content-start align-items-center'>

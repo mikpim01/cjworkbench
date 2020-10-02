@@ -6,7 +6,7 @@
   position: relative;
   scroll-behavior: smooth;
 
-  .in-between-modules {
+  .in-between-steps {
     position: relative;
     margin: 0;
     &:last-child {
@@ -125,12 +125,12 @@
 
   // Module stack in zen mode
   &.zen-mode {
-    .wf-module:not(.zen-mode),
-    .in-between-modules {
+    .step:not(.zen-mode),
+    .in-between-steps {
       display: none;
     }
 
-    .wf-module.zen-mode {
+    .step.zen-mode {
       .module-card {
         width: 50rem;
       }

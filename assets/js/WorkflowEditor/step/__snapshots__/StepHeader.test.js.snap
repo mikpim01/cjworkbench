@@ -8,7 +8,7 @@ exports[`StepHeader Mounts selected 1`] = `
   status="busy"
 >
   <div
-    className="wf-module--placeholder mx-auto"
+    className="step--placeholder mx-auto"
   >
     <div
       className="module-content"
@@ -42,7 +42,7 @@ exports[`StepHeader Mounts unselected 1`] = `
   status="busy"
 >
   <div
-    className="wf-module--placeholder mx-auto"
+    className="step--placeholder mx-auto"
   >
     <div
       className="module-content"

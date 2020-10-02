@@ -45,7 +45,7 @@ class TestTabs(WorkbenchBase):
 
         # Switch to Tab 2
         self._select_tab("Tab 2")
-        b.assert_no_element('.wf-module[data-module-name="Paste data"]')
+        b.assert_no_element('.step[data-module-name="Paste data"]')
 
         # Add a module that should not appear on Tab 1
         self.import_module("loadurl")
@@ -53,8 +53,8 @@ class TestTabs(WorkbenchBase):
 
         # Switch to Tab 1
         self._select_tab("Tab 1")
-        b.assert_element('.wf-module[data-module-name="Paste data"]')
-        b.assert_no_element('.wf-module[data-module-name="Load from URL"]')
+        b.assert_element('.step[data-module-name="Paste data"]')
+        b.assert_no_element('.step[data-module-name="Load from URL"]')
 
     def test_tab_deps(self):
         b = self.browser
@@ -71,7 +71,7 @@ class TestTabs(WorkbenchBase):
         # Switch to Tab 2
         b.click_button("Create tab")
         self._select_tab("Tab 2")
-        b.assert_no_element('.wf-module[data-module-name="Paste data"]')
+        b.assert_no_element('.step[data-module-name="Paste data"]')
 
         # Load data from tab 1
         self.add_data_step("Start from tab")
@@ -116,13 +116,11 @@ class TestTabs(WorkbenchBase):
         self.submit_step(wait=True)  # wait for previous render to end
 
         b.assert_element(
-            ".wf-module-error-msg", text="The chosen tab depends on this one", wait=True
+            ".step-error-msg", text="The chosen tab depends on this one", wait=True
         )  # wait for render
 
         self._select_tab("Tab 1")
-        b.assert_element(
-            ".wf-module-error-msg", text="The chosen tab depends on this one"
-        )
+        b.assert_element(".step-error-msg", text="The chosen tab depends on this one")
 
     def test_start_from_empty_tab(self):
         b = self.browser
@@ -142,7 +140,7 @@ class TestTabs(WorkbenchBase):
         self.submit_step()
 
         b.assert_element(
-            ".wf-module-error-msg", text="The chosen tab has no output. ", wait=True
+            ".step-error-msg", text="The chosen tab has no output. ", wait=True
         )  # wait for render
 
     def test_duplicate_tab(self):
@@ -164,4 +162,4 @@ class TestTabs(WorkbenchBase):
 
         self._select_tab("Tab 1 (1)")  # assume this is how it's named
         # Make sure everything's there.
-        b.assert_element('.wf-module[data-module-name="Paste data"]')
+        b.assert_element('.step[data-module-name="Paste data"]')

@@ -446,13 +446,13 @@ describe('Step, not read-only mode', () => {
 
     it('highlights a Step', () => {
       highlight([{ type: 'Step', index: 1, moduleIdName: 'loadurl' }])
-      expect(wrapper.find('.wf-module').prop('className')).toMatch(/\blesson-highlight\b/)
+      expect(wrapper.find('.step').prop('className')).toMatch(/\blesson-highlight\b/)
     })
 
     it('unhighlights a Step', () => {
       // wrong name
       highlight([{ type: 'Step', index: 1, moduleIdName: 'TestModule2' }])
-      expect(wrapper.find('.wf-module').prop('className')).not.toMatch(/\blesson-highlight\b/)
+      expect(wrapper.find('.step').prop('className')).not.toMatch(/\blesson-highlight\b/)
     })
 
     it('highlights the "collapse" button', () => {

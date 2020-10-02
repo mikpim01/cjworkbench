@@ -435,7 +435,7 @@ export class Step extends React.PureComponent {
       )
     }
 
-    let className = 'wf-module status-' + this.stepStatus
+    let className = 'step status-' + this.stepStatus
     className += this.state.isDragging ? ' dragging' : ''
     className += this.props.isSelected ? ' selected' : ''
     className += this.props.isAfterSelected ? ' after-selected' : ''

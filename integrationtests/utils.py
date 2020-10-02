@@ -69,12 +69,12 @@ class WorkbenchBase(unittest.TestCase):
         b = self.browser
 
         if position is None:
-            with b.scope(".in-between-modules:last-child"):
+            with b.scope(".in-between-steps:last-child"):
                 b.click_button("ADD STEP")
         else:
             assert position > 0  # for 0, use add_data_step().
             i = position * 2
-            with b.scope(f".in-between-modules:nth-child({i})"):
+            with b.scope(f".in-between-steps:nth-child({i})"):
                 b.click_button("ADD STEP")
 
         # Search. That way, we won't need to worry about overflow:auto
@@ -83,7 +83,7 @@ class WorkbenchBase(unittest.TestCase):
         b.click_whatever("button.module-search-result", text=name)
 
         b.assert_element(
-            f'.wf-module[data-module-name="{name}"]:not(.status-busy)', wait=True
+            f'.step[data-module-name="{name}"]:not(.status-busy)', wait=True
         )
 
     # TODO move to a helper .py file
@@ -98,7 +98,7 @@ class WorkbenchBase(unittest.TestCase):
 
         # Wait for module to appear and render
         b.assert_element(
-            f'.wf-module[data-module-name="{name}"]:not(.status-busy)', wait=True
+            f'.step[data-module-name="{name}"]:not(.status-busy)', wait=True
         )
 
     # TODO move to a helper .py file
@@ -109,7 +109,7 @@ class WorkbenchBase(unittest.TestCase):
         """
         b = self.browser
 
-        with b.scope(f".wf-module:nth-child({position * 2 + 1})"):
+        with b.scope(f".step:nth-child({position * 2 + 1})"):
             b.click_button("more", visible="all")
 
         # Dropdown menu is at root of document (in a <Portal>)
@@ -149,10 +149,7 @@ class WorkbenchBase(unittest.TestCase):
         wait -- True or number of seconds to wait until element appears
         """
         with self.browser.scope(
-            (
-                f'.wf-module[data-module-name="{module_name}"] '
-                f'.param[data-name="{name}"]'
-            ),
+            f'.step[data-module-name="{module_name}"] .param[data-name="{name}"]',
             **kwargs,
         ):
             self.browser.assert_element(f".react-select:not(.loading)", wait=True)
@@ -173,10 +170,7 @@ class WorkbenchBase(unittest.TestCase):
         wait -- True or number of seconds to wait until element appears
         """
         with self.browser.scope(
-            (
-                f'.wf-module[data-module-name="{module_name}"] '
-                f'.param[data-name="{name}"]'
-            ),
+            f'.step[data-module-name="{module_name}"] .param[data-name="{name}"]',
             **kwargs,
         ):
             self.browser.click_whatever(".react-select__dropdown-indicator")

@@ -23,7 +23,7 @@ const StatusLine = React.memo(function StatusLine ({ status, errors, applyQuickF
   return (
     <>
       {errors.map(({ message, quickFixes }, j) => (
-        <div className='wf-module-error-msg' key={j}>
+        <div className='step-error-msg' key={j}>
           <p>{message}</p>
           {quickFixes.length && !isReadOnly ? (
             <ul className='quick-fixes'>

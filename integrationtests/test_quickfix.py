@@ -44,7 +44,7 @@ class TestQuickFix(LoggedInIntegrationTest):
         # Wait for error to occur
         b = self.browser
         b.assert_element(
-            ".wf-module-error-msg",
+            ".step-error-msg",
             text="The column “A” must be converted from Text to Timestamps.",
             wait=True,
         )
@@ -56,7 +56,7 @@ class TestQuickFix(LoggedInIntegrationTest):
         # Click back to "Group by date" to see its output
         b.click_whatever(".module-name", text="Group by date")
         # Wait for render
-        b.assert_no_element(".wf-module-error-msg", wait=True)
+        b.assert_no_element(".step-error-msg", wait=True)
         # Wait for table render
         b.assert_element(".column-key", text="count number", wait=True)
 
@@ -81,7 +81,7 @@ class TestQuickFix(LoggedInIntegrationTest):
         self.submit_step()
         # Wait for error
         b.assert_element(
-            ".wf-module-error-msg",
+            ".step-error-msg",
             text="The column “Num” must be converted from Text to Numbers.",
             wait=True,
         )
@@ -123,13 +123,13 @@ class TestQuickFix(LoggedInIntegrationTest):
 
         # Wait for errors
         b.assert_element(
-            ".wf-module-error-msg",
+            ".step-error-msg",
             text="The column “Num1” must be converted from Text to Numbers.",
             wait=True,
         )
         b.assert_element("button", text="Convert Text to Numbers")
         b.assert_element(
-            ".wf-module-error-msg",
+            ".step-error-msg",
             text="The column “Num2” must be converted from Timestamps to Numbers.",
             wait=True,
         )

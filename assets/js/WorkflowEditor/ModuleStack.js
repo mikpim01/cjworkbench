@@ -101,7 +101,7 @@ class ModuleStackInsertSpot extends React.PureComponent {
 
   renderReadOnly () {
     return (
-      <div className='in-between-modules read-only' />
+      <div className='in-between-steps read-only' />
     )
   }
 
@@ -114,7 +114,7 @@ class ModuleStackInsertSpot extends React.PureComponent {
     if (isReadOnly) return this.renderReadOnly()
 
     return (
-      <div className='in-between-modules'>
+      <div className='in-between-steps'>
         <ModuleSearch
           index={index}
           tabSlug={tabSlug}
@@ -196,7 +196,7 @@ export class ModuleStack extends React.Component {
       this.lastScrolledStep = { tabSlug, index }
 
       const containerEl = this.scrollRef.current
-      const moduleEl = containerEl.querySelectorAll('.wf-module')[index]
+      const moduleEl = containerEl.querySelectorAll('.step')[index]
       if (moduleEl) {
         scrollTo(moduleEl, containerEl, 15, 50)
       }

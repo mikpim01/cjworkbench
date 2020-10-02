@@ -1,4 +1,4 @@
-.wf-module {
+.step {
   position: relative;
   z-index: 0; // HACK create a stacking context, so .param-radio can set z-index: 1 without leaping out of the module
 
@@ -19,7 +19,7 @@
   // Show a vertical line to the left of the module stack
   &.status-ok:not(.after-selected) {
     &:not(.selected) .module-card-and-link::before,
-    &:not(.selected) + .in-between-modules::before,
+    &:not(.selected) + .in-between-steps::before,
     &:not(:first-child) .module-notes::before {
       content: '';
       display: block;
@@ -88,7 +88,7 @@
     &.status-unreachable h3 {color:darken($number-color,15%);}
 
     // Color line to the left of the module stack
-    &::before, & + .in-between-modules::before {
+    &::before, & + .in-between-steps::before {
       background-color: $line-color;
     }
   }
@@ -395,7 +395,7 @@
     }
   }
 
-  .wf-module-error-msg  {
+  .step-error-msg  {
     padding: 1.5rem;
     background-color: $error-prompt--Vlight;
     color: $brand-red;
@@ -426,7 +426,7 @@
   }
 
   // prompt that isn't an error (module working as expected)
-  &.status-ok .wf-module-error-msg {
+  &.status-ok .step-error-msg {
     background-color: $brand-workspace--light;
     color: $brand-workspace;
     border-color: $brand-workspace--light
@@ -459,6 +459,6 @@
   }
 }
 
-.wf-module.lesson-highlight .module-content {
+.step.lesson-highlight .module-content {
   outline: 2px solid $brand-learn;
 }

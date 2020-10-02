@@ -33,7 +33,7 @@ class TestNotifications(LoggedInIntegrationTest):
         self.submit_step()
 
         # Enable notifications
-        with b.scope('.wf-module[data-module-name="Filter by condition"]'):
+        with b.scope('.step[data-module-name="Filter by condition"]'):
             # [adamhooper, 2018-10-26] wait because one time I got
             # ElementNotFound on my dev machine
             b.click_button("Email alerts disabled", wait=True)
