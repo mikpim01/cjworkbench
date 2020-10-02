@@ -16,7 +16,7 @@
     z-index: 1;
   }
 
-  // Show a vertical line to the left of the module stack
+  // Show a vertical line to the left of the step list
   &.status-ok:not(.after-selected) {
     &:not(.selected) .module-card-and-link::before,
     &:not(.selected) + .in-between-steps::before,
@@ -87,7 +87,7 @@
 
     &.status-unreachable h3 {color:darken($number-color,15%);}
 
-    // Color line to the left of the module stack
+    // Color line to the left of the step list
     &::before, & + .in-between-steps::before {
       background-color: $line-color;
     }

@@ -11,7 +11,7 @@ function Shape (type, propTypes) {
 
 const LessonHighlightType = P.oneOfType([
   Shape('Module', {
-    index: P.number.isRequired, // index in ModuleStack where we want to add the module
+    index: P.number.isRequired, // index in StepList where we want to add the module
     id_name: P.string.isRequired // slug of the Module
   }),
   Shape('Step', {

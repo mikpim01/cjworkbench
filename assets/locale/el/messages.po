@@ -448,8 +448,8 @@ msgstr "Κλείσιμο αναζήτησης"
 msgid "js.WorkflowEditor.ModuleSearch.Prompt.placeholder"
 msgstr "Αναζήτηση…"
 
-#: assets/js/WorkflowEditor/ModuleStack.js:138
-msgid "js.WorkflowEditor.ModuleStack.EmptyReadOnlyModuleStack"
+#: assets/js/WorkflowEditor/StepList.js:138
+msgid "js.WorkflowEditor.StepList.EmptyReadOnlyStepList"
 msgstr "Αυτή η καρτέλα δεν έχει βήματα."
 
 #: assets/js/WorkflowEditor/OutputPane.js:103

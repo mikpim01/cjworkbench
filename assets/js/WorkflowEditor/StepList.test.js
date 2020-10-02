@@ -1,11 +1,11 @@
 /* globals describe, expect, it, jest */
 import React from 'react'
-import { ModuleStack } from './ModuleStack'
+import { StepList } from './StepList'
 import { mountWithI18n } from '../i18n/test-utils'
 
-describe('ModuleStack', () => {
+describe('StepList', () => {
   const wrapper = (extraProps) => mountWithI18n(
-    <ModuleStack
+    <StepList
       api={{}}
       isReadOnly={false}
       tabSlug='tab-1'
@@ -22,6 +22,6 @@ describe('ModuleStack', () => {
 
   it('should render a placeholder when empty and read-only', () => {
     const w = wrapper({ steps: [], isReadOnly: true })
-    expect(w.find('Trans[id="js.WorkflowEditor.ModuleStack.EmptyReadOnlyModuleStack"]')).toHaveLength(1)
+    expect(w.find('Trans[id="js.WorkflowEditor.StepList.EmptyReadOnlyStepList"]')).toHaveLength(1)
   })
 })

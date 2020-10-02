@@ -500,8 +500,8 @@ msgid "js.WorkflowEditor.ModuleSearch.Prompt.placeholder"
 msgstr ""
 
 #. default-message: This Tab has no Steps.
-#: assets/js/WorkflowEditor/ModuleStack.js:138
-msgid "js.WorkflowEditor.ModuleStack.EmptyReadOnlyModuleStack"
+#: assets/js/WorkflowEditor/StepList.js:138
+msgid "js.WorkflowEditor.StepList.EmptyReadOnlyStepList"
 msgstr ""
 
 #. default-message: This was the data that led to an error. Please correct the error in the left pane.

@@ -1,4 +1,4 @@
-.module-stack {
+.step-list {
   flex: 0 0 auto; // auto-width: width of contents (including scrollbar)
   padding-top: 1.5rem;
   background-color: $WF-background;
@@ -123,7 +123,6 @@
     }
   }
 
-  // Module stack in zen mode
   &.zen-mode {
     .step:not(.zen-mode),
     .in-between-steps {
@@ -148,7 +147,7 @@
 
       }
 
-      // Notes are the same width as module-stack
+      // Notes are the same width as step-list
 
       textarea[name="notes"], .editable-notes-read-only {
         width: 50rem;

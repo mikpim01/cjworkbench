@@ -8,8 +8,8 @@ class TestPythonCode(LoggedInIntegrationTest):
         b = self.browser
         b.click_button("Create Workflow")
 
-        # Empty module stack
-        b.wait_for_element(".module-stack", wait=True)
+        # Empty step list
+        b.wait_for_element(".step-list", wait=True)
         self.add_data_step("Python")
 
         # Wait for dynamically-loaded editor component

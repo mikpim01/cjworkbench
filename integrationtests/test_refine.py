@@ -8,8 +8,8 @@ class TestRefine(LoggedInIntegrationTest):
         b = self.browser
         b.click_button("Create Workflow")
 
-        # Empty module stack
-        b.wait_for_element(".module-stack")
+        # Empty step list
+        b.wait_for_element(".step-list")
 
         self.import_module("refine")
 

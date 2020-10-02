@@ -428,8 +428,8 @@ msgstr "Close Search"
 msgid "js.WorkflowEditor.ModuleSearch.Prompt.placeholder"
 msgstr "Search…"
 
-#: assets/js/WorkflowEditor/ModuleStack.js:138
-msgid "js.WorkflowEditor.ModuleStack.EmptyReadOnlyModuleStack"
+#: assets/js/WorkflowEditor/StepList.js:138
+msgid "js.WorkflowEditor.StepList.EmptyReadOnlyStepList"
 msgstr "This Tab has no Steps."
 
 #: assets/js/WorkflowEditor/OutputPane.js:103

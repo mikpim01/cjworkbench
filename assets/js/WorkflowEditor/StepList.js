@@ -88,7 +88,7 @@ class ModuleDropSpot extends React.PureComponent {
   }
 }
 
-class ModuleStackInsertSpot extends React.PureComponent {
+class StepListInsertSpot extends React.PureComponent {
   static propTypes = {
     index: PropTypes.number.isRequired,
     tabSlug: PropTypes.string.isRequired,
@@ -132,10 +132,10 @@ class ModuleStackInsertSpot extends React.PureComponent {
   }
 }
 
-function EmptyReadOnlyModuleStack () {
+function EmptyReadOnlyStepList () {
   return (
     <div className='empty-read-only'>
-      <Trans id='js.WorkflowEditor.ModuleStack.EmptyReadOnlyModuleStack'>This Tab has no Steps.</Trans>
+      <Trans id='js.WorkflowEditor.StepList.EmptyReadOnlyStepList'>This Tab has no Steps.</Trans>
     </div>
   )
 }
@@ -158,7 +158,7 @@ function partitionSteps (steps, modules) {
   }
 }
 
-export class ModuleStack extends React.Component {
+export class StepList extends React.Component {
   static propTypes = {
     api: PropTypes.object.isRequired,
     tabSlug: PropTypes.string,
@@ -264,7 +264,7 @@ export class ModuleStack extends React.Component {
       if (!item) {
         return (
           <React.Fragment key={`placeholder-${i}`}>
-            <ModuleStackInsertSpot
+            <StepListInsertSpot
               index={i}
               tabSlug={this.props.tabSlug}
               isLast={false}
@@ -284,7 +284,7 @@ export class ModuleStack extends React.Component {
       } else {
         return (
           <React.Fragment key={`module-${item.id}`}>
-            <ModuleStackInsertSpot
+            <StepListInsertSpot
               index={i}
               tabSlug={this.props.tabSlug}
               isLast={false}
@@ -312,13 +312,13 @@ export class ModuleStack extends React.Component {
       }
     })
 
-    let className = 'module-stack'
+    let className = 'step-list'
     if (this.state.zenModeStepId !== null) className += ' zen-mode'
 
     return (
       <div className={className} ref={this.scrollRef}>
         {isReadOnly && steps.length === 0 ? (
-          <EmptyReadOnlyModuleStack />
+          <EmptyReadOnlyStepList />
         ) : (
           <>
             <AddData
@@ -336,7 +336,7 @@ export class ModuleStack extends React.Component {
             />
             {spotsAndItems}
             {steps.length > 0 ? (
-              <ModuleStackInsertSpot
+              <StepListInsertSpot
                 key='last'
                 index={steps.length}
                 tabSlug={tabSlug}
@@ -389,4 +389,4 @@ const mapDispatchToProps = (dispatch) => {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(ModuleStack)
+)(StepList)

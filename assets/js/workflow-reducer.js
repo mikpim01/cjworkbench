@@ -199,7 +199,7 @@ registerReducerFunc(UPDATE_MODULE, (state, action) => {
 })
 
 // MOVE_STEP
-// Re-order the modules in the module stack
+// Re-order the modules in the step list
 export function moveStepAction (tabSlug, oldIndex, newIndex) {
   return (dispatch, getState, api) => {
     if (oldIndex < newIndex) {

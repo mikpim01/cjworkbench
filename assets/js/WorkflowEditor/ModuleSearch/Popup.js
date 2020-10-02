@@ -32,7 +32,7 @@ const KeyCodes = {
  *
  * TEST: DROPUP RESIZES
  *
- * 1. Open a workflow with a few modules
+ * 1. Open a workflow with a few steps
  * 2. Click an "add-step" slot near the bottom of the page
  *    -- popup should open, with scrollbar; search field should be where it
  *       would have been had we gotten a dropdown instead of a dropup
@@ -54,9 +54,9 @@ const KeyCodes = {
  * 3. Scroll through the popup
  *    -- you should see a scrollbar; scrolling should affect the scrollbar.
  *
- * TEST: SCROLL MODULE STACK SO BUTTON IS OFFSCREEN
+ * TEST: SCROLL STEP LIST SO BUTTON IS OFFSCREEN
  *
- * 1. Open a workflow with a few modules
+ * 1. Open a workflow with a few steps
  * 2. Click a middle add-step slot
  *    -- popup appears
  * 3. Scroll all the way up and down in the step stack (_outside_ the
