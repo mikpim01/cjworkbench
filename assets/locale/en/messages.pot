@@ -499,11 +499,6 @@ msgstr ""
 msgid "js.WorkflowEditor.ModuleSearch.Prompt.placeholder"
 msgstr ""
 
-#. default-message: This Tab has no Steps.
-#: assets/js/WorkflowEditor/StepList.js:138
-msgid "js.WorkflowEditor.StepList.EmptyReadOnlyStepList"
-msgstr ""
-
 #. default-message: This was the data that led to an error. Please correct the error in the left pane.
 #: assets/js/WorkflowEditor/OutputPane.js:103
 msgid "js.WorkflowEditor.OutputPane.showingInput.becauseError"
@@ -518,6 +513,11 @@ msgstr ""
 #. default-message: Report
 #: assets/js/WorkflowEditor/PaneSelect.js:15
 msgid "js.WorkflowEditor.PaneSelect.nav.reportPlaceholder"
+msgstr ""
+
+#. default-message: This Tab has no Steps.
+#: assets/js/WorkflowEditor/StepList.js:138
+msgid "js.WorkflowEditor.StepList.EmptyReadOnlyStepList"
 msgstr ""
 
 #. default-message: Create tab

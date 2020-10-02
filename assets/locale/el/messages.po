@@ -448,10 +448,6 @@ msgstr "Κλείσιμο αναζήτησης"
 msgid "js.WorkflowEditor.ModuleSearch.Prompt.placeholder"
 msgstr "Αναζήτηση…"
 
-#: assets/js/WorkflowEditor/StepList.js:138
-msgid "js.WorkflowEditor.StepList.EmptyReadOnlyStepList"
-msgstr "Αυτή η καρτέλα δεν έχει βήματα."
-
 #: assets/js/WorkflowEditor/OutputPane.js:103
 msgid "js.WorkflowEditor.OutputPane.showingInput.becauseError"
 msgstr ""
@@ -466,6 +462,10 @@ msgstr "Αναφορά"
 #: assets/js/WorkflowEditor/PaneSelect.js:15
 msgid "js.WorkflowEditor.PaneSelect.nav.reportPlaceholder"
 msgstr "Αναφορά"
+
+#: assets/js/WorkflowEditor/StepList.js:138
+msgid "js.WorkflowEditor.StepList.EmptyReadOnlyStepList"
+msgstr "Αυτή η καρτέλα δεν έχει βήματα."
 
 #: assets/js/WorkflowEditor/Tabs/NewTabPrompt.js:14
 msgid "js.WorkflowEditor.Tabs.NewTabPrompt.createTab.title"
