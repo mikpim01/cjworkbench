@@ -373,12 +373,12 @@ msgstr "Δημιουργία αντιγράφου για αποθήκευση τ
 msgid "js.Workflow.suggestion.signInToSaveChanges"
 msgstr "<0>Συνδεθείτε</0> για να αποθηκεύσετε τις αλλαγές σας"
 
-#: assets/js/WorkflowEditor/AddData/Modal.js:26
+#: assets/js/WorkflowEditor/AddData/Modal.js:27
 msgid "js.WorkflowEditor.AddData.Modal.closeButton.hoverText"
 msgstr "Κλείσιμο"
 
 #. This should be all-caps for styling reasons
-#: assets/js/WorkflowEditor/AddData/Modal.js:21
+#: assets/js/WorkflowEditor/AddData/Modal.js:22
 msgid "js.WorkflowEditor.AddData.Modal.header.title"
 msgstr "ΕΠΙΛΕΞΤΕ ΠΗΓΗ ΔΕΔΟΜΕΝΩΝ"
 
@@ -452,7 +452,7 @@ msgstr "Αναζήτηση…"
 msgid "js.WorkflowEditor.ModuleStack.EmptyReadOnlyModuleStack"
 msgstr "Αυτή η καρτέλα δεν έχει βήματα."
 
-#: assets/js/WorkflowEditor/OutputPane.js:104
+#: assets/js/WorkflowEditor/OutputPane.js:103
 msgid "js.WorkflowEditor.OutputPane.showingInput.becauseError"
 msgstr ""
 "Αυτά ήταν τα δεδομένα που οδήγησαν σε σφάλμα. Διορθώστε το σφάλμα στο "
@@ -997,11 +997,11 @@ msgstr "κατά ώρα"
 msgid "js.params.Custom.Groups.DateGranularity.byMinute.option"
 msgstr "κατά λεπτό"
 
-#: assets/js/params/Custom/Groups/DateGranularity.js:43
+#: assets/js/params/Custom/Groups/DateGranularity.js:44
 msgid "js.params.Custom.Groups.DateGranularity.byMonth.option"
 msgstr "κατά μήνα"
 
-#: assets/js/params/Custom/Groups/DateGranularity.js:44
+#: assets/js/params/Custom/Groups/DateGranularity.js:45
 msgid "js.params.Custom.Groups.DateGranularity.byQuarter.option"
 msgstr "κατά τρίμηνο"
 
@@ -1009,7 +1009,15 @@ msgstr "κατά τρίμηνο"
 msgid "js.params.Custom.Groups.DateGranularity.bySecond.option"
 msgstr "κατά δευτερόλεπτο"
 
-#: assets/js/params/Custom/Groups/DateGranularity.js:45
+#: assets/js/params/Custom/Groups/DateGranularity.js:43
+msgid "js.params.Custom.Groups.DateGranularity.byWeek.option"
+msgstr ""
+
+#: assets/js/params/Custom/Groups/DateGranularity.js:49
+msgid "js.params.Custom.Groups.DateGranularity.byWeek.weekStartsMonday"
+msgstr ""
+
+#: assets/js/params/Custom/Groups/DateGranularity.js:46
 msgid "js.params.Custom.Groups.DateGranularity.byYear.option"
 msgstr "κατά έτος"
 
@@ -1973,14 +1981,14 @@ msgstr "Όνομα"
 msgid "py.forms.signup.lastName.placeholder"
 msgstr "Επώνυμο"
 
-#: fetcher/fetch.py:185
+#: fetcher/fetch.py:177
 msgid "py.fetcher.fetch.user_visible_bug_during_fetch"
 msgstr ""
 "Παρουσιάστηκε ένα μη αναμενόμενο πρόβλημα. Έχουμε ενημερωθεί και "
 "προσπαθούμε να το διορθώσουμε. Αν συνεχιστεί, επικοινωνήστε μαζί μας. "
 "Κωδικός σφάλματος: {message}"
 
-#: fetcher/fetch.py:281
+#: fetcher/fetch.py:271
 msgid "py.fetcher.fetch.no_loaded_module"
 msgstr "Δεν είναι δυνατή η λήψη: η μονάδα (module) διαγράφηκε"
 
@@ -1988,23 +1996,46 @@ msgstr "Δεν είναι δυνατή η λήψη: η μονάδα (module) δ�
 msgid "py.fetcher.secrets._service_no_longer_configured_error"
 msgstr "Η υπηρεσία \"{service}\" έχει πάψει να είναι διαμορφωμένη"
 
-#: fetcher/secrets.py:177
+#: fetcher/secrets.py:173
 msgid "py.fetcher.secrets._refresh_oauth2_token.error.general"
 msgstr ""
 "Ο διακομιστής διακριτικών (τεκμηρίων) απάντησε με {status_code}: {error} "
 "({description})"
 
-#: fetcher/secrets.py:184
+#: fetcher/secrets.py:180
 msgid "py.fetcher.secrets._refresh_oauth2_token.server_error.general"
 msgstr "Η {service_id} απάντησε με HTTP {status_code} {reason}: {description}"
 
-#: fetcher/secrets.py:201
+#: fetcher/secrets.py:197
 msgid "py.fetcher.secrets._refresh_oauth2_token.timeout_error"
 msgstr "Λήξη χρονικού ορίου κατά την ανανέωση του διακριτικού (τεκμηρίου) OAuth2"
 
-#: fetcher/secrets.py:211
+#: fetcher/secrets.py:207
 msgid "py.fetcher.secrets._refresh_oauth2_token.client_error"
 msgstr "Σφάλμα HTTP κατά την ανανέωση του διακριτικού (τεκμηρίου) OAuth2: {error}"
+
+#: renderer/execute/step.py:137
+msgid "py.renderer.execute.step.user_visible_bug_during_render"
+msgstr ""
+"Παρουσιάστηκε ένα μη αναμενόμενο πρόβλημα. Έχουμε ενημερωθεί και "
+"προσπαθούμε να το διορθώσουμε. Αν συνεχιστεί, επικοινωνήστε μαζί μας. "
+"Κωδικός σφάλματος: {message}"
+
+#: renderer/execute/step.py:364
+msgid "py.renderer.execute.step.noModule"
+msgstr ""
+"Διαγράψτε αυτό το βήμα: ένας διαχειριστής απεγκατέστησε τον κώδικα του "
+"βήματος."
+
+#: renderer/execute/step.py:391
+msgid "py.renderer.execute.step.TabCycleError"
+msgstr ""
+"Η επιλεγμένη καρτέλα εξαρτάται από αυτήν εδώ. Επιλέξτε διαφορετική "
+"καρτέλα."
+
+#: renderer/execute/step.py:402
+msgid "py.renderer.execute.step.TabOutputUnreachableError"
+msgstr "Η επιλεγμένη καρτέλα δεν έχει έξοδο. Επιλέξτε μια άλλη."
 
 #: renderer/execute/types.py:95
 #, fuzzy
@@ -2059,29 +2090,6 @@ msgstr ""
 "{αριθμούς} timestamp {ημερομηνίες & ώρες} other {}} σε {best_wanted_type,"
 " select, text {κείμενο} number {αριθμούς} timestamp {ημερομηνίες & ώρες} "
 "other{}}.}}"
-
-#: renderer/execute/step.py:141
-msgid "py.renderer.execute.step.user_visible_bug_during_render"
-msgstr ""
-"Παρουσιάστηκε ένα μη αναμενόμενο πρόβλημα. Έχουμε ενημερωθεί και "
-"προσπαθούμε να το διορθώσουμε. Αν συνεχιστεί, επικοινωνήστε μαζί μας. "
-"Κωδικός σφάλματος: {message}"
-
-#: renderer/execute/step.py:372
-msgid "py.renderer.execute.step.noModule"
-msgstr ""
-"Διαγράψτε αυτό το βήμα: ένας διαχειριστής απεγκατέστησε τον κώδικα του "
-"βήματος."
-
-#: renderer/execute/step.py:399
-msgid "py.renderer.execute.step.TabCycleError"
-msgstr ""
-"Η επιλεγμένη καρτέλα εξαρτάται από αυτήν εδώ. Επιλέξτε διαφορετική "
-"καρτέλα."
-
-#: renderer/execute/step.py:410
-msgid "py.renderer.execute.step.TabOutputUnreachableError"
-msgstr "Η επιλεγμένη καρτέλα δεν έχει έξοδο. Επιλέξτε μια άλλη."
 
 #: templates/403.html:6
 msgid "py.templates.403.title"
